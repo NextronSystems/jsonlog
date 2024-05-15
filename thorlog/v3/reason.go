@@ -15,7 +15,7 @@ type Reason struct {
 	Score         int64 `json:"score" textlog:"subscore"`
 	Additive      bool  `json:"additive" textlog:"-"`
 	Signature     `json:"signature" textlog:",inline"`
-	StringMatches FormattedMatchStrings `json:"matched" textlog:"matched"`
+	StringMatches MatchStrings `json:"matched" textlog:"matched"`
 }
 
 func (r *Reason) UnmarshalJSON(data []byte) error {
@@ -104,7 +104,7 @@ func (s *Sigtype) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func NewReason(desc string, score int64, signature Signature, matches FormattedMatchStrings) Reason {
+func NewReason(desc string, score int64, signature Signature, matches MatchStrings) Reason {
 	return Reason{
 		ObjectHeader: jsonlog.ObjectHeader{
 			Type:    typeReason,

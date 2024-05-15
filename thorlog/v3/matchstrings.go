@@ -13,17 +13,17 @@ import (
 	"github.com/NextronSystems/jsonlog"
 )
 
-type FormattedData struct {
+type MatchData struct {
 	Data    []byte
 	FullHex bool
 }
 
-func (f FormattedData) MarshalJSON() ([]byte, error) {
+func (f MatchData) MarshalJSON() ([]byte, error) {
 	matchingString := f.String()
 	return InvalidUnicodeString(matchingString).MarshalJSON()
 }
 
-func (f *FormattedData) UnmarshalJSON(data []byte) error {
+func (f *MatchData) UnmarshalJSON(data []byte) error {
 	var matchingString string
 	err := json.Unmarshal(data, &matchingString)
 	if err != nil {
@@ -35,7 +35,10 @@ func (f *FormattedData) UnmarshalJSON(data []byte) error {
 
 var notOnlyASCII = regexp.MustCompile(`[^\x20-\x7E\x0d\x0a\x09]+`) // printable chars + \r,\n,\t
 
-func (f FormattedData) String() string {
+func (f MatchData) String() string {
+	if f.FullHex {
+		return hex.EncodeToString(f.Data)
+	}
 	data := f.Data
 	matchingString := string(data) // Try to directly convert
 
@@ -77,12 +80,12 @@ func decodeUTF16(b []byte) (string, error) {
 	return ret.String(), nil
 }
 
-func (f FormattedData) QuotedString() string {
+func (f MatchData) QuotedString() string {
 	matchingString := f.String()
 	matchingString = escaper.Replace(matchingString)
 	var replacedString bytes.Buffer
 	for _, char := range []byte(matchingString) {
-		if char < 0x20 || char > 0x7E || f.FullHex { // non ASCII
+		if char < 0x20 || char > 0x7E { // non ASCII
 			replacedString.WriteString("\\x")
 			replacedString.WriteString(hex.EncodeToString([]byte{char}))
 		} else {
@@ -94,9 +97,9 @@ func (f FormattedData) QuotedString() string {
 	return matchingString
 }
 
-type FormattedMatchString struct {
-	Match      FormattedData      `json:"data"`
-	Context    *FormattedData     `json:"context,omitempty"`
+type MatchString struct {
+	Match      MatchData          `json:"data"`
+	Context    *MatchData         `json:"context,omitempty"`
 	Offset     *uint64            `json:"offset,omitempty"`
 	Field      *jsonlog.Reference `json:"field,omitempty"`
 	HideOffset bool               `json:"-"`
@@ -104,16 +107,16 @@ type FormattedMatchString struct {
 
 var needsQuoting = regexp.MustCompile(`[^\x21\x23-\x7E]`)
 
-func (f FormattedMatchString) String() string {
+func (f MatchString) String() string {
 	var matchString string
-	if needsQuoting.MatchString(f.Match.String()) {
+	if needsQuoting.MatchString(f.Match.String()) && !f.Match.FullHex {
 		matchString += f.Match.QuotedString()
 	} else {
 		matchString += f.Match.String()
 	}
 	if f.Context != nil {
 		matchString += " in "
-		if needsQuoting.MatchString(f.Context.String()) {
+		if needsQuoting.MatchString(f.Context.String()) && !f.Context.FullHex {
 			matchString += f.Context.QuotedString()
 		} else {
 			matchString += f.Context.String()
@@ -140,11 +143,11 @@ func (f FormattedMatchString) String() string {
 	return matchString
 }
 
-type FormattedMatchStrings []FormattedMatchString
+type MatchStrings []MatchString
 
 const maxMatchStrings = 30
 
-func (f FormattedMatchStrings) String() string {
+func (f MatchStrings) String() string {
 	if len(f) == 0 {
 		return "(none)"
 	}

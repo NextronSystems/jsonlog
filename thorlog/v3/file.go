@@ -110,8 +110,8 @@ type PeInfo struct {
 	OriginalName    string `json:"original_name" textlog:"original_name,omitempty"`
 	InternalName    string `json:"internal_name" textlog:"internal_name,omitempty"`
 
-	Signed        bool `json:"signed" textlog:"signed"`
-	SignatureInfo `textlog:",expand,omitempty"`
+	Signed     bool            `json:"signed" textlog:"signed"`
+	Signatures []SignatureInfo `json:"signatures" textlog:",expand"`
 
 	Imphash           string    `json:"imphash" textlog:"imphash,omitempty"`
 	RichHeaderHash    string    `json:"rich_header_hash"`

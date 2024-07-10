@@ -7,10 +7,10 @@ import (
 type AntiVirusProduct struct {
 	LogObjectHeader
 
-	Name            string `json:"Name" textlog:"name"`
-	Status          string `json:"Status" textlog:"status"`
-	SignatureStatus string `json:"SignatureStatus" textlog:"signature_status"`
-	Path            string `json:"Path" textlog:"path"`
+	Name            string `json:"name" textlog:"name"`
+	Status          string `json:"status" textlog:"status"`
+	SignatureStatus string `json:"signature_status" textlog:"signature_status"`
+	Path            string `json:"path" textlog:"path"`
 }
 
 const typeAntiVirusProduct = "Antivirus product"

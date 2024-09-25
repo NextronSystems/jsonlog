@@ -13,7 +13,6 @@ type Reason struct {
 	Summary string `json:"-" textlog:"reason"`
 
 	Score         int64 `json:"score" textlog:"subscore"`
-	Additive      bool  `json:"additive" textlog:"-"`
 	Signature     `json:"signature" textlog:",inline"`
 	StringMatches MatchStrings `json:"matched" textlog:"matched"`
 }

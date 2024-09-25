@@ -112,7 +112,7 @@ type AclEntry struct {
 }
 
 func (a AclEntry) String() string {
-	return a.Group + a.Access.String()
+	return a.Group + ":" + a.Access.String()
 }
 
 type AclAccess byte

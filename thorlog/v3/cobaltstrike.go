@@ -7,7 +7,7 @@ import (
 type BeaconConfig struct {
 	jsonlog.ObjectHeader
 
-	Type             string `json:"type" textlog:"beacon_type"`
+	Type             string `json:"beacon_type" textlog:"beacon_type"`
 	C2               string `json:"c2" textlog:"beacon_c2"`
 	Port             string `json:"port" textlog:"beacon_port"`
 	SpawnTo          string `json:"spawnto" textlog:"beacon_spawnto"`

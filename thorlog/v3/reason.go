@@ -33,8 +33,8 @@ func init() {
 
 type Signature struct {
 	Ref             StringList `json:"ref" textlog:"ref"`
-	Type            Sigtype    `json:"type" textlog:"sigtype"`
-	Class           Sigclass   `json:"class" textlog:"sigclass"`
+	Type            Sigtype    `json:"origin" textlog:"sigtype"`
+	Class           Sigclass   `json:"kind" textlog:"sigclass"`
 	Score           int64      `json:"score" textlog:"subscore"`
 	Date            string     `json:"ruledate,omitempty" textlog:"ruledate,omitempty"`
 	Tags            StringList `json:"tags,omitempty" textlog:"tags,omitempty"`

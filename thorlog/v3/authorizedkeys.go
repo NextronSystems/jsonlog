@@ -8,7 +8,7 @@ type AuthorizedKeysEntry struct {
 	jsonlog.ObjectHeader
 
 	Path    string `json:"path" textlog:"path"`
-	Type    string `json:"type" textlog:"type"`
+	Type    string `json:"key_type" textlog:"type"`
 	Key     string `json:"key" textlog:"key"`
 	Comment string `json:"comment" textlog:"comment"`
 	Line    string `json:"line" textlog:"line"`

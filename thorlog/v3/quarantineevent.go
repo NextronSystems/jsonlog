@@ -12,7 +12,7 @@ type QuarantineEvent struct {
 	Id        string    `json:"id" textlog:"id"`
 	Timestamp time.Time `json:"timestamp" textlog:"timestamp"`
 	Name      string    `json:"name" textlog:"name"`
-	Type      string    `json:"type" textlog:"type"`
+	Type      string    `json:"event_type" textlog:"type"`
 	Url       string    `json:"url" textlog:"url,omitempty"`
 }
 

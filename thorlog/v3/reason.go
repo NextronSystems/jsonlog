@@ -12,7 +12,6 @@ type Reason struct {
 
 	Summary string `json:"-" textlog:"reason"`
 
-	Score         int64 `json:"score" textlog:"subscore"`
 	Signature     `json:"signature" textlog:",inline"`
 	StringMatches MatchStrings `json:"matched" textlog:"matched"`
 }
@@ -36,6 +35,7 @@ type Signature struct {
 	Ref             StringList `json:"ref" textlog:"ref"`
 	Type            Sigtype    `json:"type" textlog:"sigtype"`
 	Class           Sigclass   `json:"class" textlog:"sigclass"`
+	Score           int64      `json:"score" textlog:"subscore"`
 	Date            string     `json:"ruledate,omitempty" textlog:"ruledate,omitempty"`
 	Tags            StringList `json:"tags,omitempty" textlog:"tags,omitempty"`
 	Rulename        string     `json:"rulename,omitempty" textlog:"rulename,omitempty"`
@@ -103,14 +103,13 @@ func (s *Sigtype) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func NewReason(desc string, score int64, signature Signature, matches MatchStrings) Reason {
+func NewReason(desc string, signature Signature, matches MatchStrings) Reason {
 	return Reason{
 		ObjectHeader: jsonlog.ObjectHeader{
 			Type:    typeReason,
 			Summary: desc,
 		},
 		Summary:       desc,
-		Score:         score,
 		Signature:     signature,
 		StringMatches: matches,
 	}

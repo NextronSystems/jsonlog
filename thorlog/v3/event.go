@@ -20,7 +20,7 @@ type Finding struct {
 	Score        int64            `json:"score" textlog:"score"`
 	Reasons      []Reason         `json:"reasons" textlog:",expand"`
 	ReasonCount  int              `json:"-" textlog:"reasons_count"`
-	EventContext Context          `json:"context" textlog:",expand"`
+	EventContext Context          `json:"context" textlog:",expand" jsonschema:"nullable"`
 	LogVersion   common.Version   `json:"log_version"`
 }
 
@@ -150,7 +150,7 @@ func NewFinding(subject jsonlog.Object, message string) *Finding {
 type Message struct {
 	jsonlog.ObjectHeader
 	Meta       LogEventMetadata `json:"meta" textlog:",expand"`
-	Fields     MessageFields    `json:"fields" textlog:",expand"`
+	Fields     MessageFields    `json:"fields" textlog:",expand" jsonschema:"nullable"`
 	LogVersion common.Version   `json:"log_version"`
 }
 
@@ -244,6 +244,10 @@ func (o *MessageFields) UnmarshalJSON(data []byte) error {
 	}
 	*o = details
 	return nil
+}
+
+func (o MessageFields) JSONSchemaAlias() any {
+	return map[string]any{}
 }
 
 func unmarshalJsonValue(data []byte) (any, error) {

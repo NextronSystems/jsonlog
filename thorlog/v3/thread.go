@@ -9,7 +9,7 @@ import (
 type Thread struct {
 	jsonlog.ObjectHeader
 	ThreadId uint32     `json:"id"`
-	Stack    StringList `json:"stack"`
+	Stack    StringList `json:"stack" jsonschema:"nullable"`
 }
 
 const typeThread = "thread"

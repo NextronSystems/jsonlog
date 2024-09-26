@@ -88,7 +88,7 @@ type WindowsPermissions struct {
 	LogObjectHeader
 
 	Owner       string     `json:"owner" textlog:"owner"` // FIXME: Could include information like the original SID
-	Permissions AclEntries `json:"permissions" textlog:"permissions"`
+	Permissions AclEntries `json:"permissions" textlog:"permissions" jsonschema:"nullable"`
 }
 
 func (p WindowsPermissions) String() string {

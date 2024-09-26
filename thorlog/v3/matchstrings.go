@@ -33,6 +33,10 @@ func (f *MatchData) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (f MatchData) JSONSchemaAlias() any {
+	return ""
+}
+
 var notOnlyASCII = regexp.MustCompile(`[^\x20-\x7E\x0d\x0a\x09]+`) // printable chars + \r,\n,\t
 
 func (f MatchData) String() string {

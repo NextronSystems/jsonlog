@@ -35,7 +35,7 @@ type File struct {
 	Target string `json:"target,omitempty" textlog:"target,omitempty"`
 
 	// UnpackSource is set for files that originate from another, unpacked file (possibly with multiple layers of unpacking)
-	UnpackSource ArrowStringList `json:"unpack_source,omitempty" textlog:"unpack_source,omitempty"`
+	UnpackSource ArrowStringList `json:"unpack_source,omitempty" textlog:"unpack_source,omitempty" jsonschema:"nullable"`
 
 	LinkInfo *LinkInfo `json:"link_info,omitempty" textlog:",expand,omitempty"`
 
@@ -111,7 +111,7 @@ type PeInfo struct {
 	InternalName    string `json:"internal_name" textlog:"internal_name,omitempty"`
 
 	Signed     bool            `json:"signed" textlog:"signed"`
-	Signatures []SignatureInfo `json:"signatures" textlog:",expand"`
+	Signatures []SignatureInfo `json:"signatures" textlog:",expand" jsonschema:"nullable"`
 
 	Imphash           string    `json:"imphash" textlog:"imphash,omitempty"`
 	RichHeaderHash    string    `json:"rich_header_hash"`
@@ -162,6 +162,8 @@ func (f *FirstBytes) UnmarshalJSON(data []byte) error {
 	*f = unhexedData
 	return nil
 }
+
+func (f FirstBytes) JSONSchemaAlias() any { return firstBytesJson{} }
 
 type FileModeType string
 
@@ -226,6 +228,8 @@ func (e *Existence) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+func (e Existence) JSONSchemaAlias() any { return "" }
 
 const typeFile = "file"
 

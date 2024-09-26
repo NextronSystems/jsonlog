@@ -31,7 +31,7 @@ type ProcessInfo struct {
 		CommandLine string `json:"command" textlog:"parent_command"`
 	} `json:"parent_info,omitempty" textlog:",expand,omitempty"`
 
-	ProcessTree StringList `json:"tree" textlog:"tree,omitempty"`
+	ProcessTree StringList `json:"tree" textlog:"tree,omitempty" jsonschema:"nullable"`
 
 	Created time.Time `json:"created" textlog:"created"`
 	Session string    `json:"session" textlog:"session,omitempty"`
@@ -42,8 +42,8 @@ type ProcessInfo struct {
 }
 
 type ProcessConnections struct {
-	ListenPorts     ProcessListenPorts  `json:"listen_ports" textlog:"listen_ports,omitempty"`
-	Connections     []ProcessConnection `json:"connections" textlog:"-"`
+	ListenPorts     ProcessListenPorts  `json:"listen_ports" textlog:"listen_ports,omitempty" jsonschema:"nullable"`
+	Connections     []ProcessConnection `json:"connections" textlog:"-" jsonschema:"nullable"`
 	ConnectionCount int                 `json:"-" textlog:"connection_count"`
 }
 

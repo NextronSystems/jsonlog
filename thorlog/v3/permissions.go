@@ -88,7 +88,7 @@ type WindowsPermissions struct {
 	LogObjectHeader
 
 	Owner       string     `json:"owner" textlog:"owner"` // FIXME: Could include information like the original SID
-	Permissions AclEntries `json:"permissions" textlog:"permissions"`
+	Permissions AclEntries `json:"permissions" textlog:"permissions" jsonschema:"nullable"`
 }
 
 func (p WindowsPermissions) String() string {
@@ -107,8 +107,8 @@ func (a AclEntries) String() string {
 }
 
 type AclEntry struct {
-	Group  string    // FIXME: Could include information like the original SID
-	Access AclAccess // FIXME: Could include the full original byte mask
+	Group  string    `json:"group"`  // FIXME: Could include information like the original SID
+	Access AclAccess `json:"access"` // FIXME: Could include the full original byte mask
 }
 
 func (a AclEntry) String() string {
@@ -143,6 +143,10 @@ func (a *AclAccess) UnmarshalJSON(data []byte) error {
 	}
 	*a = AclAccess(accessString[0])
 	return nil
+}
+
+func (a AclAccess) JSONSchemaAlias() any {
+	return ""
 }
 
 const typeWindowsPermissions = "windows permissions"

@@ -8,10 +8,10 @@ type FirewallRule struct {
 	jsonlog.ObjectHeader
 
 	Path            string     `json:"path" textlog:"path"`
-	LocalPorts      StringList `json:"lport" textlog:"lport"`
-	RemotePorts     StringList `json:"rport" textlog:"rport"`
-	LocalAddresses  StringList `json:"lip" textlog:"lip"`
-	RemoteAddresses StringList `json:"rip" textlog:"rip"`
+	LocalPorts      StringList `json:"lport" textlog:"lport" jsonschema:"nullable"`
+	RemotePorts     StringList `json:"rport" textlog:"rport" jsonschema:"nullable"`
+	LocalAddresses  StringList `json:"lip" textlog:"lip" jsonschema:"nullable"`
+	RemoteAddresses StringList `json:"rip" textlog:"rip" jsonschema:"nullable"`
 	Name            string     `json:"name" textlog:"name"`
 	Allow           bool       `json:"allow" textlog:"allow"`
 	Enabled         bool       `json:"enabled" textlog:"enabled"`

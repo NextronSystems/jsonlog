@@ -29,8 +29,8 @@ func NewVirusTotalResult(result string) *VirusTotalResult {
 }
 
 type VirusTotalHistory struct {
-	Names           StringList `json:"names,omitempty" textlog:"virustotal_names"`
-	Tags            StringList `json:"tags,omitempty" textlog:"virustotal_tags"`
+	Names           StringList `json:"names,omitempty" textlog:"virustotal_names" jsonschema:"nullable"`
+	Tags            StringList `json:"tags,omitempty" textlog:"virustotal_tags" jsonschema:"nullable"`
 	Submissions     int64      `json:"submissions,omitempty"  textlog:"virustotal_submissions"`
 	FirstSubmission *time.Time `json:"first_submission,omitempty" textlog:"virustotal_first_submission,omitempty"`
 	LastSubmission  *time.Time `json:"last_submission,omitempty" textlog:"virustotal_last_submission,omitempty"`

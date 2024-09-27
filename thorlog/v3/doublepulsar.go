@@ -7,7 +7,7 @@ import (
 type DoublePulsarHandshake struct {
 	LogObjectHeader
 
-	Type string    `json:"type" textlog:"type"` // SMB or RDP
+	Type string    `json:"handshake_type" textlog:"type"` // SMB or RDP
 	Key  HexNumber `json:"key,omitempty" textlog:"key,omitempty"`
 }
 

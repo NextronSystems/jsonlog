@@ -107,7 +107,7 @@ func TestFinding_UnmarshalJSON(t *testing.T) {
 				},
 			},
 			Reasons: []Reason{
-				NewReason("Reason 1", 70, Signature{}, nil),
+				NewReason("Reason 1", Signature{Score: 70}, nil),
 			},
 			Score:      70,
 			LogVersion: common.JsonV3,

@@ -11,7 +11,7 @@ import (
 
 type SparseData struct {
 	jsonlog.ObjectHeader
-	Elements []SparseDataElement `json:"elements"`
+	Elements []SparseDataElement `json:"elements" jsonschema:"nullable"`
 	Length   int64               `json:"length"`
 
 	StringVersion string `json:"-" textlog:",explicit"`

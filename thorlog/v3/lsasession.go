@@ -10,7 +10,7 @@ type LsaSession struct {
 	LsaSession  string    `json:"lsa_session" textlog:"lsa_session"`
 	User        string    `json:"user" textlog:"user"`
 	AuthPackage string    `json:"auth_package" textlog:"auth_package"`
-	Type        string    `json:"type" textlog:"type"`
+	Type        string    `json:"session_type" textlog:"type"`
 	LogonTime   time.Time `json:"logon_time" textlog:"logon_time"`
 	Domain      string    `json:"domain" textlog:"domain"`
 	Server      string    `json:"server" textlog:"server"`

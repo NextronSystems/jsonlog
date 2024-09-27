@@ -62,7 +62,7 @@ type UnixUser struct {
 	Home        string   `json:"home" textlog:"home"`
 	Shell       string   `json:"shell" textlog:"shell"`
 	Crontab     string   `json:"crontab" textlog:"-"`
-	AccessFiles []string `json:"access_files" textlog:"-"`
+	AccessFiles []string `json:"access_files" textlog:"-" jsonschema:"nullable"`
 }
 
 const typeUnixUser = "unix user"

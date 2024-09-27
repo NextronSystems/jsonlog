@@ -77,6 +77,8 @@ func (p Pointer) MarshalJSON() ([]byte, error) {
 	return json.Marshal(p.String())
 }
 
+func (p Pointer) JSONSchemaAlias() any { return "" }
+
 func New(elements ...string) Pointer {
 	return elements
 }

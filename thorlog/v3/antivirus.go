@@ -30,7 +30,7 @@ func NewAntiVirusProduct(name string) *AntiVirusProduct {
 type AntiVirusExclude struct {
 	LogObjectHeader
 
-	Type      string `json:"type" textlog:"type"`
+	Type      string `json:"exclusion_type" textlog:"type"`
 	Exclusion string `json:"exclusion" textlog:"exclusion"`
 }
 

@@ -12,9 +12,8 @@ type Reason struct {
 
 	Summary string `json:"-" textlog:"reason"`
 
-	Score         int64 `json:"score" textlog:"subscore"`
 	Signature     `json:"signature" textlog:",inline"`
-	StringMatches MatchStrings `json:"matched" textlog:"matched"`
+	StringMatches MatchStrings `json:"matched" textlog:"matched" jsonschema:"nullable"`
 }
 
 func (r *Reason) UnmarshalJSON(data []byte) error {
@@ -33,16 +32,17 @@ func init() {
 }
 
 type Signature struct {
-	Ref             StringList `json:"ref" textlog:"ref"`
-	Type            Sigtype    `json:"type" textlog:"sigtype"`
-	Class           Sigclass   `json:"class" textlog:"sigclass"`
+	Ref             StringList `json:"ref" textlog:"ref" jsonschema:"nullable"`
+	Type            Sigtype    `json:"origin" textlog:"sigtype"`
+	Class           Sigclass   `json:"kind" textlog:"sigclass"`
+	Score           int64      `json:"score" textlog:"subscore"`
 	Date            string     `json:"ruledate,omitempty" textlog:"ruledate,omitempty"`
-	Tags            StringList `json:"tags,omitempty" textlog:"tags,omitempty"`
+	Tags            StringList `json:"tags,omitempty" textlog:"tags,omitempty" jsonschema:"nullable"`
 	Rulename        string     `json:"rulename,omitempty" textlog:"rulename,omitempty"`
 	LongDescription string     `json:"description,omitempty" textlog:"description,omitempty"`
 	Author          string     `json:"author,omitempty" textlog:"author,omitempty"`
 	RuleId          string     `json:"id,omitempty" textlog:"id"`
-	FalsePositives  StringList `json:"falsepositives,omitempty" textlog:"falsepositives,omitempty"`
+	FalsePositives  StringList `json:"falsepositives,omitempty" textlog:"falsepositives,omitempty" jsonschema:"nullable"`
 }
 
 type Sigclass string
@@ -103,14 +103,15 @@ func (s *Sigtype) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func NewReason(desc string, score int64, signature Signature, matches MatchStrings) Reason {
+func (s Sigtype) JSONSchemaAlias() any { return "" }
+
+func NewReason(desc string, signature Signature, matches MatchStrings) Reason {
 	return Reason{
 		ObjectHeader: jsonlog.ObjectHeader{
 			Type:    typeReason,
 			Summary: desc,
 		},
 		Summary:       desc,
-		Score:         score,
 		Signature:     signature,
 		StringMatches: matches,
 	}

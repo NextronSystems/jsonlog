@@ -1,5 +1,5 @@
-github.com/NextronSystems/jsonlog v0.0.0-20240925132636-8f92c2c62799 h1:VzV8vLYjiP01PtE8U29U5LIoylxLVqg78KKVg5tgqrQ=
-github.com/NextronSystems/jsonlog v0.0.0-20240925132636-8f92c2c62799/go.mod h1:Hk47VW018TX8o/0sxK+EJt16iRE7gB91zGZGiaAjcww=
+github.com/NextronSystems/jsonlog v0.0.0-20240927093204-3ba6fa967aa2 h1:Zf5UV/1V+wA0F9rrpLZRL0Fvxi+9WuD9a0KsKnrAnmE=
+github.com/NextronSystems/jsonlog v0.0.0-20240927093204-3ba6fa967aa2/go.mod h1:Hk47VW018TX8o/0sxK+EJt16iRE7gB91zGZGiaAjcww=
 github.com/bahlo/generic-list-go v0.2.0 h1:5sz/EEAK+ls5wF+NeqDpk5+iNdMDXrh3z3nPnH1Wvgk=
 github.com/bahlo/generic-list-go v0.2.0/go.mod h1:2KvAjgMlE5NNynlg/5iLrrCCZ2+5xWbdbCW3pNTGyYg=
 github.com/buger/jsonparser v1.1.1 h1:2PnMjfWD7wBILjqQbt530v576A/cAbQvEW9gGIpYMUs=

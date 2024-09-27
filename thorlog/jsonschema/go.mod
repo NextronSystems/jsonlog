@@ -3,7 +3,7 @@ module gitlab.nextron/nextron-research/jsonlog/thorlog/jsonschema
 go 1.23.1
 
 require (
-	github.com/NextronSystems/jsonlog v0.0.0
+	github.com/NextronSystems/jsonlog v0.0.0-20240927093204-3ba6fa967aa2
 	github.com/invopop/jsonschema v0.12.0
 	github.com/wk8/go-ordered-map/v2 v2.1.8
 )
@@ -17,5 +17,3 @@ require (
 	golang.org/x/mod v0.15.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-replace github.com/NextronSystems/jsonlog => ../..

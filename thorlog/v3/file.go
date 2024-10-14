@@ -12,23 +12,37 @@ import (
 
 type File struct {
 	jsonlog.ObjectHeader
-	Path      string    `json:"path" textlog:"file"`
-	Exists    Existence `json:"exists" textlog:"exists,omitempty"`
-	Extension string    `json:"extension" textlog:"extension,omitempty"`
 
+	// Path is the full path of the file (possibly including archives, e.g. /path/to/archive.zip/file.txt)
+	Path string `json:"path" textlog:"file"`
+
+	// Exists is a flag indicating whether the file exists or not. This is useful for files that are referenced elsewhere, but do not necessarily exist.
+	Exists Existence `json:"exists" textlog:"exists,omitempty"`
+
+	// Extension is the file extension of the file (e.g. .txt, .exe, etc.)
+	Extension string `json:"extension" textlog:"extension,omitempty"`
+
+	// FileMode is the type of the file (e.g. file, directory, symlink, etc.)
 	FileMode FileModeType `json:"-" textlog:"-"`
 
+	// MagicHeader is the magic header of the file (e.g. PE, ZIP, etc.)
 	MagicHeader string `json:"magic_header" textlog:"type,omitempty"`
 
-	Hashes     *FileHashes `json:"hashes,omitempty" textlog:",expand,omitempty"`
-	FirstBytes FirstBytes  `json:"firstbytes,omitempty" textlog:"firstbytes,omitempty"`
+	// FileHashes contains the MD5, SHA1, and SHA256 hashes of the file, provided that the file is regular and could be read
+	Hashes *FileHashes `json:"hashes,omitempty" textlog:",expand,omitempty"`
 
+	// FirstBytes contains the first bytes of the file
+	FirstBytes FirstBytes `json:"firstbytes,omitempty" textlog:"firstbytes,omitempty"`
+
+	// Filetimes contains the file times of the file (e.g. created, modified, accessed, etc.)
 	Filetimes *Filetimes `json:"filetimes,omitempty" textlog:",expand,omitempty"`
 
 	Size uint64 `json:"size" textlog:"size,omitempty"`
 
+	// Permissions contains the permissions of the file. This can be either Unix or Windows permissions.
 	Permissions Permissions `json:"permissions" textlog:",expand,omitempty"`
 
+	// PeInfo contains information about the PE file, if the file is a PE file
 	PeInfo *PeInfo `json:"pe_info,omitempty" textlog:",expand,omitempty"`
 
 	// Target is only set for symlinks and contains the target path of the symlink
@@ -37,12 +51,16 @@ type File struct {
 	// UnpackSource is set for files that originate from another, unpacked file (possibly with multiple layers of unpacking)
 	UnpackSource ArrowStringList `json:"unpack_source,omitempty" textlog:"unpack_source,omitempty" jsonschema:"nullable"`
 
+	// LinkInfo contains information about the link, if the file is a windows link file (.lnk)
 	LinkInfo *LinkInfo `json:"link_info,omitempty" textlog:",expand,omitempty"`
 
+	// RecycleBinInfo contains information about the file if it was in the recycle bin
 	RecycleBinInfo *RecycleBinIndexFile `json:"recycle_bin_info,omitempty" textlog:",expand,omitempty"`
 
+	// WerInfo contains information about the file if it was a Windows Error Reporting crash report
 	WerInfo *WerCrashReport `json:"wer_info,omitempty" textlog:",expand,omitempty"`
 
+	// Content contains extracts from the content of the file, typically focusing on any matched patterns.
 	Content *SparseData `json:"content,omitempty" textlog:"content,expand,omitempty"`
 }
 

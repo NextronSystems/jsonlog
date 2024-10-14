@@ -18,6 +18,8 @@ type RegistryValue struct {
 	Size        uint64    `json:"size" textlog:"size"`
 }
 
+func (RegistryValue) reportable() {}
+
 const TypeRegistryValue = "registry value"
 
 func init() { AddLogObjectType(TypeRegistryValue, &RegistryValue{}) }
@@ -37,6 +39,8 @@ type RegistryKey struct {
 	Modified        time.Time `json:"modified" textlog:"modified"`
 	FormattedValues string    `json:"values" textlog:"values"`
 }
+
+func (RegistryKey) reportable() {}
 
 func (s *RegistryKey) Truncate(matches []jsonlog.FieldMatch, truncateLimit int, stringContext int) jsonlog.Object {
 	var ourMatches []truncate.Match
@@ -80,6 +84,8 @@ type MsOfficeConnectionCacheEntry struct {
 	Key          string    `json:"key" textlog:"key"`
 }
 
+func (MsOfficeConnectionCacheEntry) reportable() {}
+
 func NewMsOfficeConnectionCacheEntry() *MsOfficeConnectionCacheEntry {
 	return &MsOfficeConnectionCacheEntry{
 		ObjectHeader: jsonlog.ObjectHeader{
@@ -93,6 +99,8 @@ type RegisteredDebugger struct {
 	Executable string `json:"executable" textlog:"file"`
 	Debugger   string `json:"debugger" textlog:"element"`
 }
+
+func (RegisteredDebugger) reportable() {}
 
 const TypeRegisteredDebugger = "registered debugger"
 

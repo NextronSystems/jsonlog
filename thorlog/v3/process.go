@@ -18,6 +18,8 @@ type Process struct {
 	ProcessInfo `textlog:",expand,omitempty"`
 }
 
+func (Process) reportable() {}
+
 type ProcessInfo struct {
 	Name    string `json:"name" textlog:"name"`
 	Cmdline string `json:"command" textlog:"command"`

@@ -26,3 +26,5 @@ func (a AuditLogEntry) Truncate(matches []jsonlog.FieldMatch, truncateLimit int,
 	a.Entry = a.Entry.Truncate(matches, truncateLimit, stringContext)
 	return &a
 }
+
+func (AuditLogEntry) reportable() {}

@@ -19,6 +19,8 @@ type PeSieveReport struct {
 	Errors             int `json:"errors" textlog:"errors"`
 }
 
+func (PeSieveReport) reportable() {}
+
 const typePeSieveReport = "PE-Sieve report"
 
 func init() { AddLogObjectType(typePeSieveReport, &PeSieveReport{}) }

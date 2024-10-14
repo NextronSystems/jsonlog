@@ -14,6 +14,8 @@ type KnowledgeDBEntry struct {
 	PrimaryKey int64         `json:"primary_key" textlog:"primary_key"`
 }
 
+func (KnowledgeDBEntry) reportable() {}
+
 const typeKnowledgeDBEntry = "KnowledgeDB entry"
 
 func init() { AddLogObjectType(typeKnowledgeDBEntry, &KnowledgeDBEntry{}) }

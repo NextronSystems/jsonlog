@@ -13,6 +13,8 @@ type ProcessHandle struct {
 	Type    string   `json:"type,omitempty" textlog:"type,omitempty"`
 }
 
+func (ProcessHandle) reportable() {}
+
 const typeProcessHandle = "process handle"
 
 func init() { AddLogObjectType(typeProcessHandle, &ProcessHandle{}) }

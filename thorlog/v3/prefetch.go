@@ -11,6 +11,8 @@ type PrefetchElement struct {
 	File *File  `json:"file" textlog:",expand"`
 }
 
+func (PrefetchElement) reportable() {}
+
 const typePrefetchElement = "prefetch element"
 
 func init() { AddLogObjectType(typePrefetchElement, &PrefetchElement{}) }

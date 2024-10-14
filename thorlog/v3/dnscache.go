@@ -6,6 +6,8 @@ type DnsCacheEntry struct {
 	IP   string `json:"ip" textlog:"ip"`
 }
 
+func (DnsCacheEntry) reportable() {}
+
 const typeDnsCacheEntry = "DNSCache entry"
 
 func init() { AddLogObjectType(typeDnsCacheEntry, &DnsCacheEntry{}) }

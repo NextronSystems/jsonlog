@@ -11,6 +11,8 @@ type HotfixSummary struct {
 	LastHotfix time.Time `json:"last_hotfix" textlog:"last_hotfix"`
 }
 
+func (HotfixSummary) reportable() {}
+
 const typeHotfixSummary = "hotfix summary"
 
 func init() { AddLogObjectType(typeHotfixSummary, &HotfixSummary{}) }
@@ -31,6 +33,8 @@ type EndOfLifeReport struct {
 	Version   string    `json:"version" textlog:"version"`
 	EndOfLife time.Time `json:"end_of_life" textlog:"end_time"`
 }
+
+func (EndOfLifeReport) reportable() {}
 
 const typeEndOfLifeReport = "end of life report"
 

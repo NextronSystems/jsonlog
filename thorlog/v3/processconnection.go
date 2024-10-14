@@ -10,6 +10,8 @@ type ProcessConnectionObject struct {
 	ConnectionDetails ProcessConnection `json:"connection" textlog:",expand"`
 }
 
+func (ProcessConnectionObject) reportable() {}
+
 const typeProcessConnection = "process connection"
 
 func init() { AddLogObjectType(typeProcessConnection, &ProcessConnectionObject{}) }

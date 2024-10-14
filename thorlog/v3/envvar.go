@@ -10,6 +10,8 @@ type EnvironmentVariable struct {
 	Value    string `json:"value" textlog:"value"`
 }
 
+func (EnvironmentVariable) reportable() {}
+
 const typeEnvironmentVariable = "environment variable"
 
 func init() { AddLogObjectType(typeEnvironmentVariable, &EnvironmentVariable{}) }

@@ -13,9 +13,11 @@ type AntiVirusProduct struct {
 	Path            string `json:"path" textlog:"path"`
 }
 
+func (AntiVirusProduct) reportable() {}
+
 const typeAntiVirusProduct = "Antivirus product"
 
-func init() { AddLogObjectType(typeAntiVirusProduct, AntiVirusProduct{}) }
+func init() { AddLogObjectType(typeAntiVirusProduct, &AntiVirusProduct{}) }
 
 func NewAntiVirusProduct(name string) *AntiVirusProduct {
 	return &AntiVirusProduct{
@@ -34,9 +36,11 @@ type AntiVirusExclude struct {
 	Exclusion string `json:"exclusion" textlog:"exclusion"`
 }
 
+func (AntiVirusExclude) reportable() {}
+
 const typeAntiVirusExclude = "Antivirus exclusion"
 
-func init() { AddLogObjectType(typeAntiVirusExclude, AntiVirusExclude{}) }
+func init() { AddLogObjectType(typeAntiVirusExclude, &AntiVirusExclude{}) }
 
 func NewAntiVirusExclude(exclusionType string, exclusion string) *AntiVirusExclude {
 	return &AntiVirusExclude{

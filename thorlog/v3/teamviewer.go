@@ -12,6 +12,8 @@ type TeamViewerPassword struct {
 	Name         string `json:"name" textlog:"name"`
 }
 
+func (TeamViewerPassword) reportable() {}
+
 const typeTeamViewerPassword = "TeamViewer password"
 
 func init() { AddLogObjectType(typeTeamViewerPassword, &TeamViewerPassword{}) }

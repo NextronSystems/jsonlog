@@ -64,6 +64,8 @@ type File struct {
 	Content *SparseData `json:"content,omitempty" textlog:"content,expand,omitempty"`
 }
 
+func (File) reportable() {}
+
 func (f *File) UnmarshalJSON(data []byte) error {
 	// Permissions are either unix or windows permissions, so we need to try both
 	type plainFile File

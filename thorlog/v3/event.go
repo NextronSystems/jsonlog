@@ -16,12 +16,17 @@ import (
 type Finding struct {
 	jsonlog.ObjectHeader
 	Meta         LogEventMetadata `json:"meta" textlog:",expand"`
-	Subject      jsonlog.Object   `json:"subject" textlog:",expand"`
+	Subject      ReportableObject `json:"subject" textlog:",expand"`
 	Score        int64            `json:"score" textlog:"score"`
 	Reasons      []Reason         `json:"reasons" textlog:",expand"`
 	ReasonCount  int              `json:"-" textlog:"reasons_count"`
 	EventContext Context          `json:"context" textlog:",expand" jsonschema:"nullable"`
 	LogVersion   common.Version   `json:"log_version"`
+}
+
+type ReportableObject interface {
+	reportable()
+	jsonlog.Object
 }
 
 func (f *Finding) Message() string {
@@ -51,7 +56,11 @@ func (f *Finding) UnmarshalJSON(data []byte) error {
 	}
 	f.ObjectHeader = rawFinding.ObjectHeader
 	f.Meta = rawFinding.Meta
-	f.Subject = rawFinding.Subject.Object
+	subject, ok := rawFinding.Subject.Object.(ReportableObject)
+	if !ok {
+		return fmt.Errorf("subject must implement the reportable interface")
+	}
+	f.Subject = subject
 	f.Score = rawFinding.Score
 	f.Reasons = rawFinding.Reasons
 	f.EventContext = rawFinding.EventContext
@@ -80,9 +89,9 @@ var _ common.Event = (*Finding)(nil)
 type Context []ContextObject
 
 type ContextObject struct {
-	Object   jsonlog.Object `json:"object" textlog:",expand"`
-	Relation string         `json:"relation"`
-	Unique   bool           `json:"unique"`
+	Object   ReportableObject `json:"object" textlog:",expand"`
+	Relation string           `json:"relation"`
+	Unique   bool             `json:"unique"`
 }
 
 func (c *ContextObject) UnmarshalJSON(data []byte) error {
@@ -94,7 +103,11 @@ func (c *ContextObject) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &rawContextObject); err != nil {
 		return err
 	}
-	c.Object = rawContextObject.Object.Object
+	reportableObject, isReportable := rawContextObject.Object.Object.(ReportableObject)
+	if !isReportable {
+		return fmt.Errorf("object of type %q must implement the reportable interface", rawContextObject.Object.Object.EmbeddedHeader().Type)
+	}
+	c.Object = reportableObject
 	c.Relation = rawContextObject.Relation
 	c.Unique = rawContextObject.Unique
 	return nil
@@ -136,7 +149,7 @@ const typeFinding = "THOR finding"
 
 func init() { AddLogObjectType(typeFinding, &Finding{}) }
 
-func NewFinding(subject jsonlog.Object, message string) *Finding {
+func NewFinding(subject ReportableObject, message string) *Finding {
 	return &Finding{
 		ObjectHeader: LogObjectHeader{
 			Type:    typeFinding,

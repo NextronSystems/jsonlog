@@ -11,6 +11,8 @@ type PSMacEntry struct {
 	Command string `json:"command" textlog:"command"`
 }
 
+func (PSMacEntry) reportable() {}
+
 const typeModuleAnalysisCacheEntry = "PowerShell module analysis cache module entry"
 
 func init() { AddLogObjectType(typeModuleAnalysisCacheEntry, &PSMacEntry{}) }

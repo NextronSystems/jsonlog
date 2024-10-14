@@ -11,6 +11,8 @@ type GroupsXmlUser struct {
 	Password string `json:"password" textlog:"password"`
 }
 
+func (GroupsXmlUser) reportable() {}
+
 const typeGroupsXmlPassword = "groups.xml user"
 
 func init() { AddLogObjectType(typeGroupsXmlPassword, &GroupsXmlUser{}) }

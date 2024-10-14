@@ -16,6 +16,8 @@ type LsaSession struct {
 	Server      string    `json:"server" textlog:"server"`
 }
 
+func (LsaSession) reportable() {}
+
 const typeLsaSession = "lsa session"
 
 func init() { AddLogObjectType(typeLsaSession, &LsaSession{}) }

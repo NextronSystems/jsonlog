@@ -10,6 +10,8 @@ type TomcatUser struct {
 	File string `json:"file" textlog:"file"`
 }
 
+func (TomcatUser) reportable() {}
+
 const typeTomcatUser = "Tomcat user"
 
 func init() { AddLogObjectType(typeTomcatUser, &TomcatUser{}) }

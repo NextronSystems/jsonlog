@@ -11,6 +11,8 @@ type LogLine struct {
 	Line      string `json:"line" textlog:"line"`
 }
 
+func (LogLine) reportable() {}
+
 const TypeLogLine = "log line"
 
 func init() { AddLogObjectType(TypeLogLine, &LogLine{}) }

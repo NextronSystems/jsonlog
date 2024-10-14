@@ -16,6 +16,8 @@ type DeepDiveChunk struct {
 	Content     *SparseData `json:"content" textlog:"content,expand"`
 }
 
+func (DeepDiveChunk) reportable() {}
+
 type HexNumber uint64
 
 func (h HexNumber) String() string {

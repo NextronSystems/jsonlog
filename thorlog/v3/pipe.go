@@ -10,6 +10,8 @@ type WindowsPipe struct {
 	Pipe string `json:"pipe" textlog:"pipe"`
 }
 
+func (WindowsPipe) reportable() {}
+
 const typeWindowsPipe = "named pipe"
 
 func init() { AddLogObjectType(typeWindowsPipe, &WindowsPipe{}) }
@@ -28,6 +30,8 @@ type WindowsPipeList struct {
 	jsonlog.ObjectHeader
 	Pipes StringList `json:"pipes" textlog:"pipes"`
 }
+
+func (WindowsPipeList) reportable() {}
 
 const typeWindowsPipeList = "pipe list"
 

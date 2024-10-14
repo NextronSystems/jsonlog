@@ -27,3 +27,5 @@ func NewAtJob() *AtJob {
 		},
 	}
 }
+
+func (AtJob) reportable() {}

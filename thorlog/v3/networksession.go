@@ -14,6 +14,8 @@ type NetworkSession struct {
 	NumOpens   int           `json:"num_opens" textlog:"num_opens"`
 }
 
+func (NetworkSession) reportable() {}
+
 const typeNetworkSession = "network session"
 
 func init() { AddLogObjectType(typeNetworkSession, &NetworkSession{}) }

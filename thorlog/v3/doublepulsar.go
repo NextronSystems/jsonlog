@@ -11,6 +11,8 @@ type DoublePulsarHandshake struct {
 	Key  HexNumber `json:"key,omitempty" textlog:"key,omitempty"`
 }
 
+func (DoublePulsarHandshake) reportable() {}
+
 const typeDoublePulsarHandshake = "DoublePulsar Handshake"
 
 func init() { AddLogObjectType(typeDoublePulsarHandshake, &DoublePulsarHandshake{}) }

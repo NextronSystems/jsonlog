@@ -14,6 +14,7 @@ type testObject struct {
 		SubField1 string `json:"subfield1" textlog:"subfield1"`
 	} `json:"substruct" textlog:"substruct,expand"`
 
+	// nolint:unused // not used, just used to check that unexported fields are not included in the event
 	unexported string
 
 	AnonymousSubstruct

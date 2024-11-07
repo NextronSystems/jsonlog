@@ -40,6 +40,8 @@ func ExampleTruncateWithNewlines() {
 	fmt.Printf("%q\n", TruncateWithNewlines("aaab\nbbbc\ncccd\naaab", []Match{{Offset: 0, Data: []byte("aaab\nbbbc\ncccd\naaab")}}, 0, 10))                        // test fully wanted string
 	fmt.Printf("%q\n", TruncateWithNewlines("aaab", []Match{{Offset: 0, Data: []byte("aaab")}}, 0, 10))                                                            // test without any newlines                                                                // no truncate
 	fmt.Printf("%q\n", TruncateWithNewlines("aaab\nbbbc\ncccd\naaab", []Match{{Offset: 0, Data: []byte("aa")}, {Offset: 15, Data: []byte("aa")}}, 0, 10))          // should print both aaab's
+	fmt.Printf("%q\n", TruncateWithNewlines("aaaaaaaaaaaaaaabbbbbbbbbbbbbbbbb\nbbbc\ncccd\naaab", []Match{{Offset: 12, Data: []byte("aaab")}}, 15, 5))
+	fmt.Printf("%q\n", TruncateWithNewlines("aaaaaaaaaaaaaaabbbbbbbbbbbbbbbbb\nbbbc\ncccd\naaab", []Match{{Offset: 12, Data: []byte("aaab")}}, 10, 5))
 	// Output:
 	// "aaaaaaaaaaa[...]aaaaaaaaa"
 	// "aaab"
@@ -49,18 +51,6 @@ func ExampleTruncateWithNewlines() {
 	// "aaab[...]bbbc[...]cccd[...]aaab"
 	// "aaab"
 	// "aaab[...]aaab"
-}
-
-func ExampleTruncateWithLongLines() {
-	truncateLimit := 15
-	fmt.Printf("%q\n", TruncateWithNewlines("aaaaaaaaaaaaaaabbbbbbbbbbbbbbbbb\nbbbc\ncccd\naaab", []Match{{Offset: 12, Data: []byte("aaab")}}, truncateLimit, 5))
-	// Output:
 	// "[...]aaabb[...]"
-}
-
-func ExampleTruncateWithLowLimit() {
-	truncateLimit := 10
-	fmt.Printf("%q\n", TruncateWithNewlines("aaaaaaaaaaaaaaabbbbbbbbbbbbbbbbb\nbbbc\ncccd\naaab", []Match{{Offset: 12, Data: []byte("aaab")}}, truncateLimit, 5))
-	// Output:
 	// "aaa[...]bb"
 }

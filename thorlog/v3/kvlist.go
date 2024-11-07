@@ -25,9 +25,13 @@ func (d KeyValueList) MarshalJSON() ([]byte, error) {
 	var builder strings.Builder
 	builder.WriteString("{")
 	for i, kv := range d.KvList {
-		json.NewEncoder(&builder).Encode(kv.Key)
+		if err := json.NewEncoder(&builder).Encode(kv.Key); err != nil {
+			return nil, err
+		}
 		builder.WriteString(": ")
-		json.NewEncoder(&builder).Encode(kv.Value)
+		if err := json.NewEncoder(&builder).Encode(kv.Value); err != nil {
+			return nil, err
+		}
 		if i < len(d.KvList)-1 {
 			builder.WriteString(", ")
 		}

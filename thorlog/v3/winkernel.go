@@ -5,6 +5,8 @@ type WindowsEvent struct {
 	Event string `json:"event" textlog:"event"`
 }
 
+func (WindowsEvent) reportable() {}
+
 const typeWindowsEvent = "event"
 
 func init() { AddLogObjectType(typeWindowsEvent, &WindowsEvent{}) }
@@ -24,6 +26,8 @@ type WindowsMutex struct {
 
 	Mutex string `json:"mutex" textlog:"mutex"`
 }
+
+func (WindowsMutex) reportable() {}
 
 const typeWindowsMutex = "mutex"
 

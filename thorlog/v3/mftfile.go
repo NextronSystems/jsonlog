@@ -21,6 +21,8 @@ type MftFileEntry struct {
 	Flags    *uint64   `json:"flags,omitempty" textlog:"flags,omitempty"`
 }
 
+func (MftFileEntry) reportable() {}
+
 const typeMftFileEntry = "MFT entry"
 
 func init() { AddLogObjectType(typeMftFileEntry, &MftFileEntry{}) }
@@ -40,6 +42,8 @@ type UsnEntry struct {
 	Filename  string     `json:"filename" textlog:"filename"`
 	Reasons   StringList `json:"reasons" textlog:"reason"`
 }
+
+func (UsnEntry) reportable() {}
 
 const typeUsnEntry = "USN entry"
 

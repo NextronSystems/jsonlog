@@ -25,3 +25,5 @@ func NewAuthorizedKeysEntry() *AuthorizedKeysEntry {
 		},
 	}
 }
+
+func (AuthorizedKeysEntry) reportable() {}

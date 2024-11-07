@@ -10,6 +10,8 @@ type InitdService struct {
 	File *File `json:"file" textlog:"file,expand"`
 }
 
+func (InitdService) reportable() {}
+
 const typeInitdService = "init.d service"
 
 func init() { AddLogObjectType(typeInitdService, &InitdService{}) }
@@ -32,6 +34,8 @@ type SystemdService struct {
 	Unit  *File `json:"unit" textlog:"unit,expand"`
 	Image *File `json:"image" textlog:"image,expand"`
 }
+
+func (SystemdService) reportable() {}
 
 const typeSystemdService = "systemd service"
 
@@ -59,6 +63,8 @@ type WindowsService struct {
 	FailureCommand string    `json:"failure_command" textlog:"failure_command,omitempty"`
 	Image          *File     `json:"image" textlog:"image,expand"`
 }
+
+func (WindowsService) reportable() {}
 
 const typeWindowsService = "windows service"
 

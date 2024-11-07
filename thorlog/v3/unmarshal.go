@@ -19,6 +19,8 @@ type UnknownObject struct {
 	Data map[string]any
 }
 
+func (UnknownObject) reportable() {}
+
 func (u *UnknownObject) UnmarshalJSON(data []byte) error {
 	var details map[string]any
 	err := json.Unmarshal(data, &details)

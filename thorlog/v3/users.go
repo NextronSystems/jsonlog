@@ -15,6 +15,8 @@ type LoggedInUser struct {
 	OtherDomains string `json:"other_domains,omitempty" textlog:"other_domains,omitempty"`
 }
 
+func (LoggedInUser) reportable() {}
+
 const typeLoggedInUser = "logged in user"
 
 func init() { AddLogObjectType(typeLoggedInUser, &LoggedInUser{}) }
@@ -37,6 +39,8 @@ type ProfileFolder struct {
 	Modified time.Time  `json:"modified" textlog:"modified,omitempty"`
 	Created  *time.Time `json:"created,omitempty" textlog:"created,omitempty"`
 }
+
+func (ProfileFolder) reportable() {}
 
 const typeUserProfile = "user profile"
 
@@ -64,6 +68,8 @@ type UnixUser struct {
 	Crontab     string   `json:"crontab" textlog:"-"`
 	AccessFiles []string `json:"access_files" textlog:"-" jsonschema:"nullable"`
 }
+
+func (UnixUser) reportable() {}
 
 const typeUnixUser = "unix user"
 
@@ -94,6 +100,8 @@ type WindowsUser struct {
 	IsLocked             bool         `json:"locked" textlog:"locked"`
 	Comment              string       `json:"comment" textlog:"comment"`
 }
+
+func (WindowsUser) reportable() {}
 
 const typeWindowsUser = "windows user"
 

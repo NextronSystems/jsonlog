@@ -16,6 +16,8 @@ type QuarantineEvent struct {
 	Url       string    `json:"url" textlog:"url,omitempty"`
 }
 
+func (QuarantineEvent) reportable() {}
+
 const typeQuarantineEvent = "quarantine event"
 
 func init() { AddLogObjectType(typeQuarantineEvent, &QuarantineEvent{}) }

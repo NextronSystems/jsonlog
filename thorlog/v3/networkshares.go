@@ -11,6 +11,8 @@ type NetworkShare struct {
 	Permissions AclEntries `json:"permissions" textlog:"share_perms,omitempty"`
 }
 
+func (NetworkShare) reportable() {}
+
 const typeNetworkShare = "network share"
 
 func init() { AddLogObjectType(typeNetworkShare, &NetworkShare{}) }

@@ -30,3 +30,5 @@ func NewAmcacheEntry() *AmcacheEntry {
 		},
 	}
 }
+
+func (AmcacheEntry) reportable() {}

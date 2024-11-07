@@ -22,6 +22,8 @@ type JumplistEntry struct {
 	Checksum      uint64    `json:"checksum" textlog:"checksum"`
 }
 
+func (JumplistEntry) reportable() {}
+
 const typeJumplistEntry = "jumplist entry"
 
 func init() { AddLogObjectType(typeJumplistEntry, &JumplistEntry{}) }

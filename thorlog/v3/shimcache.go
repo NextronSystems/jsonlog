@@ -15,6 +15,8 @@ type ShimCacheEntry struct {
 	Hive      string    `json:"hive" textlog:"hive"`
 }
 
+func (ShimCacheEntry) reportable() {}
+
 const typeShimCacheEntry = "SHIM cache entry"
 
 func init() { AddLogObjectType(typeShimCacheEntry, &ShimCacheEntry{}) }
@@ -35,6 +37,8 @@ type ShimCache struct {
 	Entries          int    `json:"entries" textlog:"entries"`
 	LastKnownEntries int    `json:"last_known_entries" textlog:"previous_entries,omitempty"`
 }
+
+func (ShimCache) reportable() {}
 
 const typeShimCache = "SHIM cache"
 

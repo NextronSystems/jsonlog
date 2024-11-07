@@ -12,6 +12,8 @@ type SdbEntry struct {
 	Entry KeyValueList `json:"entry" textlog:"entry"`
 }
 
+func (SdbEntry) reportable() {}
+
 const typeSdbEntry = "Shim Database entry"
 
 func init() { AddLogObjectType(typeSdbEntry, &SdbEntry{}) }

@@ -12,6 +12,8 @@ type PluginStructuredData struct {
 	Data KeyValueList `json:"data" textlog:",inline"`
 }
 
+func (PluginStructuredData) reportable() {}
+
 const typePluginStructuredData = "structured data from plugin"
 
 func init() { AddLogObjectType(typePluginStructuredData, &PluginStructuredData{}) }
@@ -38,6 +40,8 @@ type PluginString struct {
 	String string `json:"string" textlog:"string"`
 }
 
+func (PluginString) reportable() {}
+
 const typePluginString = "data from plugin"
 
 func init() { AddLogObjectType(typePluginString, &PluginString{}) }
@@ -58,6 +62,8 @@ type PluginFinding struct {
 
 	LogDetails MessageFields `json:"details" textlog:",expand"`
 }
+
+func (PluginFinding) reportable() {}
 
 const typePluginFinding = "finding from plugin"
 

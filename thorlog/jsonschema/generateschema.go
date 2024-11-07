@@ -13,30 +13,34 @@ import (
 	orderedmap "github.com/wk8/go-ordered-map/v2"
 )
 
+var objectType = reflect.TypeOf((*jsonlog.Object)(nil)).Elem()
+
 func makeObjectSchema() *jsonschema.Schema {
 	var allLogObjects []*jsonschema.Schema
 	var logObjectTypes []any
 	var reflector jsonschema.Reflector
+	err := reflector.AddGoComments("github.com/NextronSystems/jsonlog/thorlog/v3", "../v3")
+	if err != nil {
+		panic(err)
+	}
 	reflector.Mapper = func(r reflect.Type) *jsonschema.Schema {
 		if r.Kind() == reflect.Interface {
-			switch r {
-			case reflect.TypeOf((*jsonlog.Object)(nil)).Elem():
-				return &jsonschema.Schema{
-					Ref: "#/$defs/object",
+			if r.Implements(objectType) {
+				// r is an interface that implements jsonlog.Object.
+				// Since we know all types that implement jsonlog.Object,
+				// we can filter for the types that implement the interface,
+				// and generate a oneOf schema for them.
+				var implementations = &jsonschema.Schema{}
+				for _, t := range thorlog.LogObjectTypes {
+					if reflect.TypeOf(t).Implements(r) {
+						structName := reflect.TypeOf(t).Elem().Name()
+						implementations.OneOf = append(implementations.OneOf, &jsonschema.Schema{
+							Ref: "#/$defs/" + structName,
+						})
+					}
 				}
-			case reflect.TypeOf((*thorlog.Permissions)(nil)).Elem():
-				return &jsonschema.Schema{
-					OneOf: []*jsonschema.Schema{
-						{
-							Ref: "#/$defs/WindowsPermissions",
-						},
-						{
-							Ref: "#/$defs/UnixPermissions",
-						},
-					},
-				}
-				return nil
-			default:
+				return implementations
+			} else {
 				panic(fmt.Sprintf("Use of unknown interface %s", r.Name()))
 			}
 		}
@@ -62,7 +66,7 @@ func makeObjectSchema() *jsonschema.Schema {
 		Type: "string",
 		Enum: logObjectTypes,
 	})
-	logObjectSchema.AnyOf = allLogObjects
+	logObjectSchema.OneOf = allLogObjects
 
 	return logObjectSchema
 }
@@ -75,7 +79,7 @@ func main() {
 		Definitions: map[string]*jsonschema.Schema{
 			"event": {
 				Type: "object",
-				AnyOf: []*jsonschema.Schema{
+				OneOf: []*jsonschema.Schema{
 					{
 						Ref: "#/$defs/Finding",
 					},
@@ -117,6 +121,9 @@ func flatten(schema *jsonschema.Schema, definitions jsonschema.Definitions) {
 		flatten(subschema, definitions)
 	}
 	for _, subschema := range schema.AllOf {
+		flatten(subschema, definitions)
+	}
+	for _, subschema := range schema.OneOf {
 		flatten(subschema, definitions)
 	}
 }

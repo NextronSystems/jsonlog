@@ -9,6 +9,8 @@ type Cronjob struct {
 	Command  string `json:"command" textlog:"command"`
 }
 
+func (Cronjob) reportable() {}
+
 const typeCronjob = "cronjob"
 
 func init() { AddLogObjectType(typeCronjob, &Cronjob{}) }

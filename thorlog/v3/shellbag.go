@@ -17,6 +17,8 @@ type ShellbagEntry struct {
 	Hive       string    `json:"hive" textlog:"hive"`
 }
 
+func (ShellbagEntry) reportable() {}
+
 const typeShellbagEntry = "shellbag entry"
 
 func init() { AddLogObjectType(typeShellbagEntry, &ShellbagEntry{}) }

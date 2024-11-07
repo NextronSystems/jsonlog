@@ -16,6 +16,8 @@ type DetectionAddEntry struct {
 	Detected   KeyValueList `json:"detected" textlog:",expand"`
 }
 
+func (DetectionAddEntry) reportable() {}
+
 const typeDetectionAdd = "DetectionAdd MPLog entry"
 
 func init() { AddLogObjectType(typeDetectionAdd, &DetectionAddEntry{}) }
@@ -41,6 +43,8 @@ type EstimatedImpactEntry struct {
 	Pid              int       `json:"pid" textlog:"pid"`
 	AccessedFile     string    `json:"file" textlog:"file"`
 }
+
+func (EstimatedImpactEntry) reportable() {}
 
 const typeEstimatedImpact = "EstimatedImpact MPLog entry"
 
@@ -69,6 +73,8 @@ type SdnQueryEntry struct {
 	Sha256   string    `json:"sha256" textlog:"sha256"`
 }
 
+func (SdnQueryEntry) reportable() {}
+
 const typeSdnQuery = "SDN query MPLog entry"
 
 func init() { AddLogObjectType(typeSdnQuery, &SdnQueryEntry{}) }
@@ -94,6 +100,8 @@ type EmsDetectionEntry struct {
 	ThreatName string    `json:"threat_name" textlog:"threat"`
 	Pid        int       `json:"pid" textlog:"pid"`
 }
+
+func (EmsDetectionEntry) reportable() {}
 
 const typeEmsDetection = "EMS detection MPLog entry"
 

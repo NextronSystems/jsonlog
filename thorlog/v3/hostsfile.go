@@ -6,6 +6,8 @@ type HostsFileEntry struct {
 	IP   string `json:"ip" textlog:"ip"`
 }
 
+func (HostsFileEntry) reportable() {}
+
 const typeHostsFileEntry = "hosts file entry"
 
 func init() { AddLogObjectType(typeHostsFileEntry, &HostsFileEntry{}) }

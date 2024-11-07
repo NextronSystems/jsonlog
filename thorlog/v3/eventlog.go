@@ -21,6 +21,8 @@ type WindowsEventlogEntry struct {
 	Entry KeyValueList `json:"entry" textlog:"entry"`
 }
 
+func (WindowsEventlogEntry) reportable() {}
+
 const TypeEventlogEntry = "eventlog entry"
 
 func init() { AddLogObjectType(TypeEventlogEntry, &WindowsEventlogEntry{}) }
@@ -39,6 +41,8 @@ type EventlogProcessStart struct {
 	StartTimes []time.Time `json:"start_times" textlog:"-"`
 	Count      int         `json:"-" textlog:"count"`
 }
+
+func (EventlogProcessStart) reportable() {}
 
 const TypeProcessStart = "process start"
 

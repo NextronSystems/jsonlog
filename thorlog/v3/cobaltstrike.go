@@ -17,6 +17,8 @@ type BeaconConfig struct {
 	Proxy            string `json:"proxy" textlog:"beacon_proxy"`
 }
 
+func (BeaconConfig) reportable() {}
+
 const typeBeaconConfig = "CobaltStrike Beacon configuration"
 
 func init() { AddLogObjectType(typeBeaconConfig, &BeaconConfig{}) }

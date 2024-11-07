@@ -6,6 +6,8 @@ type Rootkit struct {
 
 const typeRootkit = "rootkit"
 
+func (Rootkit) reportable() {}
+
 func init() { AddLogObjectType(typeRootkit, &Rootkit{}) }
 
 func NewRootkit() *Rootkit {

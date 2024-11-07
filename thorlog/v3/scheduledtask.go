@@ -17,6 +17,8 @@ type ScheduledTask struct {
 	NextRun time.Time `json:"nextrun" textlog:"nextrun"`
 }
 
+func (ScheduledTask) reportable() {}
+
 const typeScheduledTask = "scheduled task"
 
 func init() { AddLogObjectType(typeScheduledTask, &ScheduledTask{}) }
@@ -42,6 +44,8 @@ type RegistryScheduledTask struct {
 	Status       string    `json:"status" textlog:"status"`
 	LastResult   string    `json:"last_result" textlog:"last_result"`
 }
+
+func (RegistryScheduledTask) reportable() {}
 
 const typeRegistryScheduledTask = "registry scheduled task"
 

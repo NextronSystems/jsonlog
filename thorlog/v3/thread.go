@@ -12,6 +12,8 @@ type Thread struct {
 	Stack    StringList `json:"stack" jsonschema:"nullable"`
 }
 
+func (Thread) reportable() {}
+
 const typeThread = "thread"
 
 func init() { AddLogObjectType(typeThread, &Thread{}) }

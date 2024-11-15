@@ -62,6 +62,12 @@ type File struct {
 
 	// Content contains extracts from the content of the file, typically focusing on any matched patterns.
 	Content *SparseData `json:"content,omitempty" textlog:"content,expand,omitempty"`
+
+	// BeaconConfig contains information about the beacon configuration if the file is a CS beacon.
+	BeaconConfig *BeaconConfig `json:"beacon_config,omitempty" textlog:",expand,omitempty"`
+
+	// VirusTotalInfo contains information about the file from VirusTotal
+	VirusTotalInfo *VirusTotalInformation `json:"virustotal,omitempty" textlog:"virustotal,expand,omitempty"`
 }
 
 func (File) reportable() {}

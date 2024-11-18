@@ -16,6 +16,9 @@ type Process struct {
 	Dead bool `json:"dead,omitempty" textlog:"dead,omitempty"`
 	// Only filled if dead is false
 	ProcessInfo `textlog:",expand,omitempty"`
+
+	// BeaconConfig contains information about the beacon configuration if the chunk contains a CS beacon.
+	BeaconConfig *BeaconConfig `json:"beacon_config,omitempty" textlog:"beacon,expand,omitempty"`
 }
 
 func (Process) reportable() {}

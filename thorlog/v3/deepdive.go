@@ -14,6 +14,9 @@ type DeepDiveChunk struct {
 	ChunkOffset HexNumber   `json:"chunk_offset" textlog:"chunk_offset"`
 	ChunkEnd    HexNumber   `json:"chunk_end" textlog:"chunk_end"`
 	Content     *SparseData `json:"content" textlog:"content,expand"`
+
+	// BeaconConfig contains information about the beacon configuration if the chunk contains a CS beacon.
+	BeaconConfig *BeaconConfig `json:"beacon_config,omitempty" textlog:"beacon,expand,omitempty"`
 }
 
 func (DeepDiveChunk) reportable() {}

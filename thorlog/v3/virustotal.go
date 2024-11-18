@@ -2,36 +2,19 @@ package thorlog
 
 import (
 	"time"
-
-	"github.com/NextronSystems/jsonlog"
 )
 
-type VirusTotalResult struct {
-	jsonlog.ObjectHeader
-	LookupResult     string             `json:"result" textlog:"virustotal_result"`
-	PositiveVerdicts int64              `json:"positive_verdicts" textlog:"virustotal_verdicts"`
+type VirusTotalInformation struct {
+	LookupResult     string             `json:"result" textlog:"result"`
+	PositiveVerdicts int64              `json:"positive_verdicts" textlog:"verdicts"`
 	TotalVerdicts    int64              `json:"total_verdicts"`
 	History          *VirusTotalHistory `json:"history,omitempty" textlog:",omitempty,expand"`
 }
 
-const typeVirusTotalResult = "VirusTotal information"
-
-func init() { AddLogObjectType(typeVirusTotalResult, &VirusTotalResult{}) }
-
-func NewVirusTotalResult(result string) *VirusTotalResult {
-	return &VirusTotalResult{
-		ObjectHeader: jsonlog.ObjectHeader{
-			Summary: "VirusTotal result: " + result,
-			Type:    typeVirusTotalResult,
-		},
-		LookupResult: result,
-	}
-}
-
 type VirusTotalHistory struct {
-	Names           StringList `json:"names,omitempty" textlog:"virustotal_names" jsonschema:"nullable"`
-	Tags            StringList `json:"tags,omitempty" textlog:"virustotal_tags" jsonschema:"nullable"`
-	Submissions     int64      `json:"submissions,omitempty"  textlog:"virustotal_submissions"`
-	FirstSubmission *time.Time `json:"first_submission,omitempty" textlog:"virustotal_first_submission,omitempty"`
-	LastSubmission  *time.Time `json:"last_submission,omitempty" textlog:"virustotal_last_submission,omitempty"`
+	Names           StringList `json:"names,omitempty" textlog:"names" jsonschema:"nullable"`
+	Tags            StringList `json:"tags,omitempty" textlog:"tags" jsonschema:"nullable"`
+	Submissions     int64      `json:"submissions,omitempty"  textlog:"submissions"`
+	FirstSubmission *time.Time `json:"first_submission,omitempty" textlog:"first_submission,omitempty"`
+	LastSubmission  *time.Time `json:"last_submission,omitempty" textlog:"last_submission,omitempty"`
 }

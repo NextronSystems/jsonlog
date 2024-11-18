@@ -15,7 +15,7 @@ type DeepDiveChunk struct {
 	ChunkEnd    HexNumber   `json:"chunk_end" textlog:"chunk_end"`
 	Content     *SparseData `json:"content" textlog:"content,expand"`
 
-	// BeaconConfig contains information about the beacon configuration if the chunk contains a CS beacon.
+	// BeaconConfig contains information about a Cobalt Strike Beacon if the file contains one.
 	BeaconConfig *BeaconConfig `json:"beacon_config,omitempty" textlog:"beacon,expand,omitempty"`
 }
 

@@ -1,10 +1,8 @@
 package thorlog
 
 import (
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/NextronSystems/jsonlog"
@@ -63,7 +61,7 @@ type File struct {
 	// Content contains extracts from the content of the file, typically focusing on any matched patterns.
 	Content *SparseData `json:"content,omitempty" textlog:"content,expand,omitempty"`
 
-	// BeaconConfig contains information about the beacon configuration if the file is a CS beacon.
+	// BeaconConfig contains information about a Cobalt Strike Beacon if the file contains one.
 	BeaconConfig *BeaconConfig `json:"beacon_config,omitempty" textlog:"beacon,expand,omitempty"`
 
 	// VirusTotalInfo contains information about the file from VirusTotal
@@ -148,48 +146,6 @@ type SignatureInfo struct {
 	CertificateName string `json:"certificate_name" textlog:"certificate_name,omitempty"`
 	SignatureValid  bool   `json:"signature_valid" textlog:"signature_valid"`
 }
-
-type FirstBytes []byte
-
-func trimNonPrintableChars(data []byte) string {
-	var builder strings.Builder
-	builder.Grow(len(data))
-	for _, char := range data {
-		if char >= 0x20 && char <= 0x7E {
-			builder.WriteByte(char)
-		}
-	}
-	return builder.String()
-}
-
-func (f FirstBytes) String() string {
-	return hex.EncodeToString(f) + " / " + trimNonPrintableChars(f)
-}
-
-type firstBytesJson struct {
-	Hex   string `json:"hex"`
-	Ascii string `json:"ascii"`
-}
-
-func (f FirstBytes) MarshalJSON() ([]byte, error) {
-	return json.Marshal(firstBytesJson{hex.EncodeToString(f), trimNonPrintableChars(f)})
-}
-
-func (f *FirstBytes) UnmarshalJSON(data []byte) error {
-	var jsonStruct firstBytesJson
-	err := json.Unmarshal(data, &jsonStruct)
-	if err != nil {
-		return err
-	}
-	unhexedData, err := hex.DecodeString(jsonStruct.Hex)
-	if err != nil {
-		return err
-	}
-	*f = unhexedData
-	return nil
-}
-
-func (f FirstBytes) JSONSchemaAlias() any { return firstBytesJson{} }
 
 type FileModeType string
 

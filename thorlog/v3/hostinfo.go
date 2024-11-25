@@ -41,9 +41,18 @@ const (
 )
 
 type MountInfo struct {
-	Type       string `json:"type"`
-	Path       string `json:"path"`
-	Filesystem string `json:"filesystem"`
+	// FSType is the filesystem that is mounted, e.g. ext4, ntfs, etc.
+	FSType string `json:"fstype"`
+	// Source is the OS description of the source of the mount.
+	// This can differ greatly between OSes and filesystems.
+	// For example, on Linux, for local partitions, this is the device path.
+	Source string `json:"source"`
+	// Target is the path where the filesystem is mounted.
+	Target string `json:"target"`
+	// Class is the class of the mount, e.g. local, network, removable, etc.
+	// This determines how the mount is treated by THOR.
+	// It is not innately part of the mount information, but is determined by THOR.
+	Class string `json:"class"`
 }
 
 type InterfaceInfo struct {

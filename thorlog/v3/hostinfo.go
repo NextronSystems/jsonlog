@@ -10,10 +10,13 @@ type HostInfo struct {
 	jsonlog.ObjectHeader
 
 	Hostname    string          `json:"hostname" textlog:"hostname"`
+	Domain      string          `json:"domain" textlog:"domain,omitempty"`
 	Platform    PlatformInfo    `json:"platform" textlog:",expand"`
 	Uptime      time.Duration   `json:"uptime" textlog:"uptime"`
 	Cpus        int             `json:"cpu_count" textlog:"cpu_count"`
 	Memory      uint64          `json:"memory" textlog:"memory"`
+	Timezone    string          `json:"timezone" textlog:"timezone"`
+	Language    string          `json:"language" textlog:"language"`
 	Interfaces  []InterfaceInfo `json:"interfaces" textlog:",expand"`
 	SystemType  SystemType      `json:"system_type" textlog:"system_type"`
 	MountPoints []MountInfo     `json:"mount_points"`

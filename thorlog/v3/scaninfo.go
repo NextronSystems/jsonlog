@@ -29,7 +29,6 @@ type ScanInfo struct {
 
 	License LicenseInfo `json:"license" textlog:"license,expand"`
 
-	Plugins   []string `json:"plugins"`
 	FpFilters []string `json:"fp_filters"`
 }
 

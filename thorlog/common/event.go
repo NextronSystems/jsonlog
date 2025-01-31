@@ -18,7 +18,7 @@ const (
 type LogEventMetadata struct {
 	Time   time.Time `json:"time" textlog:"-"`
 	Lvl    LogLevel  `json:"level" textlog:"-"`
-	Mod    string    `json:"module" textlog:"module"`
+	Mod    string    `json:"module" textlog:"-"`
 	ScanID string    `json:"scanid" textlog:"scanid,omitempty"`
 	GenID  string    `json:"uid" textlog:"uid,omitempty"`
 	Source string    `json:"hostname" textlog:"-"`

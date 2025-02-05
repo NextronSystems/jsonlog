@@ -9,7 +9,7 @@ import (
 type AmcacheEntry struct {
 	jsonlog.ObjectHeader
 
-	Path     string    `json:"path" textlog:"path"`
+	File     *File     `json:"file" textlog:"file,expand"`
 	SHA1     string    `json:"sha1" textlog:"sha1"`
 	Size     int64     `json:"size" textlog:"size"`
 	Desc     string    `json:"desc" textlog:"desc"`

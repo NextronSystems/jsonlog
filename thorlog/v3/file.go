@@ -2,7 +2,6 @@ package thorlog
 
 import (
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/NextronSystems/jsonlog"
@@ -150,68 +149,28 @@ type SignatureInfo struct {
 type FileModeType string
 
 const (
-	Undefined   FileModeType = "undefined"
-	NotExisting FileModeType = "nonexistent"
-	Directory   FileModeType = "directory"
-	Irregular   FileModeType = "irregular"
-	Symlink     FileModeType = "symlink"
-	ModeFile    FileModeType = "file"
+	Undefined FileModeType = "undefined"
+	Directory FileModeType = "directory"
+	Irregular FileModeType = "irregular"
+	Symlink   FileModeType = "symlink"
+	ModeFile  FileModeType = "file"
 )
 
-func (f FileModeType) AsExistence() Existence {
-	if f == Undefined {
-		return ExistenceUnknown
-	} else if f == NotExisting {
-		return ExistenceNo
-	} else {
-		return ExistenceYes
-	}
-}
-
-type Existence int
+type Existence string
 
 const (
-	ExistenceYes Existence = iota
-	ExistenceUnknown
-	ExistenceNo
+	ExistenceYes                 Existence = "yes"
+	ExistenceNo                  Existence = "no"
+	ExistenceUnknown             Existence = "unknown"
+	ExistenceDisappeared         Existence = "disappeared"          // Unknown because disappeared
+	ExistenceExpansionInfeasible Existence = "expansion_infeasible" // Unknown because expansion
+	ExistenceNonLocal            Existence = "nonlocal"             // Unknown because not local
+	ExistenceExcluded            Existence = "excluded"             // Unknown because excluded
 )
 
-func (e Existence) String() string {
-	switch e {
-	case ExistenceYes:
-		return "yes"
-	case ExistenceUnknown:
-		return "unknown"
-	case ExistenceNo:
-		return "no"
-	default:
-		panic("invalid existence")
-	}
+func (e Existence) IsZero() bool {
+	return e == ExistenceYes
 }
-
-func (e Existence) MarshalJSON() ([]byte, error) {
-	return json.Marshal(e.String())
-}
-
-func (e *Existence) UnmarshalJSON(data []byte) error {
-	var stringValue string
-	if err := json.Unmarshal(data, &stringValue); err != nil {
-		return err
-	}
-	switch stringValue {
-	case "yes":
-		*e = ExistenceYes
-	case "unknown":
-		*e = ExistenceUnknown
-	case "no":
-		*e = ExistenceNo
-	default:
-		return fmt.Errorf("unknown existence %s", stringValue)
-	}
-	return nil
-}
-
-func (e Existence) JSONSchemaAlias() any { return "" }
 
 const typeFile = "file"
 

@@ -75,7 +75,12 @@ func main() {
 	logEventSchema := jsonschema.Schema{
 		Version: jsonschema.Version,
 		ID:      "https://www.nextron-systems.com/schemas/thorlog/v3/log-event.json",
-		Ref:     "#/$defs/event",
+		"title": "THOREvent Schema",
+  		"properties": {
+     			"THOREvent": {
+        			"$ref": "#/$defs/event"
+   			}
+ 		},
 		Definitions: map[string]*jsonschema.Schema{
 			"event": {
 				Type: "object",

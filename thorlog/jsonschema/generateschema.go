@@ -15,7 +15,7 @@ import (
 
 var objectType = reflect.TypeOf((*jsonlog.Object)(nil)).Elem()
 
-func makeObjectSchema() *jsonschema.Schema {
+func makeObjectSchema() (mainEntry string, defs map[string]*jsonschema.Schema) {
 	var allLogObjects []*jsonschema.Schema
 	var logObjectTypes []any
 	var reflector jsonschema.Reflector
@@ -23,6 +23,7 @@ func makeObjectSchema() *jsonschema.Schema {
 	if err != nil {
 		panic(err)
 	}
+	defs = map[string]*jsonschema.Schema{}
 	reflector.Mapper = func(r reflect.Type) *jsonschema.Schema {
 		if r.Kind() == reflect.Interface {
 			if r.Implements(objectType) {
@@ -39,7 +40,12 @@ func makeObjectSchema() *jsonschema.Schema {
 						})
 					}
 				}
-				return implementations
+				if _, ok := defs[r.Name()]; !ok {
+					defs[r.Name()] = implementations
+				}
+				return &jsonschema.Schema{
+					Ref: "#/$defs/" + r.Name(),
+				}
 			} else {
 				panic(fmt.Sprintf("Use of unknown interface %s", r.Name()))
 			}
@@ -68,36 +74,33 @@ func makeObjectSchema() *jsonschema.Schema {
 	})
 	logObjectSchema.OneOf = allLogObjects
 
-	return logObjectSchema
+	const logObjectSchemaName = "object"
+	defs[logObjectSchemaName] = logObjectSchema
+
+	return logObjectSchemaName, defs
 }
 
 func main() {
 	logEventSchema := jsonschema.Schema{
-		Version: jsonschema.Version,
-		ID:      "https://www.nextron-systems.com/schemas/thorlog/v3/log-event.json",
-		"title": "THOREvent Schema",
-  		"properties": {
-     			"THOREvent": {
-        			"$ref": "#/$defs/event"
-   			}
- 		},
-		Definitions: map[string]*jsonschema.Schema{
-			"event": {
-				Type: "object",
-				OneOf: []*jsonschema.Schema{
-					{
-						Ref: "#/$defs/Finding",
-					},
-					{
-						Ref: "#/$defs/Message",
-					},
-				},
+		Version:     jsonschema.Version,
+		ID:          "https://www.nextron-systems.com/schemas/thorlog/v3/thor-event.json",
+		Definitions: map[string]*jsonschema.Schema{},
+		Title:       "ThorEvent",
+		OneOf: []*jsonschema.Schema{
+			{
+				Ref: "#/$defs/Finding",
+			},
+			{
+				Ref: "#/$defs/Message",
 			},
 		},
 	}
-	logEventSchema.Definitions["object"] = makeObjectSchema()
+	entry, defs := makeObjectSchema()
+	for key, value := range defs {
+		logEventSchema.Definitions[key] = value
+	}
 
-	flatten(logEventSchema.Definitions["object"], logEventSchema.Definitions)
+	flatten(logEventSchema.Definitions[entry], logEventSchema.Definitions)
 
 	encoder := json.NewEncoder(os.Stdout)
 	encoder.SetIndent("", "  ")

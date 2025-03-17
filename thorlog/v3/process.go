@@ -17,8 +17,11 @@ type Process struct {
 	// Only filled if dead is false
 	ProcessInfo `textlog:",expand,omitempty"`
 
-	// BeaconConfig contains information about a Cobalt Strike Beacon if the file contains one.
+	// BeaconConfig contains information about a Cobalt Strike Beacon if the process contains one.
 	BeaconConfig *BeaconConfig `json:"beacon_config,omitempty" textlog:"beacon,expand,omitempty"`
+
+	// PeSieveReport contains information from PE-Sieve about the process, if any exists.
+	PeSieveReport *PeSieveReport `json:"pe_sieve,omitempty" textlog:"pe_sieve,expand,omitempty"`
 }
 
 func (Process) reportable() {}

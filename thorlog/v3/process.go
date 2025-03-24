@@ -66,12 +66,15 @@ func (p ProcessListenPorts) String() string {
 }
 
 type ProcessConnection struct {
-	Fd         uint32 `json:"-" textlog:"-"`
+	Fd uint32 `json:"-" textlog:"-"`
+	// Status is the connection status, e.g. ESTABLISHED, LISTEN, etc.
 	Status     string `json:"status" textlog:"-"`
 	Ip         string `json:"ip" textlog:"ip"`
 	Port       uint32 `json:"port" textlog:"port"`
 	RemoteIp   string `json:"rip,omitempty" textlog:"rip,omitempty"`
 	RemotePort uint32 `json:"rport,omitempty" textlog:"rport,omitempty"`
+	// Protocol is the layer 4 protocol used for the connection, e.g. TCP, UDP, etc.
+	Protocol string `json:"protocol,omitempty" textlog:"protocol,omitempty"`
 }
 
 const typeProcess = "process"

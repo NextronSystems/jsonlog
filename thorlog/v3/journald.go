@@ -9,7 +9,7 @@ import (
 type JournaldEntry struct {
 	jsonlog.ObjectHeader
 
-	Time    time.Time    `json:"time" textlog:"time"`
+	Time    Time         `json:"time" textlog:"time"`
 	Details KeyValueList `json:"details" textlog:"entry"`
 }
 

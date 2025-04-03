@@ -12,7 +12,7 @@ type JumplistEntry struct {
 
 	Path          string    `json:"path" textlog:"path"`
 	Pinned        bool      `json:"pinned" textlog:"pinned"`
-	LastAccess    time.Time `json:"last_access" textlog:"last_access"`
+	LastAccess    Time      `json:"last_access" textlog:"last_access"`
 	AccessCount   int       `json:"access_count" textlog:"access_count"`
 	NetbiosName   string    `json:"netbios_name" textlog:"netbios_name"`
 	ObjectID      uuid.UUID `json:"object_id" textlog:"object_id"`

@@ -15,6 +15,6 @@ type VirusTotalHistory struct {
 	Names           StringList `json:"names,omitempty" textlog:"names" jsonschema:"nullable"`
 	Tags            StringList `json:"tags,omitempty" textlog:"tags" jsonschema:"nullable"`
 	Submissions     int64      `json:"submissions,omitempty"  textlog:"submissions"`
-	FirstSubmission *time.Time `json:"first_submission,omitempty" textlog:"first_submission,omitempty"`
-	LastSubmission  *time.Time `json:"last_submission,omitempty" textlog:"last_submission,omitempty"`
+	FirstSubmission *Time      `json:"first_submission,omitempty" textlog:"first_submission,omitempty"`
+	LastSubmission  *Time      `json:"last_submission,omitempty" textlog:"last_submission,omitempty"`
 }

@@ -2,7 +2,6 @@ package thorlog
 
 import (
 	"encoding/json"
-	"time"
 
 	"github.com/NextronSystems/jsonlog"
 )
@@ -94,35 +93,35 @@ type FileHashes struct {
 }
 
 type RecycleBinIndexFile struct {
-	Version          uint64    `json:"-" textlog:"-"`
-	OriginalFilename string    `json:"original_filename" textlog:"original_filename"`
-	DeletionTime     time.Time `json:"deletion_time" textlog:"deletion_time"`
-	OriginalFilesize uint64    `json:"original_filesize" textlog:"-"`
+	Version          uint64 `json:"-" textlog:"-"`
+	OriginalFilename string `json:"original_filename" textlog:"original_filename"`
+	DeletionTime     Time   `json:"deletion_time" textlog:"deletion_time"`
+	OriginalFilesize uint64 `json:"original_filesize" textlog:"-"`
 }
 
 type LinkInfo struct {
-	Target       string    `json:"target" textlog:"target"`
-	Arguments    string    `json:"arguments" textlog:"arguments"`
-	CommandLine  string    `json:"command_line" textlog:"command_line"`
-	CreationTime time.Time `json:"created" textlog:"-"`
-	WriteTime    time.Time `json:"modified" textlog:"-"`
-	AccessTime   time.Time `json:"accessed" textlog:"-"`
+	Target       string `json:"target" textlog:"target"`
+	Arguments    string `json:"arguments" textlog:"arguments"`
+	CommandLine  string `json:"command_line" textlog:"command_line"`
+	CreationTime Time   `json:"created" textlog:"-"`
+	WriteTime    Time   `json:"modified" textlog:"-"`
+	AccessTime   Time   `json:"accessed" textlog:"-"`
 }
 
 const ModifierWithMilliseconds = "with_millis"
 
 type Filetimes struct {
-	Mtime time.Time  `json:"modified" textlog:"modified,with_millis"`
-	Atime *time.Time `json:"accessed,omitempty" textlog:"accessed,omitempty,with_millis"`
-	Ctime *time.Time `json:"changed,omitempty" textlog:"changed,omitempty,with_millis"`
-	Btime *time.Time `json:"created,omitempty" textlog:"created,omitempty,with_millis"`
+	Mtime Time  `json:"modified" textlog:"modified,with_millis"`
+	Atime *Time `json:"accessed,omitempty" textlog:"accessed,omitempty,with_millis"`
+	Ctime *Time `json:"changed,omitempty" textlog:"changed,omitempty,with_millis"`
+	Btime *Time `json:"created,omitempty" textlog:"created,omitempty,with_millis"`
 
 	// Timestamps that are not always available, but only set if timestomping is detected
-	UsnChangeTime       *time.Time `json:"usn_change_time,omitempty" textlog:"usn_change_time,omitempty,with_millis"`
-	MftFileNameModified *time.Time `json:"mft_file_name_modified,omitempty" textlog:"mft_file_name_modified,omitempty,with_millis"`
-	MftFileNameAccessed *time.Time `json:"mft_file_name_accessed,omitempty" textlog:"mft_file_name_accessed,omitempty,with_millis"`
-	MftFileNameChanged  *time.Time `json:"mft_file_name_changed,omitempty" textlog:"mft_file_name_changed,omitempty,with_millis"`
-	MftFileNameCreated  *time.Time `json:"mft_file_name_created,omitempty" textlog:"mft_file_name_created,omitempty,with_millis"`
+	UsnChangeTime       *Time `json:"usn_change_time,omitempty" textlog:"usn_change_time,omitempty,with_millis"`
+	MftFileNameModified *Time `json:"mft_file_name_modified,omitempty" textlog:"mft_file_name_modified,omitempty,with_millis"`
+	MftFileNameAccessed *Time `json:"mft_file_name_accessed,omitempty" textlog:"mft_file_name_accessed,omitempty,with_millis"`
+	MftFileNameChanged  *Time `json:"mft_file_name_changed,omitempty" textlog:"mft_file_name_changed,omitempty,with_millis"`
+	MftFileNameCreated  *Time `json:"mft_file_name_created,omitempty" textlog:"mft_file_name_created,omitempty,with_millis"`
 }
 
 type PeInfo struct {
@@ -136,9 +135,9 @@ type PeInfo struct {
 	Signed     bool            `json:"signed" textlog:"signed"`
 	Signatures []SignatureInfo `json:"signatures" textlog:",expand" jsonschema:"nullable"`
 
-	Imphash           string    `json:"imphash" textlog:"imphash,omitempty"`
-	RichHeaderHash    string    `json:"rich_header_hash"`
-	CreationTimestamp time.Time `json:"creation_timestamp"`
+	Imphash           string `json:"imphash" textlog:"imphash,omitempty"`
+	RichHeaderHash    string `json:"rich_header_hash"`
+	CreationTimestamp Time   `json:"creation_timestamp"`
 }
 
 type SignatureInfo struct {

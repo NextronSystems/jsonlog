@@ -9,10 +9,10 @@ import (
 type ShimCacheEntry struct {
 	jsonlog.ObjectHeader
 
-	Timestamp time.Time `json:"timestamp" textlog:"timestamp"`
-	ExecFlag  *bool     `json:"exec_flag" textlog:"exec_flag,omitempty"`
-	Path      string    `json:"path" textlog:"path"`
-	Hive      string    `json:"hive" textlog:"hive"`
+	Timestamp Time   `json:"timestamp" textlog:"timestamp"`
+	ExecFlag  *bool  `json:"exec_flag" textlog:"exec_flag,omitempty"`
+	Path      string `json:"path" textlog:"path"`
+	Hive      string `json:"hive" textlog:"hive"`
 }
 
 func (ShimCacheEntry) reportable() {}

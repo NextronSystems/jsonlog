@@ -11,7 +11,7 @@ import (
 type DetectionAddEntry struct {
 	jsonlog.ObjectHeader
 
-	Time       time.Time    `json:"time" textlog:"time"`
+	Time       Time         `json:"time" textlog:"time"`
 	ThreatName string       `json:"threat_name" textlog:"threat_name"`
 	Detected   KeyValueList `json:"detected" textlog:",expand"`
 }
@@ -38,10 +38,10 @@ func NewDetectionAddEntry(t time.Time, threat string, detected KeyValueList) *De
 type EstimatedImpactEntry struct {
 	jsonlog.ObjectHeader
 
-	Time             time.Time `json:"time" textlog:"time"`
-	ProcessImageName string    `json:"image" textlog:"image"`
-	Pid              int       `json:"pid" textlog:"pid"`
-	AccessedFile     string    `json:"file" textlog:"file"`
+	Time             Time   `json:"time" textlog:"time"`
+	ProcessImageName string `json:"image" textlog:"image"`
+	Pid              int    `json:"pid" textlog:"pid"`
+	AccessedFile     string `json:"file" textlog:"file"`
 }
 
 func (EstimatedImpactEntry) reportable() {}
@@ -67,10 +67,10 @@ func NewEstimatedImpactEntry(t time.Time, image string, pid int, file string) *E
 type SdnQueryEntry struct {
 	jsonlog.ObjectHeader
 
-	Time     time.Time `json:"time" textlog:"time"`
-	Filepath string    `json:"file" textlog:"file"`
-	Sha1     string    `json:"sha1" textlog:"sha1"`
-	Sha256   string    `json:"sha256" textlog:"sha256"`
+	Time     Time   `json:"time" textlog:"time"`
+	Filepath string `json:"file" textlog:"file"`
+	Sha1     string `json:"sha1" textlog:"sha1"`
+	Sha256   string `json:"sha256" textlog:"sha256"`
 }
 
 func (SdnQueryEntry) reportable() {}
@@ -96,9 +96,9 @@ func NewSdnQueryEntry(t time.Time, file string, sha1 string, sha256 string) *Sdn
 type EmsDetectionEntry struct {
 	jsonlog.ObjectHeader
 
-	Time       time.Time `json:"time" textlog:"time"`
-	ThreatName string    `json:"threat_name" textlog:"threat"`
-	Pid        int       `json:"pid" textlog:"pid"`
+	Time       Time   `json:"time" textlog:"time"`
+	ThreatName string `json:"threat_name" textlog:"threat"`
+	Pid        int    `json:"pid" textlog:"pid"`
 }
 
 func (EmsDetectionEntry) reportable() {}

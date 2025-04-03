@@ -52,16 +52,16 @@ func NewSystemdService() *SystemdService {
 type WindowsService struct {
 	LogObjectHeader
 
-	Key            string    `json:"key" textlog:"key"`
-	KeyName        string    `json:"key_name" textlog:"key_name"`
-	ServiceName    string    `json:"service_name" textlog:"service_name"`
-	Modified       time.Time `json:"modified" textlog:"modified"`
-	StartType      string    `json:"start_type" textlog:"start_type"`
-	ServiceType    string    `json:"service_type" textlog:"service_type"`
-	User           string    `json:"user" textlog:"user"`
-	Description    string    `json:"description" textlog:"description"`
-	FailureCommand string    `json:"failure_command" textlog:"failure_command,omitempty"`
-	Image          *File     `json:"image" textlog:"image,expand"`
+	Key            string `json:"key" textlog:"key"`
+	KeyName        string `json:"key_name" textlog:"key_name"`
+	ServiceName    string `json:"service_name" textlog:"service_name"`
+	Modified       Time   `json:"modified" textlog:"modified"`
+	StartType      string `json:"start_type" textlog:"start_type"`
+	ServiceType    string `json:"service_type" textlog:"service_type"`
+	User           string `json:"user" textlog:"user"`
+	Description    string `json:"description" textlog:"description"`
+	FailureCommand string `json:"failure_command" textlog:"failure_command,omitempty"`
+	Image          *File  `json:"image" textlog:"image,expand"`
 }
 
 func (WindowsService) reportable() {}

@@ -12,11 +12,11 @@ type WindowsEventlogEntry struct {
 
 	File string `json:"file,omitempty" textlog:"file,omitempty"`
 
-	EventId       uint16    `json:"-" textlog:"event_id"`
-	EventLevel    int       `json:"-" textlog:"event_level"`
-	EventTime     time.Time `json:"-" textlog:"event_time"`
-	EventChannel  string    `json:"-" textlog:"event_channel,omitempty"`
-	EventComputer string    `json:"-" textlog:"event_computer,omitempty"`
+	EventId       uint16 `json:"-" textlog:"event_id"`
+	EventLevel    int    `json:"-" textlog:"event_level"`
+	EventTime     Time   `json:"-" textlog:"event_time"`
+	EventChannel  string `json:"-" textlog:"event_channel,omitempty"`
+	EventComputer string `json:"-" textlog:"event_computer,omitempty"`
 
 	Entry KeyValueList `json:"entry" textlog:"entry"`
 }
@@ -37,9 +37,9 @@ func NewEventlogEntry() *WindowsEventlogEntry {
 
 type EventlogProcessStart struct {
 	jsonlog.ObjectHeader
-	Process    string      `json:"process" textlog:"process"`
-	StartTimes []time.Time `json:"start_times" textlog:"-"`
-	Count      int         `json:"-" textlog:"count"`
+	Process    string `json:"process" textlog:"process"`
+	StartTimes []Time `json:"start_times" textlog:"-"`
+	Count      int    `json:"-" textlog:"count"`
 }
 
 func (EventlogProcessStart) reportable() {}

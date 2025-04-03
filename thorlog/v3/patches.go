@@ -8,7 +8,7 @@ import (
 
 type HotfixSummary struct {
 	jsonlog.ObjectHeader
-	LastHotfix time.Time `json:"last_hotfix" textlog:"last_hotfix"`
+	LastHotfix Time `json:"last_hotfix" textlog:"last_hotfix"`
 }
 
 func (HotfixSummary) reportable() {}
@@ -30,8 +30,8 @@ func NewHotfixSummary(lastHotfix time.Time) *HotfixSummary {
 type EndOfLifeReport struct {
 	jsonlog.ObjectHeader
 
-	Version   string    `json:"version" textlog:"version"`
-	EndOfLife time.Time `json:"end_of_life" textlog:"end_time"`
+	Version   string `json:"version" textlog:"version"`
+	EndOfLife Time   `json:"end_of_life" textlog:"end_time"`
 }
 
 func (EndOfLifeReport) reportable() {}

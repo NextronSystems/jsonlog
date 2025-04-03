@@ -124,13 +124,13 @@ func NewLinuxPlatformInfo() *PlatformInfoLinux {
 type PlatformInfoWindows struct {
 	jsonlog.ObjectHeader
 
-	Name        string    `json:"name" textlog:"name"`
-	Type        string    `json:"type" textlog:"type"`
-	Version     string    `json:"version" textlog:"version"`
-	Proc        string    `json:"proc" textlog:"proc"`
-	Arch        string    `json:"arch" textlog:"arch"`
-	InstalledOn time.Time `json:"installed_on" textlog:"installed_on"`
-	BuildNumber string    `json:"build_number" textlog:"build_number"`
+	Name        string `json:"name" textlog:"name"`
+	Type        string `json:"type" textlog:"type"`
+	Version     string `json:"version" textlog:"version"`
+	Proc        string `json:"proc" textlog:"proc"`
+	Arch        string `json:"arch" textlog:"arch"`
+	InstalledOn Time   `json:"installed_on" textlog:"installed_on"`
+	BuildNumber string `json:"build_number" textlog:"build_number"`
 }
 
 func (PlatformInfoWindows) platform() {}

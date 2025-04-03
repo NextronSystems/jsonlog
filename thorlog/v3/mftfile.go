@@ -9,16 +9,16 @@ import (
 type MftFileEntry struct {
 	jsonlog.ObjectHeader
 
-	Path     string    `json:"path" textlog:"path"`
-	Size     int64     `json:"size" textlog:"size"`
-	Dir      bool      `json:"dir" textlog:"dir"`
-	Modified time.Time `json:"modified" textlog:"modified"`
-	Created  time.Time `json:"created" textlog:"created"`
-	Accessed time.Time `json:"accessed" textlog:"accessed"`
-	Changed  time.Time `json:"changed" textlog:"changed"`
-	Filename string    `json:"filename" textlog:"filename"`
-	Deleted  bool      `json:"deleted,omitempty" textlog:"deleted,omitempty"`
-	Flags    *uint64   `json:"flags,omitempty" textlog:"flags,omitempty"`
+	Path     string  `json:"path" textlog:"path"`
+	Size     int64   `json:"size" textlog:"size"`
+	Dir      bool    `json:"dir" textlog:"dir"`
+	Modified Time    `json:"modified" textlog:"modified"`
+	Created  Time    `json:"created" textlog:"created"`
+	Accessed Time    `json:"accessed" textlog:"accessed"`
+	Changed  Time    `json:"changed" textlog:"changed"`
+	Filename string  `json:"filename" textlog:"filename"`
+	Deleted  bool    `json:"deleted,omitempty" textlog:"deleted,omitempty"`
+	Flags    *uint64 `json:"flags,omitempty" textlog:"flags,omitempty"`
 }
 
 func (MftFileEntry) reportable() {}
@@ -38,7 +38,7 @@ func NewMftFileEntry() *MftFileEntry {
 type UsnEntry struct {
 	LogObjectHeader
 
-	EventTime time.Time  `json:"event_time" textlog:"event_time"`
+	EventTime Time       `json:"event_time" textlog:"event_time"`
 	Filename  string     `json:"filename" textlog:"filename"`
 	Reasons   StringList `json:"reasons" textlog:"reason"`
 }

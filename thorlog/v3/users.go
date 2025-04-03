@@ -36,8 +36,8 @@ type ProfileFolder struct {
 
 	User string `json:"user" textlog:"user"`
 
-	Modified time.Time  `json:"modified" textlog:"modified,omitempty"`
-	Created  *time.Time `json:"created,omitempty" textlog:"created,omitempty"`
+	Modified Time  `json:"modified" textlog:"modified,omitempty"`
+	Created  *Time `json:"created,omitempty" textlog:"created,omitempty"`
 }
 
 func (ProfileFolder) reportable() {}
@@ -91,7 +91,7 @@ type WindowsUser struct {
 	User                 string       `json:"user" textlog:"user"`
 	FullName             string       `json:"full_name" textlog:"full_name"`
 	IsAdmin              bool         `json:"is_admin" textlog:"is_admin"`
-	LastLogon            time.Time    `json:"last_logon" textlog:"last_logon"`
+	LastLogon            Time         `json:"last_logon" textlog:"last_logon"`
 	BadPasswordCount     int          `json:"bad_password_count" textlog:"bad_password_count"`
 	NumberOfLogons       int          `json:"num_logons" textlog:"num_logons"`
 	PasswordAge          HourDuration `json:"pass_age" textlog:"pass_age"`

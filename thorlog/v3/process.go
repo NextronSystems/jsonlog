@@ -41,8 +41,8 @@ type ProcessInfo struct {
 
 	ProcessTree StringList `json:"tree" textlog:"tree,omitempty" jsonschema:"nullable"`
 
-	Created time.Time `json:"created" textlog:"created"`
-	Session string    `json:"session" textlog:"session,omitempty"`
+	Created Time   `json:"created" textlog:"created"`
+	Session string `json:"session" textlog:"session,omitempty"`
 
 	ProcessConnections `textlog:",expand"`
 

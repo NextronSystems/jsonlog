@@ -21,6 +21,7 @@ type Finding struct {
 	Reasons      []Reason         `json:"reasons" textlog:",expand"`
 	ReasonCount  int              `json:"-" textlog:"reasons_count"`
 	EventContext Context          `json:"context" textlog:",expand" jsonschema:"nullable"`
+	Issues       []Issue          `json:"issues,omitempty" textlog:"-"`
 	LogVersion   common.Version   `json:"log_version"`
 }
 
@@ -80,6 +81,16 @@ func (f *Finding) UnmarshalJSON(data []byte) error {
 			}
 			f.Reasons[i].StringMatches[j].Field = jsonlog.NewReference(f.Subject, target)
 		}
+	}
+	for i := range f.Issues {
+		if f.Issues[i].Affected == nil {
+			continue
+		}
+		target, err := jsonpointer.Resolve(f, f.Issues[i].Affected.ToJsonPointer())
+		if err != nil {
+			return err
+		}
+		f.Issues[i].Affected = jsonlog.NewReference(f, target)
 	}
 	return nil
 }

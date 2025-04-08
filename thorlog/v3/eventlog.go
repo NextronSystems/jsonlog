@@ -59,8 +59,3 @@ func NewEventlogProcessStart(process string, startTimes []time.Time) *EventlogPr
 		Count:      len(startTimes),
 	}
 }
-
-func (a WindowsEventlogEntry) Truncate(matches []jsonlog.FieldMatch, truncateLimit int, stringContext int) jsonlog.Object {
-	a.Entry = a.Entry.Truncate(matches, truncateLimit, stringContext)
-	return &a
-}

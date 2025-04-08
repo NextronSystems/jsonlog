@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/NextronSystems/jsonlog"
-	"github.com/NextronSystems/jsonlog/thorlog/truncate"
 )
 
 type RegistryValue struct {
@@ -41,18 +40,6 @@ type RegistryKey struct {
 }
 
 func (RegistryKey) reportable() {}
-
-func (s *RegistryKey) Truncate(matches []jsonlog.FieldMatch, truncateLimit int, stringContext int) jsonlog.Object {
-	var ourMatches []truncate.Match
-	for _, match := range matches {
-		if match.FieldPointer == &s.FormattedValues {
-			ourMatches = append(ourMatches, match.Match)
-		}
-	}
-	var copiedKey = *s
-	copiedKey.FormattedValues = truncate.TruncateWithNewlines(s.FormattedValues, ourMatches, truncateLimit, stringContext)
-	return &copiedKey
-}
 
 func (s *RegistryKey) RawEvent() (string, *jsonlog.Reference) {
 	return s.FormattedValues, jsonlog.NewReference(s, &s.FormattedValues)

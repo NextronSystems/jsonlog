@@ -27,11 +27,6 @@ func NewPluginStructuredData(plugin string) *PluginStructuredData {
 	}
 }
 
-func (a PluginStructuredData) Truncate(matches []jsonlog.FieldMatch, truncateLimit int, stringContext int) jsonlog.Object {
-	a.Data = a.Data.Truncate(matches, truncateLimit, stringContext)
-	return &a
-}
-
 type PluginString struct {
 	jsonlog.ObjectHeader
 

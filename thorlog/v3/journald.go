@@ -25,9 +25,4 @@ func NewJournaldEntry() *JournaldEntry {
 	}
 }
 
-func (a JournaldEntry) Truncate(matches []jsonlog.FieldMatch, truncateLimit int, stringContext int) jsonlog.Object {
-	a.Details = a.Details.Truncate(matches, truncateLimit, stringContext)
-	return &a
-}
-
 func (JournaldEntry) reportable() {}

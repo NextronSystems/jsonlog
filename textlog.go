@@ -169,3 +169,20 @@ func (t TextlogFormatter) toEntry(object reflect.Value) TextlogEntry {
 		return nil
 	}
 }
+
+type isZeroer interface {
+	IsZero() bool
+}
+
+func isZero(v reflect.Value) bool {
+	if v.IsZero() {
+		return true
+	}
+	if zeroer, ok := v.Interface().(isZeroer); ok {
+		return zeroer.IsZero()
+	}
+	if v.Comparable() {
+		return v.Equal(reflect.Zero(v.Type()))
+	}
+	return false
+}

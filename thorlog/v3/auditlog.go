@@ -22,9 +22,4 @@ func NewAuditLogEntry() *AuditLogEntry {
 	}
 }
 
-func (a AuditLogEntry) Truncate(matches []jsonlog.FieldMatch, truncateLimit int, stringContext int) jsonlog.Object {
-	a.Entry = a.Entry.Truncate(matches, truncateLimit, stringContext)
-	return &a
-}
-
 func (AuditLogEntry) reportable() {}

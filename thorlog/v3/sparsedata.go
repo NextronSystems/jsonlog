@@ -13,12 +13,28 @@ type SparseData struct {
 	jsonlog.ObjectHeader
 	Elements []SparseDataElement `json:"elements" jsonschema:"nullable"`
 	Length   int64               `json:"length"`
-
-	StringVersion string `json:"-" textlog:",explicit"`
 }
 
+const truncateSequence = "[...]"
+
 func (s SparseData) String() string {
-	return s.StringVersion
+	if s.Length == 0 {
+		return ""
+	}
+	if len(s.Elements) == 0 {
+		return truncateSequence
+	}
+	var w strings.Builder
+	if s.Elements[0].Offset > 0 {
+		_, _ = w.WriteString(truncateSequence)
+	}
+	for _, element := range s.Elements {
+		_, _ = nonAsciiEscaper.WriteString(&w, string(element.Data))
+		if element.Offset+uint64(len(element.Data)) < uint64(s.Length) {
+			_, _ = w.WriteString(truncateSequence)
+		}
+	}
+	return w.String()
 }
 
 type SparseDataElement struct {
@@ -56,4 +72,17 @@ func NewSparseData() *SparseData {
 			Type: typeSparseData,
 		},
 	}
+}
+
+var nonAsciiEscaper *strings.Replacer
+
+func init() {
+	var escapes = []string{`\`, `\\`}
+	for nonAsciiByte := 0; nonAsciiByte < 0x20; nonAsciiByte++ {
+		escapes = append(escapes, string([]byte{byte(nonAsciiByte)}), fmt.Sprintf("\\x%02x", nonAsciiByte))
+	}
+	for nonAsciiByte := 0x7F; nonAsciiByte <= 0xFF; nonAsciiByte++ {
+		escapes = append(escapes, string([]byte{byte(nonAsciiByte)}), fmt.Sprintf("\\x%02x", nonAsciiByte))
+	}
+	nonAsciiEscaper = strings.NewReplacer(escapes...)
 }

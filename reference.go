@@ -228,3 +228,13 @@ func (r Reference) Value() any {
 func (r Reference) JSONSchemaAlias() any {
 	return ""
 }
+
+// SetLabels sets the JSON pointer and text label for the reference.
+// This is an unsafe operation since it does not update the base and pointed field,
+// nor does it check if the passed values match the pointed field.
+// However, it can be used on a fresh reference where the labels are already known
+// to avoid the overhead of looking them up.
+func (r *Reference) SetLabels(jsonPointer jsonpointer.Pointer, textLabel string) {
+	r.jsonPointer = jsonPointer
+	r.textLabel = textLabel
+}

@@ -16,5 +16,8 @@ type Issue struct {
 }
 
 const (
+	// IssueCategoryTruncated indicates that a value was truncated due to its size.
 	IssueCategoryTruncated = "truncated"
+	// IssueCategoryOutOfRange indicates that a value can't be represented in the format that the log uses.
+	IssueCategoryOutOfRange = "out_of_range"
 )

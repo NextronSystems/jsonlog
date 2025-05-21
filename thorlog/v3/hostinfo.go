@@ -1,6 +1,8 @@
 package thorlog
 
 import (
+	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/NextronSystems/jsonlog"
@@ -33,6 +35,29 @@ func NewHostInfo() *HostInfo {
 			Summary: "System Information",
 		},
 	}
+}
+
+func (h *HostInfo) UnmarshalJSON(data []byte) error {
+	// PlatformInfo is an embedded object, so we need to unmarshal first into a struct
+	// that correctly resolves it based on the type.
+	// To do this, we create a struct that has the same fields as HostInfo,
+	// but with the Platform field as an EmbeddedObject and without the UnmarshalJSON method.
+	type hostInfoClone HostInfo
+	var unmarshalableInfo struct {
+		hostInfoClone
+		Platform EmbeddedObject `json:"platform"`
+	}
+	err := json.Unmarshal(data, &unmarshalableInfo)
+	if err != nil {
+		return err
+	}
+	*h = HostInfo(unmarshalableInfo.hostInfoClone)
+	if platformInfo, isPlatformInfo := unmarshalableInfo.Platform.Object.(PlatformInfo); isPlatformInfo {
+		h.Platform = platformInfo
+	} else {
+		return fmt.Errorf("platform information has invalid type %s", unmarshalableInfo.Platform.Object.EmbeddedHeader().Type)
+	}
+	return nil
 }
 
 type SystemType string

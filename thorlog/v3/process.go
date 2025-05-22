@@ -71,8 +71,8 @@ type ProcessConnection struct {
 	Status     string `json:"status" textlog:"-"`
 	Ip         string `json:"ip" textlog:"ip"`
 	Port       uint32 `json:"port" textlog:"port"`
-	RemoteIp   string `json:"rip,omitempty" textlog:"rip,omitempty"`
-	RemotePort uint32 `json:"rport,omitempty" textlog:"rport,omitempty"`
+	RemoteIp   string `json:"remote_ip,omitempty" textlog:"rip,omitempty"`
+	RemotePort uint32 `json:"remote_port,omitempty" textlog:"rport,omitempty"`
 	// Protocol is the layer 4 protocol used for the connection, e.g. TCP, UDP, etc.
 	Protocol string `json:"protocol,omitempty" textlog:"protocol,omitempty"`
 }

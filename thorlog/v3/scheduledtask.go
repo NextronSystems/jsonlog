@@ -13,8 +13,8 @@ type ScheduledTask struct {
 	Path    string    `json:"path" textlog:"path"`
 	Command string    `json:"command" textlog:"command"`
 	Enabled bool      `json:"enabled" textlog:"enabled"`
-	LastRun time.Time `json:"lastrun,omitzero" textlog:"lastrun,omitempty"`
-	NextRun time.Time `json:"nextrun,omitzero" textlog:"nextrun,omitempty"`
+	LastRun time.Time `json:"last_run,omitzero" textlog:"lastrun,omitempty"`
+	NextRun time.Time `json:"next_run,omitzero" textlog:"nextrun,omitempty"`
 }
 
 func (ScheduledTask) reportable() {}

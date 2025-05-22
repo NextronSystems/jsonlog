@@ -9,7 +9,7 @@ type LinuxKernelModule struct {
 	// Whether this modules was compiled into the kernel
 	IncludedInKernel bool `json:"included_in_kernel" textlog:"included_in_kernel"`
 
-	Refcount   int          `json:"refcount"`
+	Refcount   int          `json:"ref_count"`
 	UsedBy     StringList   `json:"used_by"`
 	Version    string       `json:"version"`
 	Parameters KeyValueList `json:"parameters,omitempty" textlog:"parameters,omitempty"`

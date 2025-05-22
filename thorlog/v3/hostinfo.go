@@ -70,7 +70,7 @@ const (
 
 type MountInfo struct {
 	// FSType is the filesystem that is mounted, e.g. ext4, ntfs, etc.
-	FSType string `json:"fstype"`
+	FSType string `json:"fs_type"`
 	// Source is the OS description of the source of the mount.
 	// This can differ greatly between OSes and filesystems.
 	// For example, on Linux, for local partitions, this is the device path.

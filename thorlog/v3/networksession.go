@@ -7,7 +7,7 @@ import (
 type NetworkSession struct {
 	LogObjectHeader
 	Client     string        `json:"client" textlog:"client"`
-	Username   string        `json:"username" textlog:"username"`
+	Username   string        `json:"user_name" textlog:"username"`
 	ClientType string        `json:"client_type" textlog:"client_type"`
 	Active     time.Duration `json:"active" textlog:"active"`
 	Idle       time.Duration `json:"idle" textlog:"idle"`

@@ -8,12 +8,12 @@ type WmiElement struct {
 	jsonlog.ObjectHeader
 
 	Key        string `json:"key" textlog:"key"`
-	Filtertype string `json:"filtertype" textlog:"filtertype"`
+	Filtertype string `json:"filter_type" textlog:"filtertype"`
 
-	Eventfiltername   string `json:"eventfiltername" textlog:"eventfiltername"`
-	Eventconsumername string `json:"eventconsumername" textlog:"eventconsumername"`
-	Eventfilter       string `json:"eventfilter" textlog:"eventfilter"`
-	Eventconsumer     string `json:"eventconsumer" textlog:"eventconsumer"`
+	Eventfiltername   string `json:"event_filter_name" textlog:"eventfiltername"`
+	Eventconsumername string `json:"event_consumer_name" textlog:"eventconsumername"`
+	Eventfilter       string `json:"event_filter" textlog:"eventfilter"`
+	Eventconsumer     string `json:"event_consumer" textlog:"eventconsumer"`
 }
 
 func (WmiElement) reportable() {}

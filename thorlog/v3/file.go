@@ -29,10 +29,10 @@ type File struct {
 	Hashes *FileHashes `json:"hashes,omitempty" textlog:",expand,omitempty"`
 
 	// FirstBytes contains the first bytes of the file
-	FirstBytes FirstBytes `json:"firstbytes,omitempty" textlog:"firstbytes,omitempty"`
+	FirstBytes FirstBytes `json:"first_bytes,omitempty" textlog:"firstbytes,omitempty"`
 
 	// Filetimes contains the file times of the file (e.g. created, modified, accessed, etc.)
-	Filetimes *Filetimes `json:"filetimes,omitempty" textlog:",expand,omitempty"`
+	Filetimes *Filetimes `json:"file_times,omitempty" textlog:",expand,omitempty"`
 
 	Size uint64 `json:"size" textlog:"size,omitempty"`
 
@@ -95,9 +95,9 @@ type FileHashes struct {
 
 type RecycleBinIndexFile struct {
 	Version          uint64    `json:"-" textlog:"-"`
-	OriginalFilename string    `json:"original_filename" textlog:"original_filename"`
+	OriginalFilename string    `json:"original_file_name" textlog:"original_filename"`
 	DeletionTime     time.Time `json:"deletion_time" textlog:"deletion_time"`
-	OriginalFilesize uint64    `json:"original_filesize" textlog:"-"`
+	OriginalFilesize uint64    `json:"original_file_size" textlog:"-"`
 }
 
 type LinkInfo struct {

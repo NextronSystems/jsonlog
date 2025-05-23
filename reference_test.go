@@ -3,8 +3,81 @@ package jsonlog
 import (
 	"testing"
 
+	"github.com/NextronSystems/jsonlog/jsonpointer"
 	"github.com/stretchr/testify/assert"
 )
+
+type testObject struct {
+	ObjectHeader
+
+	Substruct struct {
+		SubField1 string `json:"subfield1" textlog:"subfield1"`
+	} `json:"substruct" textlog:"substruct,expand"`
+
+	// nolint:unused // not used, just used to check that unexported fields are not included in the event
+	unexported string
+
+	AnonymousSubstruct
+
+	Nested NestedSubstruct `json:"nested" textlog:"nested,expand"`
+
+	Unexpanded UnexpandedSubstruct `json:"unexpanded" textlog:"unexpanded"`
+
+	Subfield5 string `json:"subfield5" textlog:"subfield5"`
+
+	Valuer TestEventValuer `json:"valuer" textlog:"valuer"`
+
+	SubObject *SubObject `json:"subobject" textlog:"subobject,expand"`
+}
+
+type AnonymousSubstruct struct {
+	SubField2 string `json:"subfield2" textlog:"subfield2"`
+}
+
+type NestedSubstruct struct {
+	Substruct struct {
+		SubField3 string `json:"subfield3" textlog:"subfield3"`
+	} `json:"substruct" textlog:",expand"`
+}
+
+type UnexpandedSubstruct struct {
+	SubField4 string `json:"subfield4" textlog:"subfield4"`
+}
+
+func (u UnexpandedSubstruct) String() string {
+	return u.SubField4
+}
+
+type TestEventValuer struct {
+	Subfield6 string `json:"subfield6"`
+	Subfield7 string `json:"subfield7"`
+	Ignore    string
+}
+
+func (t *TestEventValuer) RelativeTextPointer(pointee any) (string, bool) {
+	if pointee == &t.Subfield6 {
+		return "subfield6", true
+	}
+	if pointee == &t.Subfield7 {
+		return "subfield7", true
+	}
+	return "", false
+}
+
+func (t *TestEventValuer) RelativeJsonPointer(pointee any) jsonpointer.Pointer {
+	if pointee == &t.Subfield6 {
+		return jsonpointer.New("subfield6")
+	}
+	if pointee == &t.Subfield7 {
+		return jsonpointer.New("subfield7")
+	}
+	return nil
+}
+
+type SubObject struct {
+	ObjectHeader
+	Subfield8 string `json:"subfield8" textlog:"subfield8"`
+}
 
 func TestReference_ToJsonPointer(t *testing.T) {
 	var test testObject

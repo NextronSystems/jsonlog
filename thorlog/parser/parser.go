@@ -7,7 +7,7 @@ import (
 	"github.com/NextronSystems/jsonlog/thorlog/common"
 	thorlogv1 "github.com/NextronSystems/jsonlog/thorlog/v1"
 	thorlogv2 "github.com/NextronSystems/jsonlog/thorlog/v2"
-	"github.com/NextronSystems/jsonlog/thorlog/v3"
+	thorlogv3 "github.com/NextronSystems/jsonlog/thorlog/v3"
 )
 
 func ParseEvent(data []byte) (common.Event, error) {
@@ -32,7 +32,7 @@ func ParseEvent(data []byte) (common.Event, error) {
 		}
 		return &event, nil
 	case common.JsonV3:
-		var logObject thorlog.EmbeddedObject
+		var logObject thorlogv3.EmbeddedObject
 		if err := json.Unmarshal(data, &logObject); err != nil {
 			return nil, err
 		}

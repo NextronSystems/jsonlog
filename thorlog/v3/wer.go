@@ -8,7 +8,7 @@ type WerCrashReport struct {
 	Type        string    `json:"-" textlog:"-"`
 	Exe         string    `json:"exe" textlog:"exe"`
 	Date        time.Time `json:"date" textlog:"date"`
-	AppPath     string    `json:"apppath" textlog:"apppath"`
+	AppPath     string    `json:"app_path" textlog:"apppath"`
 	Error       string    `json:"error" textlog:"error"`
 	FaultModule string    `json:"fault_in_module" textlog:"fault_in_module"`
 }
@@ -16,7 +16,7 @@ type WerCrashReport struct {
 type AnalysisResult struct {
 	Exe         string    `json:"exe"`
 	Date        time.Time `json:"date"`
-	AppPath     string    `json:"apppath"`
+	AppPath     string    `json:"app_path"`
 	Error       string    `json:"error"`
 	FaultModule string    `json:"fault_in_module"`
 }

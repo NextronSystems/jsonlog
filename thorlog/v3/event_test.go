@@ -92,7 +92,7 @@ func concatEntry(entry jsonlog.TextlogEntry) string {
 func TestFinding_UnmarshalJSON(t *testing.T) {
 	for i, finding := range []*Finding{
 		{
-			ObjectHeader: LogObjectHeader{Type: typeFinding, Summary: "message"},
+			ObjectHeader: LogObjectHeader{Type: typeFinding},
 			Meta: LogEventMetadata{
 				Lvl:    common.Alert,
 				Mod:    "Test",
@@ -100,6 +100,7 @@ func TestFinding_UnmarshalJSON(t *testing.T) {
 				GenID:  "abdas",
 				Source: "aserarsd",
 			},
+			Text:    "This is a test finding",
 			Subject: NewFile("path/to/file"),
 			EventContext: Context{
 				{

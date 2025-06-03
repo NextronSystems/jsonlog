@@ -67,7 +67,6 @@ func makeObjectSchema() (mainEntry string, defs map[string]*jsonschema.Schema) {
 	var logObjectSchema = &jsonschema.Schema{
 		Properties: orderedmap.New[string, *jsonschema.Schema](),
 	}
-	logObjectSchema.Properties.Set("summary", &jsonschema.Schema{Type: "string"})
 	logObjectSchema.Properties.Set("type", &jsonschema.Schema{
 		Type: "string",
 		Enum: logObjectTypes,

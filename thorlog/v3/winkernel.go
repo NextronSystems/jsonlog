@@ -14,8 +14,7 @@ func init() { AddLogObjectType(typeWindowsEvent, &WindowsEvent{}) }
 func NewWindowsEvent(event string) *WindowsEvent {
 	return &WindowsEvent{
 		LogObjectHeader: LogObjectHeader{
-			Type:    typeWindowsEvent,
-			Summary: event,
+			Type: typeWindowsEvent,
 		},
 		Event: event,
 	}
@@ -36,8 +35,7 @@ func init() { AddLogObjectType(typeWindowsMutex, &WindowsMutex{}) }
 func NewWindowsMutex(mutex string) *WindowsMutex {
 	return &WindowsMutex{
 		LogObjectHeader: LogObjectHeader{
-			Type:    typeWindowsMutex,
-			Summary: mutex,
+			Type: typeWindowsMutex,
 		},
 		Mutex: mutex,
 	}

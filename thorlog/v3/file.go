@@ -179,8 +179,7 @@ func init() { AddLogObjectType(typeFile, &File{}) }
 func NewFile(path string) *File {
 	return &File{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Type:    typeFile,
-			Summary: path,
+			Type: typeFile,
 		},
 		Path: path,
 	}

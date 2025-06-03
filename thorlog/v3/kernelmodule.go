@@ -26,8 +26,7 @@ const typeLinuxKernelModule = "Linux Kernel Module"
 func NewLinuxKernelModule(name string) *LinuxKernelModule {
 	return &LinuxKernelModule{
 		LogObjectHeader: LogObjectHeader{
-			Type:    typeLinuxKernelModule,
-			Summary: name,
+			Type: typeLinuxKernelModule,
 		},
 		Name: name,
 	}

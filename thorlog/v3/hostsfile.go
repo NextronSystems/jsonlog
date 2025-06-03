@@ -15,8 +15,7 @@ func init() { AddLogObjectType(typeHostsFileEntry, &HostsFileEntry{}) }
 func NewHostsFileEntry(host string, ip string) *HostsFileEntry {
 	return &HostsFileEntry{
 		LogObjectHeader: LogObjectHeader{
-			Type:    typeHostsFileEntry,
-			Summary: host,
+			Type: typeHostsFileEntry,
 		},
 		Host: host,
 		IP:   ip,

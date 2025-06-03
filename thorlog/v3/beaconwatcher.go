@@ -1,7 +1,6 @@
 package thorlog
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/NextronSystems/jsonlog"
@@ -26,8 +25,7 @@ func (NetworkConnectingThread) reportable() {}
 func NewNetworkConnectingThread(threadId uint32, process *Process) *NetworkConnectingThread {
 	return &NetworkConnectingThread{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Summary: fmt.Sprintf("Thread %d connected to remote servers regularly", threadId),
-			Type:    typeNetworkConnectingThread,
+			Type: typeNetworkConnectingThread,
 		},
 		ThreadId: threadId,
 		Process:  process,

@@ -19,8 +19,7 @@ func init() { AddLogObjectType(typeEnvironmentVariable, &EnvironmentVariable{}) 
 func NewEnvironmentVariable(variable string, value string) *EnvironmentVariable {
 	return &EnvironmentVariable{
 		LogObjectHeader: LogObjectHeader{
-			Type:    typeEnvironmentVariable,
-			Summary: variable + "=" + value,
+			Type: typeEnvironmentVariable,
 		},
 		Variable: variable,
 		Value:    value,

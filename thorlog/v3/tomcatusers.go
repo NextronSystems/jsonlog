@@ -19,8 +19,7 @@ func init() { AddLogObjectType(typeTomcatUser, &TomcatUser{}) }
 func NewTomcatUser(user, file string) *TomcatUser {
 	return &TomcatUser{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Summary: "User " + user,
-			Type:    typeTomcatUser,
+			Type: typeTomcatUser,
 		},
 		User: user,
 		File: file,

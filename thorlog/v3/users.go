@@ -24,8 +24,7 @@ func init() { AddLogObjectType(typeLoggedInUser, &LoggedInUser{}) }
 func NewLoggedInUser(user string) *LoggedInUser {
 	return &LoggedInUser{
 		LogObjectHeader: LogObjectHeader{
-			Type:    typeLoggedInUser,
-			Summary: user,
+			Type: typeLoggedInUser,
 		},
 		User: user,
 	}
@@ -49,8 +48,7 @@ func init() { AddLogObjectType(typeUserProfile, &ProfileFolder{}) }
 func NewProfileFolder(user string) *ProfileFolder {
 	return &ProfileFolder{
 		LogObjectHeader: LogObjectHeader{
-			Type:    typeUserProfile,
-			Summary: user,
+			Type: typeUserProfile,
 		},
 		User: user,
 	}
@@ -78,8 +76,7 @@ func init() { AddLogObjectType(typeUnixUser, &UnixUser{}) }
 func NewUnixUser(name string) *UnixUser {
 	return &UnixUser{
 		LogObjectHeader: LogObjectHeader{
-			Type:    typeUnixUser,
-			Summary: name,
+			Type: typeUnixUser,
 		},
 		Name: name,
 	}
@@ -110,8 +107,7 @@ func init() { AddLogObjectType(typeWindowsUser, &WindowsUser{}) }
 func NewWindowsUser(user string) *WindowsUser {
 	return &WindowsUser{
 		LogObjectHeader: LogObjectHeader{
-			Type:    typeWindowsUser,
-			Summary: user,
+			Type: typeWindowsUser,
 		},
 		User: user,
 	}

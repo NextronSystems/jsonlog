@@ -19,8 +19,7 @@ func init() { AddLogObjectType(typeWindowsPipe, &WindowsPipe{}) }
 func NewWindowsPipe(pipe string) *WindowsPipe {
 	return &WindowsPipe{
 		LogObjectHeader: LogObjectHeader{
-			Type:    typeWindowsPipe,
-			Summary: pipe,
+			Type: typeWindowsPipe,
 		},
 		Pipe: pipe,
 	}

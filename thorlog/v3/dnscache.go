@@ -15,8 +15,7 @@ func init() { AddLogObjectType(typeDnsCacheEntry, &DnsCacheEntry{}) }
 func NewDnsCacheEntry(host string, ip string) *DnsCacheEntry {
 	return &DnsCacheEntry{
 		LogObjectHeader: LogObjectHeader{
-			Type:    typeDnsCacheEntry,
-			Summary: host,
+			Type: typeDnsCacheEntry,
 		},
 		Host: host,
 		IP:   ip,

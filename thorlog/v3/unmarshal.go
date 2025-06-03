@@ -101,20 +101,11 @@ func (e *EmbeddedObject) UnmarshalJSON(data []byte) error {
 		return ErrNoLogObject
 	}
 
-	objectSummary, exists := details["summary"]
-	if !exists {
-		return ErrNoLogObject
-	}
-	_, isString = objectSummary.(string)
-	if !isString {
-		return ErrNoLogObject
-	}
-
 	objectBlank := LogObjectTypes[objectTypeString]
 	if objectBlank == nil {
 		e.Object = &UnknownObject{
 			Data:         details,
-			ObjectHeader: jsonlog.ObjectHeader{Type: objectTypeString, Summary: objectSummary.(string)},
+			ObjectHeader: jsonlog.ObjectHeader{Type: objectTypeString},
 		}
 		return nil
 	}
@@ -123,10 +114,6 @@ func (e *EmbeddedObject) UnmarshalJSON(data []byte) error {
 	decoder := json.NewDecoder(bytes.NewReader(data))
 	decoder.DisallowUnknownFields()
 	err = decoder.Decode(object)
-	if err != nil {
-		return err
-	}
-
 	if err != nil {
 		return err
 	}

@@ -30,8 +30,7 @@ type SimpleSubstruct struct {
 func TestToDetails(t *testing.T) {
 	var test = TestObject{
 		ObjectHeader: ObjectHeader{
-			Summary: "TestObject",
-			Type:    "testobject",
+			Type: "testobject",
 		},
 		Element1:   "element1",
 		Element2:   "element2",

@@ -1,7 +1,6 @@
 package thorlog
 
 import (
-	"strconv"
 	"time"
 
 	"github.com/NextronSystems/jsonlog"
@@ -51,8 +50,7 @@ func init() { AddLogObjectType(TypeProcessStart, &EventlogProcessStart{}) }
 func NewEventlogProcessStart(process string, startTimes []time.Time) *EventlogProcessStart {
 	return &EventlogProcessStart{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Type:    TypeProcessStart,
-			Summary: process + " started " + strconv.Itoa(len(startTimes)) + " times",
+			Type: TypeProcessStart,
 		},
 		Process:    process,
 		StartTimes: startTimes,

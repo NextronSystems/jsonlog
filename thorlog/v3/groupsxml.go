@@ -20,8 +20,7 @@ func init() { AddLogObjectType(typeGroupsXmlPassword, &GroupsXmlUser{}) }
 func NewGroupsXmlPassword(file, user, password string) *GroupsXmlUser {
 	return &GroupsXmlUser{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Type:    typeGroupsXmlPassword,
-			Summary: user,
+			Type: typeGroupsXmlPassword,
 		},
 		File:     file,
 		User:     user,

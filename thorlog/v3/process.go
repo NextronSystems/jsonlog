@@ -84,8 +84,7 @@ func init() { AddLogObjectType(typeProcess, &Process{}) }
 func NewProcess(pid int32) *Process {
 	return &Process{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Type:    typeProcess,
-			Summary: fmt.Sprintf("PID %d", pid),
+			Type: typeProcess,
 		},
 		Pid: pid,
 	}

@@ -1,7 +1,6 @@
 package thorlog
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/NextronSystems/jsonlog"
@@ -25,8 +24,7 @@ func init() { AddLogObjectType(typeDetectionAdd, &DetectionAddEntry{}) }
 func NewDetectionAddEntry(t time.Time, threat string, detected KeyValueList) *DetectionAddEntry {
 	return &DetectionAddEntry{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Type:    "DETECTION_ADD MPLog entry",
-			Summary: fmt.Sprintf("Detected threat %q", threat),
+			Type: "DETECTION_ADD MPLog entry",
 		},
 		Time:       t,
 		ThreatName: threat,
@@ -53,8 +51,7 @@ func init() { AddLogObjectType(typeEstimatedImpact, &EstimatedImpactEntry{}) }
 func NewEstimatedImpactEntry(t time.Time, image string, pid int, file string) *EstimatedImpactEntry {
 	return &EstimatedImpactEntry{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Type:    typeEstimatedImpact,
-			Summary: fmt.Sprintf("Process %q accessed file %q", image, file),
+			Type: typeEstimatedImpact,
 		},
 		Time:             t,
 		ProcessImageName: image,
@@ -82,8 +79,7 @@ func init() { AddLogObjectType(typeSdnQuery, &SdnQueryEntry{}) }
 func NewSdnQueryEntry(t time.Time, file string, sha1 string, sha256 string) *SdnQueryEntry {
 	return &SdnQueryEntry{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Type:    typeSdnQuery,
-			Summary: fmt.Sprintf("SDN query for file %q", file),
+			Type: typeSdnQuery,
 		},
 		Time:     t,
 		Filepath: file,
@@ -110,8 +106,7 @@ func init() { AddLogObjectType(typeEmsDetection, &EmsDetectionEntry{}) }
 func NewEmsDetection(timestamp time.Time, threatName string, pid int) *EmsDetectionEntry {
 	return &EmsDetectionEntry{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Type:    "EMS detection MPLog entry",
-			Summary: fmt.Sprintf("Detected threat %q in process %d", threatName, pid),
+			Type: "EMS detection MPLog entry",
 		},
 		Time:       timestamp,
 		ThreatName: threatName,

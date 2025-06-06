@@ -1,8 +1,6 @@
 package thorlog
 
 import (
-	"fmt"
-
 	"github.com/NextronSystems/jsonlog"
 )
 
@@ -21,8 +19,7 @@ func init() { AddLogObjectType(typeThread, &Thread{}) }
 func NewThread(tid uint32) *Thread {
 	return &Thread{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Type:    typeThread,
-			Summary: fmt.Sprintf("Thread %d", tid),
+			Type: typeThread,
 		},
 		ThreadId: tid,
 	}

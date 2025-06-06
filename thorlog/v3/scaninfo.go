@@ -39,8 +39,7 @@ func init() { AddLogObjectType(typeScanInfo, &ScanInfo{}) }
 func NewScanInfo() *ScanInfo {
 	return &ScanInfo{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Type:    typeScanInfo,
-			Summary: "Information about THOR invocation",
+			Type: typeScanInfo,
 		},
 	}
 }

@@ -20,8 +20,7 @@ func init() { AddLogObjectType(typeNetworkShare, &NetworkShare{}) }
 func NewNetworkShare(name, path string) *NetworkShare {
 	return &NetworkShare{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Type:    typeNetworkShare,
-			Summary: name,
+			Type: typeNetworkShare,
 		},
 		Name: name,
 		Path: path,

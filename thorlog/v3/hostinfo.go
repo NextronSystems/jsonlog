@@ -31,8 +31,7 @@ func init() { AddLogObjectType(typeHostInfo, &HostInfo{}) }
 func NewHostInfo() *HostInfo {
 	return &HostInfo{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Type:    typeHostInfo,
-			Summary: "System Information",
+			Type: typeHostInfo,
 		},
 	}
 }
@@ -115,8 +114,7 @@ func init() { AddLogObjectType(typePlatformInfoMacos, &PlatformInfoMacos{}) }
 func NewMacOSPlatformInfo() *PlatformInfoMacos {
 	return &PlatformInfoMacos{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Type:    typePlatformInfoMacos,
-			Summary: "MacOS specific Information",
+			Type: typePlatformInfoMacos,
 		},
 	}
 }
@@ -140,8 +138,7 @@ func init() { AddLogObjectType(typePlatformInfoLinux, &PlatformInfoLinux{}) }
 func NewLinuxPlatformInfo() *PlatformInfoLinux {
 	return &PlatformInfoLinux{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Type:    typePlatformInfoLinux,
-			Summary: "Linux specific Information",
+			Type: typePlatformInfoLinux,
 		},
 	}
 }
@@ -167,8 +164,7 @@ func init() { AddLogObjectType(typePlatformInfoWindows, &PlatformInfoWindows{}) 
 func NewWindowsPlatformInfo() *PlatformInfoWindows {
 	return &PlatformInfoWindows{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Type:    typePlatformInfoWindows,
-			Summary: "Windows specific Information",
+			Type: typePlatformInfoWindows,
 		},
 	}
 }

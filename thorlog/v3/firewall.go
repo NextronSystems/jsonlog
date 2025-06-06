@@ -48,8 +48,7 @@ func init() { AddLogObjectType(typeRawFirewallRule, &RawFirewallRule{}) }
 func NewRawFirewallRule(rule string) *RawFirewallRule {
 	return &RawFirewallRule{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Type:    typeRawFirewallRule,
-			Summary: rule,
+			Type: typeRawFirewallRule,
 		},
 		Rule: rule,
 	}

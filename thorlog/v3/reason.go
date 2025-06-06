@@ -10,7 +10,7 @@ import (
 type Reason struct {
 	jsonlog.ObjectHeader
 
-	Summary string `json:"-" textlog:"reason"`
+	Summary string `json:"summary" textlog:"reason"`
 
 	Signature     `json:"signature" textlog:",inline"`
 	StringMatches MatchStrings `json:"matched" textlog:"matched" jsonschema:"nullable"`
@@ -21,7 +21,6 @@ func (r *Reason) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, (*plainReason)(r)); err != nil {
 		return err
 	}
-	r.Summary = r.ObjectHeader.Summary
 	return nil
 }
 
@@ -108,8 +107,7 @@ func (s Sigtype) JSONSchemaAlias() any { return "" }
 func NewReason(desc string, signature Signature, matches MatchStrings) Reason {
 	return Reason{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Type:    typeReason,
-			Summary: desc,
+			Type: typeReason,
 		},
 		Summary:       desc,
 		Signature:     signature,

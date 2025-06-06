@@ -31,8 +31,7 @@ func init() { AddLogObjectType(typeJumplistEntry, &JumplistEntry{}) }
 func NewJumplistEntry(path string) *JumplistEntry {
 	return &JumplistEntry{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Type:    typeJumplistEntry,
-			Summary: path,
+			Type: typeJumplistEntry,
 		},
 		Path: path,
 	}

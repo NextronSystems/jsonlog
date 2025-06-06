@@ -1,7 +1,6 @@
 package thorlog
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/NextronSystems/jsonlog"
@@ -96,8 +95,7 @@ func init() { AddLogObjectType(TypeRegisteredDebugger, &RegisteredDebugger{}) }
 func NewRegisteredDebugger(target string, debugger string) *RegisteredDebugger {
 	return &RegisteredDebugger{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Type:    TypeRegisteredDebugger,
-			Summary: fmt.Sprintf("%q registered as debugger for %q", debugger, target),
+			Type: TypeRegisteredDebugger,
 		},
 		Executable: target,
 		Debugger:   debugger,

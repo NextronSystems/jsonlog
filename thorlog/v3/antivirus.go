@@ -22,8 +22,7 @@ func init() { AddLogObjectType(typeAntiVirusProduct, &AntiVirusProduct{}) }
 func NewAntiVirusProduct(name string) *AntiVirusProduct {
 	return &AntiVirusProduct{
 		LogObjectHeader: jsonlog.ObjectHeader{
-			Type:    typeAntiVirusProduct,
-			Summary: name,
+			Type: typeAntiVirusProduct,
 		},
 		Name: name,
 	}
@@ -45,8 +44,7 @@ func init() { AddLogObjectType(typeAntiVirusExclude, &AntiVirusExclude{}) }
 func NewAntiVirusExclude(exclusionType string, exclusion string) *AntiVirusExclude {
 	return &AntiVirusExclude{
 		LogObjectHeader: jsonlog.ObjectHeader{
-			Type:    typeAntiVirusExclude,
-			Summary: exclusionType + " " + exclusion,
+			Type: typeAntiVirusExclude,
 		},
 		Type:      exclusionType,
 		Exclusion: exclusion,

@@ -20,8 +20,7 @@ func init() { AddLogObjectType(typeHotfixSummary, &HotfixSummary{}) }
 func NewHotfixSummary(lastHotfix time.Time) *HotfixSummary {
 	return &HotfixSummary{
 		ObjectHeader: LogObjectHeader{
-			Type:    typeHotfixSummary,
-			Summary: "last hotfix installed " + lastHotfix.Format("2006-01-02"),
+			Type: typeHotfixSummary,
 		},
 		LastHotfix: lastHotfix,
 	}
@@ -43,8 +42,7 @@ func init() { AddLogObjectType(typeEndOfLifeReport, &EndOfLifeReport{}) }
 func NewEndOfLifeReport(version string, endOfLife time.Time) *EndOfLifeReport {
 	return &EndOfLifeReport{
 		ObjectHeader: LogObjectHeader{
-			Type:    typeEndOfLifeReport,
-			Summary: "end of life for " + version + " was " + endOfLife.Format("2006-01-02"),
+			Type: typeEndOfLifeReport,
 		},
 		Version:   version,
 		EndOfLife: endOfLife,

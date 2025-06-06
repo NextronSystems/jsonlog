@@ -1,9 +1,5 @@
 package thorlog
 
-import (
-	"fmt"
-)
-
 type DoublePulsarHandshake struct {
 	LogObjectHeader
 
@@ -20,8 +16,7 @@ func init() { AddLogObjectType(typeDoublePulsarHandshake, &DoublePulsarHandshake
 func NewDoublePulsarHandshake(handshakeType string, key uint64) *DoublePulsarHandshake {
 	return &DoublePulsarHandshake{
 		LogObjectHeader: LogObjectHeader{
-			Type:    typeDoublePulsarHandshake,
-			Summary: fmt.Sprintf("DoublePulsar Handshake via %s succeeded", handshakeType),
+			Type: typeDoublePulsarHandshake,
 		},
 		Key:  HexNumber(key),
 		Type: handshakeType,

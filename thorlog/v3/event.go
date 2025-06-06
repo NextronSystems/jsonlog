@@ -16,6 +16,7 @@ import (
 type Finding struct {
 	jsonlog.ObjectHeader
 	Meta         LogEventMetadata `json:"meta" textlog:",expand"`
+	Text         string           `json:"message" textlog:"-"`
 	Subject      ReportableObject `json:"subject" textlog:",expand"`
 	Score        int64            `json:"score" textlog:"score"`
 	Reasons      []Reason         `json:"reasons" textlog:",expand"`
@@ -31,7 +32,7 @@ type ReportableObject interface {
 }
 
 func (f *Finding) Message() string {
-	return f.Summary
+	return f.Text
 }
 
 func (f *Finding) Version() common.Version {
@@ -43,29 +44,20 @@ func (f *Finding) Metadata() *LogEventMetadata {
 }
 
 func (f *Finding) UnmarshalJSON(data []byte) error {
+	type plainFinding Finding
 	var rawFinding struct {
-		jsonlog.ObjectHeader
-		Meta         LogEventMetadata `json:"meta"`
-		Subject      EmbeddedObject   `json:"subject"`
-		Score        int64            `json:"score"`
-		Reasons      []Reason         `json:"reasons"`
-		EventContext Context          `json:"context"`
-		LogVersion   common.Version   `json:"log_version"`
+		plainFinding                // Embed without unmarshal method to avoid infinite recursion
+		Subject      EmbeddedObject `json:"subject"` // EmbeddedObject is used to allow unmarshalling of the subject as a ReportableObject
 	}
 	if err := json.Unmarshal(data, &rawFinding); err != nil {
 		return err
 	}
-	f.ObjectHeader = rawFinding.ObjectHeader
-	f.Meta = rawFinding.Meta
 	subject, ok := rawFinding.Subject.Object.(ReportableObject)
 	if !ok {
 		return fmt.Errorf("subject must implement the reportable interface")
 	}
+	*f = Finding(rawFinding.plainFinding) // Copy the fields from rawFinding to f
 	f.Subject = subject
-	f.Score = rawFinding.Score
-	f.Reasons = rawFinding.Reasons
-	f.EventContext = rawFinding.EventContext
-	f.LogVersion = rawFinding.LogVersion
 
 	// Resolve all references
 	// When the event is unmarshalled, the references are not resolved yet and only contain the JSON pointers.
@@ -163,9 +155,9 @@ func init() { AddLogObjectType(typeFinding, &Finding{}) }
 func NewFinding(subject ReportableObject, message string) *Finding {
 	return &Finding{
 		ObjectHeader: LogObjectHeader{
-			Type:    typeFinding,
-			Summary: message,
+			Type: typeFinding,
 		},
+		Text:       message,
 		Subject:    subject,
 		LogVersion: currentVersion,
 	}
@@ -174,12 +166,13 @@ func NewFinding(subject ReportableObject, message string) *Finding {
 type Message struct {
 	jsonlog.ObjectHeader
 	Meta       LogEventMetadata `json:"meta" textlog:",expand"`
+	Text       string           `json:"message" textlog:"-"`
 	Fields     MessageFields    `json:"fields" textlog:",expand" jsonschema:"nullable"`
 	LogVersion common.Version   `json:"log_version"`
 }
 
 func (m *Message) Message() string {
-	return m.Summary
+	return m.Text
 }
 
 func (m *Message) Version() common.Version {
@@ -199,9 +192,9 @@ func init() { AddLogObjectType(typeMessage, &Message{}) }
 func NewMessage(meta LogEventMetadata, message string, kvs ...any) *Message {
 	msg := &Message{
 		ObjectHeader: LogObjectHeader{
-			Type:    typeMessage,
-			Summary: message,
+			Type: typeMessage,
 		},
+		Text:       message,
 		Meta:       meta,
 		LogVersion: currentVersion,
 	}

@@ -119,6 +119,7 @@ func TestFinding_UnmarshalJSON(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			t.Log(string(jsonform))
 			var newFinding Finding
 			if err := json.Unmarshal(jsonform, &newFinding); err != nil {
 				t.Fatal(err)

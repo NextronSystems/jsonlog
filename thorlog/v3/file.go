@@ -2,6 +2,7 @@ package thorlog
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/NextronSystems/jsonlog"
@@ -73,17 +74,20 @@ func (f *File) UnmarshalJSON(data []byte) error {
 	// Permissions are either unix or windows permissions, so we need to try both
 	type plainFile File
 
-	var testFile plainFile
-	testFile.Permissions = &UnixPermissions{}
+	var testFile struct {
+		plainFile
+		Permissions EmbeddedObject `json:"permissions"`
+	}
 	err := json.Unmarshal(data, &testFile)
 	if err != nil {
-		testFile.Permissions = &WindowsPermissions{}
-		err = json.Unmarshal(data, &testFile)
-		if err != nil {
-			return err
-		}
+		return err
 	}
-	*f = File(testFile)
+	perms, isPermissions := testFile.Permissions.Object.(Permissions)
+	if !isPermissions && testFile.Permissions.Object != nil {
+		return fmt.Errorf("invalid permissions type: %T", testFile.Permissions.Object)
+	}
+	*f = File(testFile.plainFile)
+	f.Permissions = perms
 	return nil
 }
 

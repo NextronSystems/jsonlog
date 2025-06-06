@@ -2,19 +2,20 @@ package v1
 
 import (
 	"encoding/json"
+	"time"
 
 	"github.com/NextronSystems/jsonlog/thorlog/common"
 	"golang.org/x/mod/semver"
 )
 
 type Event struct {
-	common.LogEventMetadata
+	LogEventMetadata Metadata
 
 	Data Fields `textlog:",expand"`
 }
 
 func (e *Event) Metadata() *common.LogEventMetadata {
-	return &e.LogEventMetadata
+	return (*common.LogEventMetadata)(&e.LogEventMetadata)
 }
 
 func (e *Event) Message() string {
@@ -74,4 +75,13 @@ func (e Event) MarshalJSON() ([]byte, error) {
 	combinedData = append(combinedData, ',')
 	combinedData = append(combinedData, data2[1:]...)
 	return combinedData, nil
+}
+
+type Metadata struct {
+	Time   time.Time       `json:"time" textlog:"-"`
+	Lvl    common.LogLevel `json:"level" textlog:"-"`
+	Mod    string          `json:"module" textlog:"-"`
+	ScanID string          `json:"scanid" textlog:"scanid,omitempty"`
+	GenID  string          `json:"uid" textlog:"uid,omitempty"`
+	Source string          `json:"hostname" textlog:"-"`
 }

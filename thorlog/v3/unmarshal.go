@@ -92,6 +92,9 @@ func (e *EmbeddedObject) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
+	if details == nil {
+		return nil
+	}
 	objectType, exists := details["type"]
 	if !exists {
 		return ErrNoLogObject

@@ -9,7 +9,7 @@ import (
 )
 
 type Event struct {
-	LogEventMetadata Metadata
+	LogEventMetadata Metadata `textlog:",expand"`
 
 	Data Fields `textlog:",expand"`
 }

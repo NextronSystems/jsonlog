@@ -9,10 +9,21 @@ import (
 	"github.com/NextronSystems/jsonlog"
 )
 
+// SparseData is a log object that represents a sparse data structure.
+// SparseData represents a selection of data from a large data block (e.g.: a file's content)
+// that is not fully contained in the log.
+//
+// Not all parts of the full data structure are necessarily contained in the sparse data,
+// typically based on how much data is relevant for the analysis.
 type SparseData struct {
 	jsonlog.ObjectHeader
+	// Elements is a list of sparse data elements that contain the actual data.
+	// Each element has an offset within the block and the data that is present at that offset.
+	// Elements are ordered by their offset, and are guaranteed to be non-overlapping.
 	Elements []SparseDataElement `json:"elements" jsonschema:"nullable"`
-	Length   int64               `json:"length"`
+	// Length is the length of the block where the sparse elements reside in.
+	// In other words, all Elements are within an address range of [0, Length).
+	Length int64 `json:"length"`
 }
 
 const truncateSequence = "[...]"

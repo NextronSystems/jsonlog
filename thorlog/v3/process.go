@@ -46,7 +46,30 @@ type ProcessInfo struct {
 
 	ProcessConnections `textlog:",expand"`
 
-	Memory *SparseData `json:"memory,omitempty" textlog:"memory,expand,omitempty"`
+	Sections []Section `json:"sections,omitempty" textlog:"-"`
+}
+
+// Section describes a memory range in a process's virtual memory.
+// This typically corresponds to a section in an executable file or library, such as .text, .data, etc.,
+// or a stack, heap, or similar.
+// In Linux terms: it corresponds to a line in /proc/<pid>/maps.
+type Section struct {
+	// Name of the section. For sections from loaded libraries, this is the library's file path.
+	// For other memory ranges, this is OS specific and may be empty.
+	Name string `json:"name"`
+	// Address is the start address of the section in the process's virtual memory.
+	Address uint64 `json:"address"`
+	// Size is the size of the section in bytes.
+	Size uint64 `json:"size" textlog:"size"`
+	// Offset is the offset within the mapped file or library, if this section
+	// corresponds to a file section. If this section does not correspond to a file,
+	// this is empty.
+	Offset uint64 `json:"offset,omitempty"`
+	// SparseData contains a sparse representation of the section's data.
+	// Only the interesting parts of the section are included, typically those that have been matched.
+	SparseData *SparseData `json:"sparse_data,omitempty"`
+	// Permissions of the section.
+	Permissions RwxPermissions `json:"permissions"`
 }
 
 type ProcessConnections struct {

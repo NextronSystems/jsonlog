@@ -46,8 +46,10 @@ type ProcessInfo struct {
 
 	ProcessConnections `textlog:",expand"`
 
-	Sections []Section `json:"sections,omitempty" textlog:"-"`
+	Sections Sections `json:"sections,omitempty" textlog:"-"`
 }
+
+type Sections []Section
 
 // Section describes a memory range in a process's virtual memory.
 // This typically corresponds to a section in an executable file or library, such as .text, .data, etc.,
@@ -70,6 +72,22 @@ type Section struct {
 	SparseData *SparseData `json:"sparse_data,omitempty"`
 	// Permissions of the section.
 	Permissions RwxPermissions `json:"permissions"`
+}
+
+// RelativeTextPointer implements the jsonlog.TextReferenceResolver interface for Sections.
+// It resolves a reference to a Section's SparseData field to a human-readable string.
+func (s *Sections) RelativeTextPointer(pointee any) (string, bool) {
+	for i := range *s {
+		section := &(*s)[i]
+		if pointee == &section.SparseData {
+			if section.Name != "" {
+				return section.Name, true
+			} else {
+				return fmt.Sprintf("0x%x", section.Address), true
+			}
+		}
+	}
+	return "", false
 }
 
 type ProcessConnections struct {

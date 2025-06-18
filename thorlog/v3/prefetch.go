@@ -1,38 +1,59 @@
 package thorlog
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/NextronSystems/jsonlog"
 )
 
-type PrefetchElement struct {
+// PrefetchInfo contains information about a Windows Prefetch file.
+//
+// Prefetch files are used by Windows to speed up the startup of applications.
+// They contain information about an executable such as:
+// - The path to the executable
+// - The times the executable was run
+// - The number of times the executable was run
+// - Files accessed by the executable
+//
+// Prefetch files are located in the C:\Windows\Prefetch directory and have the .pf file extension.
+// They rotate, meaning that older prefetch files are deleted when the number of prefetch files exceeds a certain limit.
+type PrefetchInfo struct {
 	jsonlog.ObjectHeader
-
-	Dir  string `json:"dir" textlog:"dir"`
-	File *File  `json:"file" textlog:",expand"`
+	Executable     *File          `json:"executable" textlog:"executable,expand"`
+	ExecutionTimes ExecutionTimes `json:"execution_times" textlog:",expand"`
+	ExecutionCount int            `json:"execution_count" textlog:"execution_count"`
+	AccessedFiles  []string       `json:"accessed_files" textlog:"-"`
 }
 
-func (PrefetchElement) reportable() {}
+func (PrefetchInfo) reportable() {}
 
-const typePrefetchElement = "prefetch element"
+type ExecutionTimes []time.Time
 
-func init() { AddLogObjectType(typePrefetchElement, &PrefetchElement{}) }
-
-func NewPrefetchElement() *PrefetchElement {
-	return &PrefetchElement{
-		ObjectHeader: jsonlog.ObjectHeader{
-			Type: typePrefetchElement,
-		},
+func (e ExecutionTimes) MarshalTextLog(t jsonlog.TextlogFormatter) jsonlog.TextlogEntry {
+	// Only include the most recent execution time in the textlog
+	if len(e) == 0 {
+		return nil
+	}
+	var formattedLastTime string
+	if t.FormatValue != nil {
+		formattedLastTime = t.FormatValue(e[0], nil)
+	} else {
+		formattedLastTime = fmt.Sprint(e[0])
+	}
+	return jsonlog.TextlogEntry{
+		{Key: "last_execution_time", Value: formattedLastTime},
 	}
 }
 
-const typePrefetchFile = "prefetch file"
+const typePrefetchInfo = "prefetch info"
 
-func init() { AddLogObjectType(typePrefetchFile, &PrefetchElement{}) }
+func init() { AddLogObjectType(typePrefetchInfo, &PrefetchInfo{}) }
 
-func NewPrefetchFile() *PrefetchElement {
-	return &PrefetchElement{
+func NewPrefetchInfo() *PrefetchInfo {
+	return &PrefetchInfo{
 		ObjectHeader: jsonlog.ObjectHeader{
-			Type: typePrefetchFile,
+			Type: typePrefetchInfo,
 		},
 	}
 }

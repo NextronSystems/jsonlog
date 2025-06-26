@@ -16,7 +16,7 @@ import (
 type Finding struct {
 	jsonlog.ObjectHeader
 	Meta         LogEventMetadata `json:"meta" textlog:",expand"`
-	Text         string           `json:"message" textlog:"-"`
+	Text         string           `json:"message" textlog:"message"`
 	Subject      ReportableObject `json:"subject" textlog:",expand"`
 	Score        int64            `json:"score" textlog:"score"`
 	Reasons      []Reason         `json:"reasons" textlog:",expand"`
@@ -166,7 +166,7 @@ func NewFinding(subject ReportableObject, message string) *Finding {
 type Message struct {
 	jsonlog.ObjectHeader
 	Meta       LogEventMetadata `json:"meta" textlog:",expand"`
-	Text       string           `json:"message" textlog:"-"`
+	Text       string           `json:"message" textlog:"message"`
 	Fields     MessageFields    `json:"fields" textlog:",expand" jsonschema:"nullable"`
 	LogVersion common.Version   `json:"log_version"`
 }

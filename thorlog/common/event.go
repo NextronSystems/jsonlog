@@ -15,10 +15,17 @@ const (
 	Debug   LogLevel = "Debug"
 )
 
+// LogEventMetadata contains the metadata of a log event.
+// It is used to store common fields that are available in all log events.
+//
+// In a textlog formatted event, some of these fields are part of the header and do
+// not occur "normally" as a KEY: VALUE pair in the event body.
+// These fields are marked with the `textlog:"-"` tag to prevent them from being
+// included in the event body.
 type LogEventMetadata struct {
 	Time   time.Time `json:"time" textlog:"-"`
 	Lvl    LogLevel  `json:"level" textlog:"-"`
-	Mod    string    `json:"module" textlog:"-"`
+	Mod    string    `json:"module" textlog:"module"`
 	ScanID string    `json:"scan_id" textlog:"scanid,omitempty"`
 	GenID  string    `json:"event_id" textlog:"uid,omitempty"`
 	Source string    `json:"hostname" textlog:"-"`

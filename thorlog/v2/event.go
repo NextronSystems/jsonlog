@@ -105,7 +105,7 @@ func (e Event) MarshalJSON() ([]byte, error) {
 type Metadata struct {
 	Time   time.Time       `json:"time" textlog:"-"`
 	Lvl    common.LogLevel `json:"level" textlog:"-"`
-	Mod    string          `json:"module" textlog:"-"`
+	Mod    string          `json:"module" textlog:"module"`
 	ScanID string          `json:"scanid" textlog:"scanid,omitempty"`
 	GenID  string          `json:"uid" textlog:"uid,omitempty"`
 	Source string          `json:"hostname" textlog:"-"`

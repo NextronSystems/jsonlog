@@ -26,9 +26,9 @@ func TestContext_MarshalTextLog(t *testing.T) {
 			name: "context with unique related object",
 			c: &Context{
 				{
-					Object:   NewFile("path/to/file"),
-					Relation: "file",
-					Unique:   true,
+					Object:       NewFile("path/to/file"),
+					RelationName: "file",
+					Unique:       true,
 				},
 			},
 			want: "FILE: path/to/file",
@@ -37,14 +37,14 @@ func TestContext_MarshalTextLog(t *testing.T) {
 			name: "context with related object group",
 			c: &Context{
 				{
-					Object:   NewFile("path/to/file"),
-					Relation: "file",
-					Unique:   false,
+					Object:       NewFile("path/to/file"),
+					RelationName: "file",
+					Unique:       false,
 				},
 				{
-					Object:   NewFile("path/to/otherfile"),
-					Relation: "file",
-					Unique:   false,
+					Object:       NewFile("path/to/otherfile"),
+					RelationName: "file",
+					Unique:       false,
 				},
 			},
 			want: "FILE_1: path/to/file FILE_2: path/to/otherfile",
@@ -53,14 +53,14 @@ func TestContext_MarshalTextLog(t *testing.T) {
 			name: "context with different related objects",
 			c: &Context{
 				{
-					Object:   NewFile("path/to/file"),
-					Relation: "file",
-					Unique:   false,
+					Object:       NewFile("path/to/file"),
+					RelationName: "file",
+					Unique:       false,
 				},
 				{
-					Object:   NewFile("path/to/otherfile"),
-					Relation: "archive",
-					Unique:   true,
+					Object:       NewFile("path/to/otherfile"),
+					RelationName: "archive",
+					Unique:       true,
 				},
 			},
 			want: "FILE_1: path/to/file ARCHIVE_FILE: path/to/otherfile",
@@ -104,7 +104,8 @@ func TestFinding_UnmarshalJSON(t *testing.T) {
 			Subject: NewFile("path/to/file"),
 			EventContext: Context{
 				{
-					Object: NewAtJob(),
+					Object:       NewAtJob(),
+					RelationType: "related to",
 				},
 			},
 			Reasons: []Reason{

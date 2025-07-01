@@ -92,16 +92,17 @@ var _ common.Event = (*Finding)(nil)
 type Context []ContextObject
 
 type ContextObject struct {
-	Object   ReportableObject `json:"object" textlog:",expand"`
-	Relation string           `json:"relation"`
-	Unique   bool             `json:"unique"`
+	Object       ReportableObject `json:"object" textlog:",expand"`
+	RelationType string           `json:"relation_type"` // RelationType is used to specify the type of relation, e.g. "derives from" or "related to"
+	RelationName string           `json:"relation_name"` // RelationName is used to specify the name of the relation, e.g. "parent". It is optional.
+	Unique       bool             `json:"unique"`        // Unique indicates whether the relation is unique, i.e. there can only be one object with this relation type / name in the context.
 }
 
 func (c *ContextObject) UnmarshalJSON(data []byte) error {
+	type plainContextObject ContextObject
 	var rawContextObject struct {
-		Object   EmbeddedObject `json:"object"`
-		Relation string         `json:"relation"`
-		Unique   bool           `json:"unique"`
+		Object EmbeddedObject `json:"object"`
+		plainContextObject
 	}
 	if err := json.Unmarshal(data, &rawContextObject); err != nil {
 		return err
@@ -110,9 +111,8 @@ func (c *ContextObject) UnmarshalJSON(data []byte) error {
 	if !isReportable {
 		return fmt.Errorf("object of type %q must implement the reportable interface", rawContextObject.Object.Object.EmbeddedHeader().Type)
 	}
+	*c = ContextObject(rawContextObject.plainContextObject) // Copy the fields from rawContextObject to c
 	c.Object = reportableObject
-	c.Relation = rawContextObject.Relation
-	c.Unique = rawContextObject.Unique
 	return nil
 }
 
@@ -121,7 +121,7 @@ func (c Context) MarshalTextLog(t jsonlog.TextlogFormatter) jsonlog.TextlogEntry
 	for _, element := range c {
 		var groupExists bool
 		for i := range elementsByRelation {
-			if elementsByRelation[i][0].Relation == element.Relation {
+			if elementsByRelation[i][0].RelationName == element.RelationName {
 				elementsByRelation[i] = append(elementsByRelation[i], element)
 				groupExists = true
 				break
@@ -137,7 +137,7 @@ func (c Context) MarshalTextLog(t jsonlog.TextlogFormatter) jsonlog.TextlogEntry
 		for g, element := range group {
 			marshaledElement := t.Format(element)
 			for i := range marshaledElement {
-				marshaledElement[i].Key = jsonlog.ConcatTextLabels(strings.ToUpper(element.Relation), marshaledElement[i].Key)
+				marshaledElement[i].Key = jsonlog.ConcatTextLabels(strings.ToUpper(element.RelationName), marshaledElement[i].Key)
 				if !element.Unique {
 					marshaledElement[i].Key = jsonlog.ConcatTextLabels(marshaledElement[i].Key, strconv.Itoa(g+1))
 				}

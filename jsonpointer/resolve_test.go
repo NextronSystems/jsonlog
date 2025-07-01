@@ -6,6 +6,11 @@ type BaseStruct struct {
 	Field1     string      `json:"field1"`
 	SliceField []string    `json:"slice_field"`
 	SubStruct  *BaseStruct `json:"sub_struct"`
+	AnonymousSubstruct
+}
+
+type AnonymousSubstruct struct {
+	Field2 string `json:"field2"`
 }
 
 func TestResolve(t *testing.T) {
@@ -14,6 +19,9 @@ func TestResolve(t *testing.T) {
 		SliceField: []string{"slice_field"},
 		SubStruct: &BaseStruct{
 			Field1: "sub_field1",
+		},
+		AnonymousSubstruct: AnonymousSubstruct{
+			Field2: "field2",
 		},
 	}
 	for _, tt := range []struct {
@@ -35,6 +43,11 @@ func TestResolve(t *testing.T) {
 			desc:    "sub struct field",
 			pointer: "/sub_struct/field1",
 			want:    &base.SubStruct.Field1,
+		},
+		{
+			desc:    "anonymous sub struct field",
+			pointer: "/field2",
+			want:    &base.Field2,
 		},
 	} {
 		t.Run(tt.desc, func(t *testing.T) {

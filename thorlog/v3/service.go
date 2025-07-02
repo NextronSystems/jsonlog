@@ -66,7 +66,7 @@ type WindowsService struct {
 
 func (WindowsService) reportable() {}
 
-const typeWindowsService = "windows service"
+const typeWindowsService = "Windows service"
 
 func init() { AddLogObjectType(typeWindowsService, &WindowsService{}) }
 

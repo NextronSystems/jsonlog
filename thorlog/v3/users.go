@@ -69,7 +69,7 @@ type UnixUser struct {
 
 func (UnixUser) reportable() {}
 
-const typeUnixUser = "unix user"
+const typeUnixUser = "Unix user"
 
 func init() { AddLogObjectType(typeUnixUser, &UnixUser{}) }
 
@@ -100,7 +100,7 @@ type WindowsUser struct {
 
 func (WindowsUser) reportable() {}
 
-const typeWindowsUser = "windows user"
+const typeWindowsUser = "Windows user"
 
 func init() { AddLogObjectType(typeWindowsUser, &WindowsUser{}) }
 

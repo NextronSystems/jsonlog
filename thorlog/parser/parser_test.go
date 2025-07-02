@@ -130,7 +130,7 @@ func TestParseEvent(t *testing.T) {
 		},
 		{
 			"JsonV3Finding",
-			`{"type":"THOR finding","meta":{"time":"2024-09-24T14:18:46.190394329+02:00","level":"Alert","module":"Test","scan_id":"abdc","event_id":"abdas","hostname":"aserarsd"},"message":"This is a test finding","subject":{"type":"file","path":"path/to/file"},"score":70,"reasons":[{"type":"reason","summary":"Reason 1","signature":{"score":70,"ref":null,"origin":"internal","kind":""},"matched":null}],"reason_count":0,"context":[{"object":{"type":"At Job"},"relation":"","unique":false}],"log_version":"v3"}`,
+			`{"type":"THOR finding","meta":{"time":"2024-09-24T14:18:46.190394329+02:00","level":"Alert","module":"Test","scan_id":"abdc","event_id":"abdas","hostname":"aserarsd"},"message":"This is a test finding","subject":{"type":"file","path":"path/to/file"},"score":70,"reasons":[{"type":"reason","summary":"Reason 1","signature":{"score":70,"ref":null,"origin":"internal","kind":""},"matched":null}],"reason_count":0,"context":[{"object":{"type":"at job"},"relation":"","unique":false}],"log_version":"v3"}`,
 			&thorlog.Finding{
 				ObjectHeader: jsonlog.ObjectHeader{
 					Type: "THOR finding",
@@ -168,7 +168,7 @@ func TestParseEvent(t *testing.T) {
 					{
 						Object: &thorlog.AtJob{
 							ObjectHeader: jsonlog.ObjectHeader{
-								Type: "At Job",
+								Type: "at job",
 							},
 						},
 					},

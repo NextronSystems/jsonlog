@@ -72,7 +72,7 @@ func (r RwxPermissions) String() string {
 	return s.String()
 }
 
-const typeUnixPermissions = "unix permissions"
+const typeUnixPermissions = "Unix permissions"
 
 func init() { AddLogObjectType(typeUnixPermissions, &UnixPermissions{}) }
 
@@ -149,7 +149,7 @@ func (a AclAccess) JSONSchemaAlias() any {
 	return ""
 }
 
-const typeWindowsPermissions = "windows permissions"
+const typeWindowsPermissions = "Windows permissions"
 
 func init() { AddLogObjectType(typeWindowsPermissions, &WindowsPermissions{}) }
 

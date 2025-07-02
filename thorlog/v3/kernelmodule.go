@@ -21,7 +21,7 @@ type LinuxKernelModule struct {
 
 func (LinuxKernelModule) reportable() {}
 
-const typeLinuxKernelModule = "Linux Kernel Module"
+const typeLinuxKernelModule = "Linux kernel module"
 
 func NewLinuxKernelModule(name string) *LinuxKernelModule {
 	return &LinuxKernelModule{

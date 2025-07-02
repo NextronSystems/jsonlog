@@ -8,7 +8,7 @@ type DnsCacheEntry struct {
 
 func (DnsCacheEntry) reportable() {}
 
-const typeDnsCacheEntry = "DNSCache entry"
+const typeDnsCacheEntry = "DNS cache entry"
 
 func init() { AddLogObjectType(typeDnsCacheEntry, &DnsCacheEntry{}) }
 

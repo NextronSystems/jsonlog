@@ -59,6 +59,16 @@ func findStructFieldByLabel(base reflect.Value, label string) (reflect.Value, bo
 		if !field.IsExported() {
 			continue
 		}
+		if field.Anonymous {
+			// If the field is anonymous, we need to search recursively
+			// in the embedded struct.
+			embeddedValue := base.Field(i)
+			value, found := findByLabel(embeddedValue, label)
+			if found {
+				return value, true
+			}
+			continue
+		}
 		if strings.SplitN(field.Tag.Get("json"), ",", 2)[0] == label {
 			return base.Field(i), true
 		}

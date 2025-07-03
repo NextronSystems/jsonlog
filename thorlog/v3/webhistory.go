@@ -23,7 +23,7 @@ type WebDownload struct {
 
 func (WebDownload) reportable() {}
 
-const typeWebDownload = "Web Download"
+const typeWebDownload = "web download"
 
 func init() { AddLogObjectType(typeWebDownload, &WebDownload{}) }
 
@@ -49,7 +49,7 @@ type WebPageVisit struct {
 
 func (WebPageVisit) reportable() {}
 
-const typeWebVisit = "Web Page Visit"
+const typeWebVisit = "web page visit"
 
 func init() { AddLogObjectType(typeWebVisit, &WebPageVisit{}) }
 

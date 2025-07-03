@@ -14,7 +14,7 @@ type SdbEntry struct {
 
 func (SdbEntry) reportable() {}
 
-const typeSdbEntry = "Shim Database entry"
+const typeSdbEntry = "shim database entry"
 
 func init() { AddLogObjectType(typeSdbEntry, &SdbEntry{}) }
 

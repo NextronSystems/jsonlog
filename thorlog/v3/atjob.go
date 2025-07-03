@@ -16,7 +16,7 @@ type AtJob struct {
 	Image     *File  `json:"image" textlog:"image,expand"`
 }
 
-const typeAtJob = "At Job"
+const typeAtJob = "at job"
 
 func init() { AddLogObjectType(typeAtJob, &AtJob{}) }
 

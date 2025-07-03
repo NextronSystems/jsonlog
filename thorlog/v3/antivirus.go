@@ -15,7 +15,7 @@ type AntiVirusProduct struct {
 
 func (AntiVirusProduct) reportable() {}
 
-const typeAntiVirusProduct = "Antivirus product"
+const typeAntiVirusProduct = "antivirus product"
 
 func init() { AddLogObjectType(typeAntiVirusProduct, &AntiVirusProduct{}) }
 
@@ -37,7 +37,7 @@ type AntiVirusExclude struct {
 
 func (AntiVirusExclude) reportable() {}
 
-const typeAntiVirusExclude = "Antivirus exclusion"
+const typeAntiVirusExclude = "antivirus exclusion"
 
 func init() { AddLogObjectType(typeAntiVirusExclude, &AntiVirusExclude{}) }
 

@@ -24,7 +24,7 @@ type JumplistEntry struct {
 
 func (JumplistEntry) reportable() {}
 
-const typeJumplistEntry = "jumplist entry"
+const typeJumplistEntry = "jump list entry"
 
 func init() { AddLogObjectType(typeJumplistEntry, &JumplistEntry{}) }
 

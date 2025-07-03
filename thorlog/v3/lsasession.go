@@ -18,7 +18,7 @@ type LsaSession struct {
 
 func (LsaSession) reportable() {}
 
-const typeLsaSession = "lsa session"
+const typeLsaSession = "LSA session"
 
 func init() { AddLogObjectType(typeLsaSession, &LsaSession{}) }
 

@@ -17,7 +17,7 @@ type ShimCacheEntry struct {
 
 func (ShimCacheEntry) reportable() {}
 
-const typeShimCacheEntry = "SHIM cache entry"
+const typeShimCacheEntry = "shim cache entry"
 
 func init() { AddLogObjectType(typeShimCacheEntry, &ShimCacheEntry{}) }
 
@@ -40,7 +40,7 @@ type ShimCache struct {
 
 func (ShimCache) reportable() {}
 
-const typeShimCache = "SHIM cache"
+const typeShimCache = "shim cache"
 
 func init() { AddLogObjectType(typeShimCache, &ShimCache{}) }
 

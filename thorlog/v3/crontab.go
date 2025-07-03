@@ -1,6 +1,6 @@
 package thorlog
 
-type Cronjob struct {
+type CronJob struct {
 	LogObjectHeader
 
 	File     string `json:"file" textlog:"file"`
@@ -9,16 +9,16 @@ type Cronjob struct {
 	Command  string `json:"command" textlog:"command"`
 }
 
-func (Cronjob) reportable() {}
+func (CronJob) reportable() {}
 
-const typeCronjob = "cronjob"
+const typeCronJob = "cron job"
 
-func init() { AddLogObjectType(typeCronjob, &Cronjob{}) }
+func init() { AddLogObjectType(typeCronJob, &CronJob{}) }
 
-func NewCronjob() *Cronjob {
-	return &Cronjob{
+func NewCronjob() *CronJob {
+	return &CronJob{
 		LogObjectHeader: LogObjectHeader{
-			Type: typeCronjob,
+			Type: typeCronJob,
 		},
 	}
 }

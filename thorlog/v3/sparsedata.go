@@ -73,7 +73,7 @@ func (s InvalidUnicodeString) MarshalJSON() ([]byte, error) {
 
 var escaper = strings.NewReplacer("\\", "\\\\", "\"", "\\\"")
 
-const typeSparseData = "sparsedata"
+const typeSparseData = "sparse data"
 
 func init() { AddLogObjectType(typeSparseData, &SparseData{}) }
 

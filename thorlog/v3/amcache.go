@@ -19,7 +19,7 @@ type AmcacheEntry struct {
 	Company  string    `json:"company" textlog:"company"`
 }
 
-const typeAmcacheEntry = "Amcache Entry"
+const typeAmcacheEntry = "AmCache entry"
 
 func init() { AddLogObjectType(typeAmcacheEntry, &AmcacheEntry{}) }
 

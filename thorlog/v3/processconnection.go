@@ -6,8 +6,7 @@ import (
 
 type ProcessConnectionObject struct {
 	jsonlog.ObjectHeader
-	Process           *Process          `json:"process" textlog:"process,expand"`
-	ConnectionDetails ProcessConnection `json:"connection" textlog:",expand"`
+	ProcessConnection
 }
 
 func (ProcessConnectionObject) reportable() {}

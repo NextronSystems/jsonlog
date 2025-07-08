@@ -9,7 +9,6 @@ import (
 type RegistryValue struct {
 	jsonlog.ObjectHeader
 
-	File        string    `json:"file,omitempty" textlog:"file"`
 	Key         string    `json:"key" textlog:"key"`
 	Modified    time.Time `json:"modified" textlog:"modified"`
 	ParsedValue string    `json:"value" textlog:"value"`
@@ -32,7 +31,6 @@ func NewRegistryValue() *RegistryValue {
 
 type RegistryKey struct {
 	jsonlog.ObjectHeader
-	File            string    `json:"path,omitempty" textlog:"path,omitempty"`
 	Key             string    `json:"key" textlog:"key"`
 	Modified        time.Time `json:"modified" textlog:"modified"`
 	FormattedValues string    `json:"values" textlog:"values"`
@@ -64,10 +62,9 @@ func init() {
 
 type MsOfficeConnectionCacheEntry struct {
 	jsonlog.ObjectHeader
-	RegistryHive string    `json:"registry_hive" textlog:"path"`
-	Entry        string    `json:"entry" textlog:"entry"`
-	Modified     time.Time `json:"modified" textlog:"modified"`
-	Key          string    `json:"key" textlog:"key"`
+	Entry    string    `json:"entry" textlog:"entry"`
+	Modified time.Time `json:"modified" textlog:"modified"`
+	Key      string    `json:"key" textlog:"key"`
 }
 
 func (MsOfficeConnectionCacheEntry) reportable() {}

@@ -9,8 +9,6 @@ import (
 type WindowsEventlogEntry struct {
 	jsonlog.ObjectHeader
 
-	File string `json:"file,omitempty" textlog:"file,omitempty"`
-
 	EventId       uint16    `json:"-" textlog:"event_id"`
 	EventLevel    int       `json:"-" textlog:"event_level"`
 	EventTime     time.Time `json:"-" textlog:"event_time"`

@@ -33,16 +33,14 @@ func NewScheduledTask() *ScheduledTask {
 
 type RegistryScheduledTask struct {
 	jsonlog.ObjectHeader
-	RegistryHive string    `json:"registry_hive" textlog:"hive"`
-	Key          string    `json:"key" textlog:"registry_path"`
-	Guid         string    `json:"guid" textlog:"guid"`
-	Path         string    `json:"path" textlog:"path"`
-	Version      int       `json:"version" textlog:"version"`
-	Created      time.Time `json:"created" textlog:"created"`
-	LastRun      time.Time `json:"last_run" textlog:"last_run"`
-	LastStopped  time.Time `json:"last_stopped" textlog:"last_stopped"`
-	Status       string    `json:"status" textlog:"status"`
-	LastResult   string    `json:"last_result" textlog:"last_result"`
+	Guid        string    `json:"guid" textlog:"guid"`
+	Path        string    `json:"path" textlog:"path"`
+	Version     int       `json:"version" textlog:"version"`
+	Created     time.Time `json:"created" textlog:"created"`
+	LastRun     time.Time `json:"last_run" textlog:"last_run"`
+	LastStopped time.Time `json:"last_stopped" textlog:"last_stopped"`
+	Status      string    `json:"status" textlog:"status"`
+	LastResult  string    `json:"last_result" textlog:"last_result"`
 }
 
 func (RegistryScheduledTask) reportable() {}

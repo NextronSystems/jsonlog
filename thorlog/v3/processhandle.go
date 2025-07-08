@@ -7,10 +7,9 @@ import (
 type ProcessHandle struct {
 	jsonlog.ObjectHeader
 
-	Process *Process `json:"process" textlog:"process,expand"`
-	Name    string   `json:"name" textlog:"name"`
-	Handle  uint64   `json:"handle" textlog:"handle,omitempty"`
-	Type    string   `json:"type,omitempty" textlog:"type,omitempty"`
+	Name   string `json:"name" textlog:"name"`
+	Handle uint64 `json:"handle" textlog:"handle,omitempty"`
+	Type   string `json:"type,omitempty" textlog:"type,omitempty"`
 }
 
 func (ProcessHandle) reportable() {}

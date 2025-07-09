@@ -7,7 +7,6 @@ import (
 type AtJob struct {
 	jsonlog.ObjectHeader
 
-	File      string `json:"file" textlog:"job"`
 	Command   string `json:"command" textlog:"command"`
 	Start     string `json:"start" textlog:"start"`
 	User      string `json:"user" textlog:"user"`

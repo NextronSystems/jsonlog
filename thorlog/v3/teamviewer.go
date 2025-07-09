@@ -6,10 +6,8 @@ import (
 
 type TeamViewerPassword struct {
 	jsonlog.ObjectHeader
-	Password     string `json:"password" textlog:"password"`
-	Path         string `json:"path" textlog:"path"`
-	RegistryPath string `json:"registry_path" textlog:"registry_path"`
-	Name         string `json:"name" textlog:"name"`
+	Password string `json:"password" textlog:"password"`
+	Name     string `json:"name" textlog:"name"`
 }
 
 func (TeamViewerPassword) reportable() {}

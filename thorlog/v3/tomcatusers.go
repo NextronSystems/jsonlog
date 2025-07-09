@@ -7,7 +7,6 @@ import (
 type TomcatUser struct {
 	jsonlog.ObjectHeader
 	User string `json:"user" textlog:"user"`
-	File string `json:"file" textlog:"file"`
 }
 
 func (TomcatUser) reportable() {}
@@ -16,12 +15,11 @@ const typeTomcatUser = "Tomcat user"
 
 func init() { AddLogObjectType(typeTomcatUser, &TomcatUser{}) }
 
-func NewTomcatUser(user, file string) *TomcatUser {
+func NewTomcatUser(user string) *TomcatUser {
 	return &TomcatUser{
 		ObjectHeader: jsonlog.ObjectHeader{
 			Type: typeTomcatUser,
 		},
 		User: user,
-		File: file,
 	}
 }

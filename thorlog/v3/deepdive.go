@@ -9,8 +9,6 @@ import (
 type DeepDiveChunk struct {
 	jsonlog.ObjectHeader
 
-	Target *File `json:"file" textlog:"file"`
-
 	ChunkOffset HexNumber   `json:"chunk_offset" textlog:"chunk_offset"`
 	ChunkEnd    HexNumber   `json:"chunk_end" textlog:"chunk_end"`
 	Content     *SparseData `json:"content" textlog:"content,expand"`

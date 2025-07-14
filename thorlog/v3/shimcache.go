@@ -31,10 +31,8 @@ func NewShimCacheEntry() *ShimCacheEntry {
 type ShimCache struct {
 	jsonlog.ObjectHeader
 
-	Path             string `json:"path" textlog:"path"`
-	Hive             string `json:"hive" textlog:"hive"`
-	Entries          int    `json:"entries" textlog:"entries"`
-	LastKnownEntries int    `json:"last_known_entries" textlog:"previous_entries,omitempty"`
+	Entries          int `json:"entries" textlog:"entries"`
+	LastKnownEntries int `json:"last_known_entries" textlog:"previous_entries,omitempty"`
 }
 
 func (ShimCache) reportable() {}

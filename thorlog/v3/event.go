@@ -20,7 +20,7 @@ type Finding struct {
 	Subject      ReportableObject `json:"subject" textlog:",expand"`
 	Score        int64            `json:"score" textlog:"score"`
 	Reasons      []Reason         `json:"reasons" textlog:",expand"`
-	ReasonCount  int              `json:"reason_count" textlog:"reasons_count"`
+	ReasonCount  int              `json:"reason_count,omitempty" textlog:"reasons_count,omitempty"`
 	EventContext Context          `json:"context" textlog:",expand" jsonschema:"nullable"`
 	Issues       []Issue          `json:"issues,omitempty" textlog:"-"`
 	LogVersion   common.Version   `json:"log_version"`

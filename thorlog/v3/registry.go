@@ -11,7 +11,7 @@ type RegistryValue struct {
 
 	Key         string    `json:"key" textlog:"key"`
 	Modified    time.Time `json:"modified" textlog:"modified"`
-	ParsedValue string    `json:"value" textlog:"value"`
+	ParsedValue string    `json:"value" textlog:"value,omitincontext"`
 	Size        uint64    `json:"size" textlog:"size"`
 }
 
@@ -33,7 +33,7 @@ type RegistryKey struct {
 	jsonlog.ObjectHeader
 	Key             string    `json:"key" textlog:"key"`
 	Modified        time.Time `json:"modified" textlog:"modified"`
-	FormattedValues string    `json:"values" textlog:"values"`
+	FormattedValues string    `json:"values" textlog:"values,omitincontext"`
 }
 
 func (RegistryKey) reportable() {}

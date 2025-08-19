@@ -11,6 +11,7 @@ import (
 	"github.com/NextronSystems/jsonlog"
 	"github.com/NextronSystems/jsonlog/jsonpointer"
 	"github.com/NextronSystems/jsonlog/thorlog/common"
+	"golang.org/x/exp/slices"
 )
 
 type Finding struct {
@@ -116,6 +117,8 @@ func (c *ContextObject) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+const omitInContext = "omitincontext"
+
 func (c Context) MarshalTextLog(t jsonlog.TextlogFormatter) jsonlog.TextlogEntry {
 	var elementsByRelation [][]ContextObject
 	for _, element := range c {
@@ -130,6 +133,16 @@ func (c Context) MarshalTextLog(t jsonlog.TextlogFormatter) jsonlog.TextlogEntry
 		if !groupExists {
 			elementsByRelation = append(elementsByRelation, []ContextObject{element})
 		}
+	}
+	oldOmit := t.Omit
+	t.Omit = func(modifiers []string, value any) bool {
+		if slices.Contains(modifiers, omitInContext) {
+			return true // Omit fields that are marked with "omitincontext"
+		}
+		if oldOmit != nil {
+			return oldOmit(modifiers, value) // Call the original omit function if it exists
+		}
+		return false // Default behavior is to not omit any fields
 	}
 
 	var result jsonlog.TextlogEntry

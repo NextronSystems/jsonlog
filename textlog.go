@@ -30,6 +30,9 @@ type TextlogValuePair struct {
 type TextlogFormatter struct {
 	// FormatValue is a function that formats a single value into a string. If it is nil, fmt.Sprint is used.
 	FormatValue func(data any, modifiers []string) string
+	// Omit is a function that determines whether a field should be omitted from the log entry.
+	// If it is nil, no fields are omitted.
+	Omit func(modifiers []string, value any) bool
 }
 
 func (t TextlogFormatter) format(data any, modifiers []string) string {
@@ -114,30 +117,34 @@ func (t TextlogFormatter) toEntry(object reflect.Value) TextlogEntry {
 			if logfield == "-" {
 				continue
 			}
-			if typeField.Anonymous || textlogTag != "" || slices.Contains(tagModifiers, modifierExplicit) {
-				if slices.Contains(tagModifiers, modifierOmitempty) && isZero(field) {
-					continue
-				}
-				if typeField.Anonymous || slices.Contains(tagModifiers, modifierExpand) {
-					// Use the tag as a prefix for the subfields
-					subentry := t.toEntry(field)
-					for _, subentryValue := range subentry {
-						details = append(details, TextlogValuePair{
-							Key:   ConcatTextLabels(logfield, subentryValue.Key),
-							Value: subentryValue.Value,
-						})
-					}
-				} else {
-					// Add the field as a single value
-					key := logfield
-					if field.Kind() == reflect.Ptr {
-						field = field.Elem()
-					}
+			if !typeField.Anonymous && textlogTag == "" && !slices.Contains(tagModifiers, modifierExplicit) {
+				continue
+			}
+			if slices.Contains(tagModifiers, modifierOmitempty) && isZero(field) {
+				continue
+			}
+			if t.Omit != nil && t.Omit(tagModifiers, field.Interface()) {
+				continue
+			}
+			if typeField.Anonymous || slices.Contains(tagModifiers, modifierExpand) {
+				// Use the tag as a prefix for the subfields
+				subentry := t.toEntry(field)
+				for _, subentryValue := range subentry {
 					details = append(details, TextlogValuePair{
-						Key:   key,
-						Value: t.format(field.Interface(), tagModifiers),
+						Key:   ConcatTextLabels(logfield, subentryValue.Key),
+						Value: subentryValue.Value,
 					})
 				}
+			} else {
+				// Add the field as a single value
+				key := logfield
+				if field.Kind() == reflect.Ptr {
+					field = field.Elem()
+				}
+				details = append(details, TextlogValuePair{
+					Key:   key,
+					Value: t.format(field.Interface(), tagModifiers),
+				})
 			}
 		}
 		return details

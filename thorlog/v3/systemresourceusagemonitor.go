@@ -59,7 +59,7 @@ type SRUMResourceUsageEntry struct {
 	// FaceTime is the total time in milliseconds that the application was visible
 	// to the user (in the foreground) during the measurement period. This indicates
 	// actual user interaction time with the application.
-	FaceTime uint64 `json:"face_time" textlog:"face_time"`
+	FaceTime time.Duration `json:"face_time" textlog:"face_time"`
 
 	// ForegroundBytesRead is the total number of bytes read from disk/storage
 	// while the application was in the foreground during the measurement period.

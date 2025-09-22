@@ -56,7 +56,7 @@ type SRUMResourceUsageEntry struct {
 	// May be empty if the SID cannot be resolved to a username.
 	UserName string `json:"user_name,omitempty" textlog:"user_name,omitempty"`
 
-	// FaceTime is the total time in milliseconds that the application was visible
+	// FaceTime is the total duration that the application was visible
 	// to the user (in the foreground) during the measurement period. This indicates
 	// actual user interaction time with the application.
 	FaceTime time.Duration `json:"face_time" textlog:"face_time"`

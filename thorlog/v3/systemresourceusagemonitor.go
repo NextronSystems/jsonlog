@@ -12,8 +12,10 @@ import (
 //
 // Reference: https://www.forensafe.com/blogs/srudb.html
 //
-// A SRUMEntry represents a single entry in the "Application Resource Usage" table.
-// Enriched with AppInfo, UserSID and UserName from the "SruDbIdMapTable" table.
+// A SRUMEntry represents a single entry in the "Application Resource Usage" table
+// ({D10CA2FE-6FCF-4F6D-848E-B2E99266FA89}) enriched with AppInfo, UserSID and UserName
+// from the "SruDbIdMapTable" table. Each entry represents a snapshot of resource usage
+// for a specific application and user combination at a given time.
 //
 // Columns in {D10CA2FE-6FCF-4F6D-848E-B2E99266FA89} (19):
 // Id     Name                                 Type
@@ -37,43 +39,63 @@ import (
 type SRUMEntry struct {
 	jsonlog.ObjectHeader
 
-	// TimeStamp is when the entry was recorded.
+	// TimeStamp is when the resource usage measurement was recorded by SRUM.
+	// This represents the end time of the measurement period (typically hourly).
 	TimeStamp time.Time `json:"timestamp" textlog:"timestamp"`
 
-	// AppInfo is the Appname/Apppath decoded from the IdBlob
+	// AppInfo contains the application path or executable name extracted from the
+	// SruDbIdMapTable.IdBlob field. This identifies which application the resource
+	// usage data belongs to (e.g., "C:\Windows\System32\notepad.exe").
 	AppInfo string `json:"app_info" textlog:"app_info"`
 
-	// UserSID is the string SID parsed from the binary SID
+	// UserSID is the Windows Security Identifier string parsed from the binary SID
+	// stored in SruDbIdMapTable.IdBlob. This identifies which user account was
+	// running the application (e.g., "S-1-5-21-...").
 	UserSID string `json:"user_sid" textlog:"user_sid"`
 
-	// UserName is the Username looked up from the SID, works only on Windows Builds.
-	UserName string `json:"user_name" textlog:"user_name"`
+	// UserName is the human-readable username resolved from the UserSID.
+	// May be empty if the SID cannot be resolved to a username.
+	UserName string `json:"user_name,omitempty" textlog:"user_name,omitempty"`
 
-	// FaceTime is the total foreground time in milliseconds.
+	// FaceTime is the total time in milliseconds that the application was visible
+	// to the user (in the foreground) during the measurement period. This indicates
+	// actual user interaction time with the application.
 	FaceTime uint64 `json:"face_time" textlog:"face_time"`
 
-	// ForegroundBytesRead is the number of bytes read in the foreground.
+	// ForegroundBytesRead is the total number of bytes read from disk/storage
+	// while the application was in the foreground during the measurement period.
 	ForegroundBytesRead uint64 `json:"foreground_bytes_read" textlog:"foreground_bytes_read"`
 
-	// ForegroundBytesWritten is the number of bytes written in the foreground.
+	// ForegroundBytesWritten is the total number of bytes written to disk/storage
+	// while the application was in the foreground during the measurement period.
 	ForegroundBytesWritten uint64 `json:"foreground_bytes_written" textlog:"foreground_bytes_written"`
 
-	// ForegroundNumReadOperations is the number of read operations in the foreground.
+	// ForegroundNumReadOperations is the count of discrete read I/O operations
+	// performed while the application was in the foreground. This differs from
+	// bytes read as it counts individual operations regardless of size.
 	ForegroundNumReadOperations uint64 `json:"foreground_num_read_operations" textlog:"foreground_num_read_operations"`
 
-	// ForegroundNumWriteOperations is the number of write operations in the foreground.
+	// ForegroundNumWriteOperations is the count of discrete write I/O operations
+	// performed while the application was in the foreground. This differs from
+	// bytes written as it counts individual operations regardless of size.
 	ForegroundNumWriteOperations uint64 `json:"foreground_num_write_operations" textlog:"foreground_num_write_operations"`
 
-	// BackgroundBytesRead is the number of bytes read in the background.
+	// BackgroundBytesRead is the total number of bytes read from disk/storage
+	// while the application was running in the background during the measurement period.
 	BackgroundBytesRead uint64 `json:"background_bytes_read" textlog:"background_bytes_read"`
 
-	// BackgroundBytesWritten is the number of bytes written in the background.
+	// BackgroundBytesWritten is the total number of bytes written to disk/storage
+	// while the application was running in the background during the measurement period.
 	BackgroundBytesWritten uint64 `json:"background_bytes_written" textlog:"background_bytes_written"`
 
-	// BackgroundNumReadOperations is the number of read operations in the background.
+	// BackgroundNumReadOperations is the count of discrete read I/O operations
+	// performed while the application was running in the background. This differs
+	// from bytes read as it counts individual operations regardless of size.
 	BackgroundNumReadOperations uint64 `json:"background_num_read_operations" textlog:"background_num_read_operations"`
 
-	// BackgroundNumWriteOperations is the number of write operations in the background.
+	// BackgroundNumWriteOperations is the count of discrete write I/O operations
+	// performed while the application was running in the background. This differs
+	// from bytes written as it counts individual operations regardless of size.
 	BackgroundNumWriteOperations uint64 `json:"background_num_write_operations" textlog:"background_num_write_operations"`
 }
 

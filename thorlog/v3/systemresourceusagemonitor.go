@@ -6,13 +6,13 @@ import (
 	"github.com/NextronSystems/jsonlog"
 )
 
-// SRUMEntry holds information about a single entry of a System Resource Usage Monitor (SRUM)
+// SRUMResourceUsageEntry holds information about a single entry of a System Resource Usage Monitor (SRUM)
 // database. These databases are written by the SRUM service which collects and aggregates
 // system resource usage data such as network activity, energy consumption, and application usage.
 //
 // Reference: https://www.forensafe.com/blogs/srudb.html
 //
-// A SRUMEntry represents a single entry in the "Application Resource Usage" table
+// A SRUMResourceUsageEntry represents a single entry in the "Application Resource Usage" table
 // ({D10CA2FE-6FCF-4F6D-848E-B2E99266FA89}) enriched with AppInfo, UserSID and UserName
 // from the "SruDbIdMapTable" table. Each entry represents a snapshot of resource usage
 // for a specific application and user combination at a given time.
@@ -35,8 +35,7 @@ import (
 // 1      IdType                               Signed byte
 // 2      IdIndex                              Signed long
 // 256    IdBlob                               Long Binary
-
-type SRUMEntry struct {
+type SRUMResourceUsageEntry struct {
 	jsonlog.ObjectHeader
 
 	// TimeStamp is when the resource usage measurement was recorded by SRUM.
@@ -101,14 +100,14 @@ type SRUMEntry struct {
 
 const typeSRUMEntry = "SRUM Resource Usage Entry"
 
-func init() { AddLogObjectType(typeSRUMEntry, &SRUMEntry{}) }
+func init() { AddLogObjectType(typeSRUMEntry, &SRUMResourceUsageEntry{}) }
 
-func NewSRUMEntry() *SRUMEntry {
-	return &SRUMEntry{
+func NewSRUMResourceUsageEntry() *SRUMResourceUsageEntry {
+	return &SRUMResourceUsageEntry{
 		ObjectHeader: jsonlog.ObjectHeader{
 			Type: typeSRUMEntry,
 		},
 	}
 }
 
-func (SRUMEntry) reportable() {}
+func (SRUMResourceUsageEntry) reportable() {}

@@ -25,6 +25,14 @@ func Resolve(base any, pointer Pointer) (any, error) {
 }
 
 func findByLabel(base reflect.Value, jsonLabel string) (reflect.Value, bool) {
+	if resolver, ok := base.Interface().(LabelResolver); ok {
+		value, ok := resolver.ResolveJsonLabel(jsonLabel)
+		if ok {
+			return reflect.ValueOf(value).Elem(), true
+		}
+		return reflect.Value{}, false
+	}
+
 	for base.Kind() == reflect.Ptr || base.Kind() == reflect.Interface {
 		if base.IsNil() {
 			return reflect.Value{}, false
@@ -74,4 +82,11 @@ func findStructFieldByLabel(base reflect.Value, label string) (reflect.Value, bo
 		}
 	}
 	return reflect.Value{}, false
+}
+
+type LabelResolver interface {
+	// ResolveJsonLabel resolves the given JSON label to a value.
+	// If the label is not found, (nil, false) is returned.
+	// The returned value must be a pointer to the field.
+	ResolveJsonLabel(label string) (any, bool)
 }

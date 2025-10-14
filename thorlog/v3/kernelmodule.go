@@ -25,7 +25,7 @@ type LinuxKernelModule struct {
 	// Indicates if this module was found in /proc/modules (currently loaded modules)
 	InProcModules bool `json:"in_proc_modules" textlog:"in_proc_modules"`
 
-	// Indicates if this module was found in /sys/module/ (modules with sysfs representation)
+	// Indicates the kernel exposes this module under /sys/module (sysfs entry present).
 	InSysModule bool `json:"in_sys_module" textlog:"in_sys_module"`
 
 	// Indicates if this module was found in /proc/vmallocinfo (modules with vmalloc allocations)

@@ -14,14 +14,12 @@ type KeyValue struct {
 	Value string
 }
 
-type KeyValueList struct {
-	KvList []KeyValue
-}
+type KeyValueList []KeyValue
 
 func (d KeyValueList) MarshalJSON() ([]byte, error) {
 	var builder strings.Builder
 	builder.WriteString("{")
-	for i, kv := range d.KvList {
+	for i, kv := range d {
 		if err := json.NewEncoder(&builder).Encode(kv.Key); err != nil {
 			return nil, err
 		}
@@ -29,7 +27,7 @@ func (d KeyValueList) MarshalJSON() ([]byte, error) {
 		if err := json.NewEncoder(&builder).Encode(kv.Value); err != nil {
 			return nil, err
 		}
-		if i < len(d.KvList)-1 {
+		if i < len(d)-1 {
 			builder.WriteString(", ")
 		}
 	}
@@ -48,15 +46,21 @@ func (d *KeyValueList) UnmarshalJSON(data []byte) error {
 	}
 	var kvList []KeyValue
 	for decoder.More() {
-		var key string
-		err = decoder.Decode(&key)
+		keyToken, err := decoder.Token()
 		if err != nil {
 			return err
 		}
-		var value string
-		err = decoder.Decode(&value)
+		key, isString := keyToken.(string)
+		if !isString {
+			return errors.New("expected string key")
+		}
+		valueToken, err := decoder.Token()
 		if err != nil {
 			return err
+		}
+		value, isString := valueToken.(string)
+		if !isString {
+			return errors.New("expected string value")
 		}
 		kvList = append(kvList, KeyValue{Key: key, Value: value})
 	}
@@ -67,8 +71,17 @@ func (d *KeyValueList) UnmarshalJSON(data []byte) error {
 	if delim, isDelim := token.(json.Delim); !isDelim || delim != '}' {
 		return errors.New("expected '}'")
 	}
-	d.KvList = kvList
+	*d = kvList
 	return nil
+}
+
+func (d KeyValueList) ResolveJsonLabel(label string) (any, bool) {
+	for i := range d {
+		if d[i].Key == label {
+			return &d[i].Value, true
+		}
+	}
+	return nil, false
 }
 
 func (d KeyValueList) RelativeJsonPointer(pointee any) jsonpointer.Pointer {
@@ -76,9 +89,9 @@ func (d KeyValueList) RelativeJsonPointer(pointee any) jsonpointer.Pointer {
 	if !isStringPointer {
 		return nil
 	}
-	for i := range d.KvList {
-		if &d.KvList[i].Value == stringPointer {
-			return jsonpointer.New(d.KvList[i].Key)
+	for i := range d {
+		if &d[i].Value == stringPointer {
+			return jsonpointer.New(d[i].Key)
 		}
 	}
 	return nil
@@ -89,18 +102,18 @@ func (d KeyValueList) RelativeTextPointer(pointee any) (string, bool) {
 	if !isStringPointer {
 		return "", false
 	}
-	for i := range d.KvList {
-		if &d.KvList[i].Value == stringPointer {
-			return d.KvList[i].Key, true
+	for i := range d {
+		if &d[i].Value == stringPointer {
+			return d[i].Key, true
 		}
 	}
 	return "", false
 }
 
 func (d KeyValueList) Find(key string) *string {
-	for i := range d.KvList {
-		if d.KvList[i].Key == key {
-			return &d.KvList[i].Value
+	for i := range d {
+		if d[i].Key == key {
+			return &d[i].Value
 		}
 	}
 	return nil
@@ -108,11 +121,11 @@ func (d KeyValueList) Find(key string) *string {
 
 func (d KeyValueList) String() string {
 	var dataBuilder strings.Builder
-	for i, kv := range d.KvList {
+	for i, kv := range d {
 		dataBuilder.WriteString(kv.Key)
 		dataBuilder.WriteString(": ")
 		dataBuilder.WriteString(kv.Value)
-		if i < len(d.KvList)-1 {
+		if i < len(d)-1 {
 			dataBuilder.WriteString("  ")
 		}
 	}

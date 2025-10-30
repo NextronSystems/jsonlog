@@ -16,7 +16,7 @@ type HostInfo struct {
 	Platform    PlatformInfo    `json:"platform" textlog:",expand"`
 	Uptime      time.Duration   `json:"uptime" textlog:"uptime"`
 	Cpus        int             `json:"cpu_count" textlog:"cpu_count"`
-	Memory      uint64          `json:"memory" textlog:"memory"`
+	Memory      Memory          `json:"memory" textlog:"memory"`
 	Timezone    string          `json:"timezone" textlog:"timezone"`
 	Language    string          `json:"language" textlog:"language"`
 	Interfaces  []InterfaceInfo `json:"interfaces" textlog:",expand"`

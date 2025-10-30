@@ -1,7 +1,9 @@
 package thorlog
 
 import (
+	"fmt"
 	"strings"
+	"time"
 
 	"github.com/NextronSystems/jsonlog"
 )
@@ -24,8 +26,15 @@ type ScanInfo struct {
 
 	Outputs []ScannerOutput `json:"outputs"`
 
-	ActiveModules  []string `json:"active_modules"`
-	ActiveFeatures []string `json:"active_features"`
+	ActiveModules  StringList `json:"active_modules" textlog:"active_modules"`
+	ActiveFeatures StringList `json:"active_features" textlog:"active_features"`
+
+	Threads int `json:"threads" textlog:"threads"`
+
+	Timeout         time.Duration `json:"timeout" textlog:"timeout"`
+	CPULimit        int           `json:"cpu_limit" textlog:"cpu_limit"`
+	FreeMemoryLimit Memory        `json:"free_memory_limit" textlog:"free_memory_limit"`
+	FileSizeLimit   Memory        `json:"file_size_limit" textlog:"file_size_limit"`
 
 	License LicenseInfo `json:"license" textlog:"license,expand"`
 
@@ -63,4 +72,35 @@ type VersionInfo struct {
 	Build      string `json:"build" textlog:"build"`
 	Signatures string `json:"signatures" textlog:"signature_version"`
 	Sigma      string `json:"sigma_rules" textlog:"sigma_version"`
+}
+
+type Memory uint64
+
+func (m Memory) String() string {
+	var usedSuffix = "B"
+	var divisor uint64 = 1
+	bytes := uint64(m)
+	for suffix, multiplier := range multipliers {
+		if multiplier < bytes && multiplier > divisor {
+			divisor = multiplier
+			usedSuffix = suffix + "B"
+		}
+	}
+	return fmt.Sprintf("%d%s", int64(float64(bytes)/float64(divisor)), usedSuffix)
+}
+
+const (
+	kb = 1024
+	mb = 1024 * kb
+	gb = 1024 * mb
+	tb = 1024 * gb
+	pb = 1024 * tb
+)
+
+var multipliers = map[string]uint64{
+	"K": kb,
+	"M": mb,
+	"G": gb,
+	"T": tb,
+	"P": pb,
 }

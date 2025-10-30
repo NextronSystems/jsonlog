@@ -23,12 +23,16 @@ const (
 // These fields are marked with the `textlog:"-"` tag to prevent them from being
 // included in the event body.
 type LogEventMetadata struct {
-	Time   time.Time `json:"time" textlog:"-"`
-	Lvl    LogLevel  `json:"level" textlog:"-"`
-	Mod    string    `json:"module" textlog:"module"`
-	ScanID string    `json:"scan_id" textlog:"scanid,omitempty"`
-	GenID  string    `json:"event_id" textlog:"uid,omitempty"`
-	Source string    `json:"hostname" textlog:"-"`
+	Time time.Time `json:"time" textlog:"-"`
+	Lvl  LogLevel  `json:"level" textlog:"-"`
+	Mod  string    `json:"module" textlog:"module"`
+	// The ID of the scan where this event was created.
+	ScanID string `json:"scan_id" textlog:"scanid,omitempty"`
+	// A unique ID for this finding.
+	// The ID is transient and the same element may have different IDs across multiple scans.
+	GenID string `json:"event_id,omitempty" textlog:"uid,omitempty"`
+	// The hostname of the machine where this event was generated.
+	Source string `json:"hostname" textlog:"-"`
 }
 
 // Event describes the basic information of a THOR event that is available in all versions.

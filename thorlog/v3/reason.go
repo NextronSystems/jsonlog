@@ -44,9 +44,9 @@ type Signature struct {
 	// a likely false positive (which results in a score reduction on any related
 	// finding).
 	Score int64 `json:"score" textlog:"subscore"`
-	// Ref contains a reference (usually in form of a link) for further information about
+	// Ref contains references (usually as links) for further information about
 	// the threat that is detected by this signature.
-	Ref StringList `json:"ref" textlog:"ref" jsonschema:"nullable"`
+	Ref StringList `json:"reference" textlog:"ref" jsonschema:"nullable"`
 	// Type indicates whether a signature was part of THOR's built in signature set
 	// or whether it was a custom signature provided by the user.
 	Type Sigtype `json:"origin" textlog:"sigtype"`

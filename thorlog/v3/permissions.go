@@ -28,7 +28,7 @@ type UnixPermissions struct {
 
 	Owner string         `json:"owner" textlog:"owner"` // FIXME: Could explicitly include name / UID
 	Group string         `json:"group" textlog:"group"` // FIXME: Could explicitly include name / GID
-	Mask  PermissionMask `json:"permissions" textlog:"permissions"`
+	Mask  PermissionMask `json:"mask" textlog:"permissions"`
 }
 
 func (p UnixPermissions) String() string {
@@ -88,7 +88,7 @@ type WindowsPermissions struct {
 	LogObjectHeader
 
 	Owner       string     `json:"owner" textlog:"owner"` // FIXME: Could include information like the original SID
-	Permissions AclEntries `json:"permissions" textlog:"permissions" jsonschema:"nullable"`
+	Permissions AclEntries `json:"acl" textlog:"permissions" jsonschema:"nullable"`
 }
 
 func (p WindowsPermissions) String() string {

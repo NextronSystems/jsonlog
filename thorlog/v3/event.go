@@ -14,19 +14,46 @@ import (
 	"golang.org/x/exp/slices"
 )
 
+// Finding is a summary of a Subject's analysis by THOR.
+// This object is usually, but not necessarily suspicious; the
+// severity can be seen in the Score, and beyond that the
+// Reasons contain further information on why this Subject is
+// considered suspicious.
 type Finding struct {
 	jsonlog.ObjectHeader
-	Meta         LogEventMetadata `json:"meta" textlog:",expand"`
-	Text         string           `json:"message" textlog:"message"`
-	Subject      ReportableObject `json:"subject" textlog:",expand"`
-	Score        int64            `json:"score" textlog:"score"`
-	Reasons      []Reason         `json:"reasons" textlog:",expand"`
-	ReasonCount  int              `json:"reason_count,omitempty" textlog:"reasons_count,omitempty"`
-	EventContext Context          `json:"context" textlog:",expand" jsonschema:"nullable"`
-	Issues       []Issue          `json:"issues,omitempty" textlog:"-"`
-	LogVersion   common.Version   `json:"log_version"`
+	Meta LogEventMetadata `json:"meta" textlog:",expand"`
+	// Text is the message THOR printed for this finding.
+	// This is usually a summary based on this finding's subject and level.
+	Text string `json:"message" textlog:"message"`
+	// Subject is the object analysed by THOR.
+	Subject ReportableObject `json:"subject" textlog:",expand"`
+	// Score is a metric that combines severity and certainty. The score is always in a range of 0 to 100;
+	// 0 indicates that the analysis found no suspicious indicators, whereas 100 indicates very high
+	// severity and certainty.
+	Score int64 `json:"score" textlog:"score"`
+	// Reasons describes the indicators that contributed to the score.
+	// This list is not necessarily comprehensive; THOR may cut off all reasons after the first few.
+	// If this is the case, an Issue with category IssueCategoryTruncated pointing to this field will be present.
+	Reasons []Reason `json:"reasons" textlog:",expand"`
+	// ReasonCount contains the total number of reasons (before any truncations).
+	ReasonCount int `json:"reason_count,omitempty" textlog:"reasons_count,omitempty"`
+	// EventContext contains other objects that may be relevant for an analyst and their relation to the
+	// Subject.
+	//
+	// To give an example: if the Subject is a file in a ZIP archive,
+	// the ZIP archive would be listed in the EventContext with a relation type of "derives from"
+	// and a relation name of "parent", indicating that the Subject derives from this object,
+	// which is its parent.
+	EventContext Context `json:"context" textlog:",expand" jsonschema:"nullable"`
+	// Issues lists any problems that THOR encountered when trying to create a Finding for this analysis.
+	// This may include e.g. overly long fields that were truncated, fields that could not be rendered to JSON,
+	// or similar problems.
+	Issues []Issue `json:"issues,omitempty" textlog:"-"`
+	// LogVersion describes the jsonlog version that this event was created with.
+	LogVersion common.Version `json:"log_version"`
 }
 
+// ReportableObject can be any object type that THOR analyses, e.g. File or Process.
 type ReportableObject interface {
 	reportable()
 	jsonlog.Object
@@ -92,6 +119,7 @@ var _ common.Event = (*Finding)(nil)
 
 type Context []ContextObject
 
+// ContextObject describes a relation of an object to another.
 type ContextObject struct {
 	Object       ReportableObject `json:"object" textlog:",expand"`
 	RelationType string           `json:"relation_type"` // RelationType is used to specify the type of relation, e.g. "derives from" or "related to"
@@ -176,12 +204,18 @@ func NewFinding(subject ReportableObject, message string) *Finding {
 	}
 }
 
+// Message describes a THOR message printed during the scan.
+// Unlike Finding, this does not describe an analysis' result,
+// but rather something about the scan itself (e.g. how many IOCs were loaded).
 type Message struct {
 	jsonlog.ObjectHeader
-	Meta       LogEventMetadata `json:"meta" textlog:",expand"`
-	Text       string           `json:"message" textlog:"message"`
-	Fields     MessageFields    `json:"fields" textlog:",expand" jsonschema:"nullable"`
-	LogVersion common.Version   `json:"log_version"`
+	Meta LogEventMetadata `json:"meta" textlog:",expand"`
+	// Text is the message that was logged.
+	Text string `json:"message" textlog:"message"`
+	// Fields contains additional structured fields that were logged. These
+	// contain details about the Text displayed.
+	Fields     MessageFields  `json:"fields" textlog:",expand" jsonschema:"nullable"`
+	LogVersion common.Version `json:"log_version"`
 }
 
 func (m *Message) Message() string {

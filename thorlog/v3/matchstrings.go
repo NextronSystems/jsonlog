@@ -101,10 +101,18 @@ func (f MatchData) QuotedString() string {
 	return matchingString
 }
 
+// MatchString describes a sequence of bytes in an object
+// that was matched on by a signature.
 type MatchString struct {
-	Match      MatchData          `json:"data"`
-	Context    *MatchData         `json:"context,omitempty"`
-	Offset     *uint64            `json:"offset,omitempty"`
+	// Match contains the bytes that were matched.
+	Match MatchData `json:"data"`
+	// Context contains the bytes surrounding the matched bytes.
+	// This may be missing if no context is available.
+	Context *MatchData `json:"context,omitempty"`
+	// Offset contains the Match's offset within the Field
+	// where the data was matched.
+	Offset *uint64 `json:"offset,omitempty"`
+	// Field points to the field within the object that was matched on.
 	Field      *jsonlog.Reference `json:"field,omitempty"`
 	HideOffset bool               `json:"-"`
 }
@@ -147,6 +155,8 @@ func (f MatchString) String() string {
 	return matchString
 }
 
+// MatchStrings is a list of matching byte sequences that explains
+// why a specific signature matched on an object.
 type MatchStrings []MatchString
 
 const maxMatchStrings = 30

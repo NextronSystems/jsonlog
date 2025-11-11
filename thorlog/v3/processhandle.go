@@ -9,7 +9,7 @@ type ProcessHandle struct {
 
 	Name   string `json:"name" textlog:"name"`
 	Handle uint64 `json:"handle" textlog:"handle,omitempty"`
-	Type   string `json:"type,omitempty" textlog:"type,omitempty"`
+	Type   string `json:"handle_type,omitempty" textlog:"type,omitempty"`
 }
 
 func (ProcessHandle) reportable() {}

@@ -1,7 +1,7 @@
 package thorlog
 
 type BeaconConfig struct {
-	Type             string `json:"type" textlog:"type"`
+	Type             string `json:"beacon_type" textlog:"type"`
 	C2               string `json:"c2" textlog:"c2"`
 	Port             string `json:"port" textlog:"port"`
 	SpawnTo          string `json:"spawn_to" textlog:"spawnto"`

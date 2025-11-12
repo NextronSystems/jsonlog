@@ -147,7 +147,7 @@ type PlatformInfoWindows struct {
 	jsonlog.ObjectHeader
 
 	Name        string    `json:"name" textlog:"name"`
-	Type        string    `json:"type" textlog:"type"`
+	Type        string    `json:"os_type" textlog:"type"`
 	Version     string    `json:"version" textlog:"version"`
 	Proc        string    `json:"proc" textlog:"proc"`
 	Arch        string    `json:"arch" textlog:"arch"`

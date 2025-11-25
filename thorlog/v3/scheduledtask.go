@@ -6,6 +6,10 @@ import (
 	"github.com/NextronSystems/jsonlog"
 )
 
+// ScheduledTask describes a Windows Scheduled Task.
+//
+// See also the Microsoft documentation at https://learn.microsoft.com/en-us/windows/win32/taskschd/task-scheduler-reference
+// for more details about scheduled tasks.
 type ScheduledTask struct {
 	LogObjectHeader
 

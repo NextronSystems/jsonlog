@@ -7,6 +7,10 @@ import (
 // EBPFProgram describes an eBPF program attached to a specific endpoint in the kernel.
 //
 // To use eBPF nomenclature: This struct describes an eBPF link and its corresponding program.
+// The exposed information by the kernel about links can be found at
+// https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/bpf.h?h=v6.17#n6680,
+// and program information at
+// https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/bpf.h?h=v6.17#n6610.
 //
 // eBPF programs can be attached to a wide range of things; the LinkType contains what sort of object
 // the program is attached to, and AttachTarget contains what specific object it is attached to.

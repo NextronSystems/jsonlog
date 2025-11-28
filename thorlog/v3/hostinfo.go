@@ -168,3 +168,28 @@ func NewWindowsPlatformInfo() *PlatformInfoWindows {
 		},
 	}
 }
+
+type PlatformInfoAIX struct {
+	jsonlog.ObjectHeader
+
+	// Hardware model
+	Model string `json:"model" textlog:"model"`
+	// OS version string, e.g. "7.3"
+	Version string `json:"version" textlog:"version"`
+	// Processor type, e.g. "POWER9"
+	Proc string `json:"proc" textlog:"proc"`
+}
+
+func (PlatformInfoAIX) platform() {}
+
+const typePlatformInfoAIX = "AIX platform information"
+
+func init() { AddLogObjectType(typePlatformInfoAIX, &PlatformInfoAIX{}) }
+
+func NewAIXPlatformInfo() *PlatformInfoAIX {
+	return &PlatformInfoAIX{
+		ObjectHeader: jsonlog.ObjectHeader{
+			Type: typePlatformInfoAIX,
+		},
+	}
+}

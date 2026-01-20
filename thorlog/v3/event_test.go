@@ -26,9 +26,11 @@ func TestContext_MarshalTextLog(t *testing.T) {
 			name: "context with unique related object",
 			c: &Context{
 				{
-					Object:       NewFile("path/to/file"),
-					RelationName: "file",
-					Unique:       true,
+					Object: NewFile("path/to/file"),
+					Relations: []Relation{{
+						Name:   "file",
+						Unique: true,
+					}},
 				},
 			},
 			want: "FILE: path/to/file",
@@ -37,14 +39,18 @@ func TestContext_MarshalTextLog(t *testing.T) {
 			name: "context with related object group",
 			c: &Context{
 				{
-					Object:       NewFile("path/to/file"),
-					RelationName: "file",
-					Unique:       false,
+					Object: NewFile("path/to/file"),
+					Relations: []Relation{{
+						Name:   "file",
+						Unique: false,
+					}},
 				},
 				{
-					Object:       NewFile("path/to/otherfile"),
-					RelationName: "file",
-					Unique:       false,
+					Object: NewFile("path/to/otherfile"),
+					Relations: []Relation{{
+						Name:   "file",
+						Unique: false,
+					}},
 				},
 			},
 			want: "FILE_1: path/to/file FILE_2: path/to/otherfile",
@@ -53,17 +59,39 @@ func TestContext_MarshalTextLog(t *testing.T) {
 			name: "context with different related objects",
 			c: &Context{
 				{
-					Object:       NewFile("path/to/file"),
-					RelationName: "file",
-					Unique:       false,
+					Object: NewFile("path/to/file"),
+					Relations: []Relation{{
+						Name:   "file",
+						Unique: false,
+					}},
 				},
 				{
-					Object:       NewFile("path/to/otherfile"),
-					RelationName: "archive",
-					Unique:       true,
+					Object: NewFile("path/to/otherfile"),
+					Relations: []Relation{{
+						Name:   "archive",
+						Unique: true,
+					}},
 				},
 			},
 			want: "FILE_1: path/to/file ARCHIVE_FILE: path/to/otherfile",
+		},
+		{
+			name: "context with object related in two ways",
+			c: &Context{
+				{
+					Object: NewFile("path/to/file"),
+					Relations: []Relation{{
+						Name:   "parent",
+						Type:   "derived from",
+						Unique: true,
+					}, {
+						Name:   "origin",
+						Type:   "derived from",
+						Unique: true,
+					}},
+				},
+			},
+			want: "PARENT_FILE: path/to/file",
 		},
 	}
 	var formatter jsonlog.TextlogFormatter
@@ -104,8 +132,10 @@ func TestFinding_UnmarshalJSON(t *testing.T) {
 			Subject: NewFile("path/to/file"),
 			EventContext: Context{
 				{
-					Object:       NewAtJob(),
-					RelationType: "related to",
+					Object: NewAtJob(),
+					Relations: []Relation{{
+						Type: "related to",
+					}},
 				},
 			},
 			Reasons: []Reason{

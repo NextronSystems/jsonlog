@@ -121,10 +121,19 @@ type Context []ContextObject
 
 // ContextObject describes a relation of an object to another.
 type ContextObject struct {
-	Object       ReportableObject `json:"object" textlog:",expand"`
-	RelationType string           `json:"relation_type"` // RelationType is used to specify the type of relation, e.g. "derives from" or "related to"
-	RelationName string           `json:"relation_name"` // RelationName is used to specify the name of the relation, e.g. "parent". It is optional.
-	Unique       bool             `json:"unique"`        // Unique indicates whether the relation is unique, i.e. there can only be one object with this relation type / name in the context.
+	Object ReportableObject `json:"object" textlog:",expand"`
+	// Relations describes how the object relates to the main subject of the finding.
+	// There may be multiple relations, e.g. if the object is both the parent and the topmost ancestor of the subject.
+	//
+	// Relations should be ordered by relevance, i.e. the most important relation should be first.
+	// Only the first (and most relevant) relation is used for text log formatting.
+	Relations []Relation `json:"relations" textlog:",expand" jsonschema:"minItems=1"`
+}
+
+type Relation struct {
+	Type   string `json:"relation_type"` // RelationType is used to specify the type of relation, e.g. "derives from" or "related to"
+	Name   string `json:"relation_name"` // RelationName is used to specify the name of the relation, e.g. "parent". It is optional.
+	Unique bool   `json:"unique"`        // Unique indicates whether the relation is unique, i.e. there can only be one object with this relation type / name in the context.
 }
 
 func (c *ContextObject) UnmarshalJSON(data []byte) error {
@@ -148,18 +157,27 @@ func (c *ContextObject) UnmarshalJSON(data []byte) error {
 const omitInContext = "omitincontext"
 
 func (c Context) MarshalTextLog(t jsonlog.TextlogFormatter) jsonlog.TextlogEntry {
-	var elementsByRelation [][]ContextObject
+	type objectsByRelation struct {
+		Relation Relation
+		Objects  []ContextObject
+	}
+	var elementsByRelation []objectsByRelation
 	for _, element := range c {
 		var groupExists bool
+		if len(element.Relations) == 0 {
+			continue
+		}
+		// only use the first relation for textlog conversion
+		relation := element.Relations[0]
 		for i := range elementsByRelation {
-			if elementsByRelation[i][0].RelationName == element.RelationName {
-				elementsByRelation[i] = append(elementsByRelation[i], element)
+			if elementsByRelation[i].Relation == relation {
+				elementsByRelation[i].Objects = append(elementsByRelation[i].Objects, element)
 				groupExists = true
 				break
 			}
 		}
 		if !groupExists {
-			elementsByRelation = append(elementsByRelation, []ContextObject{element})
+			elementsByRelation = append(elementsByRelation, objectsByRelation{Relation: relation, Objects: []ContextObject{element}})
 		}
 	}
 	oldOmit := t.Omit
@@ -175,11 +193,11 @@ func (c Context) MarshalTextLog(t jsonlog.TextlogFormatter) jsonlog.TextlogEntry
 
 	var result jsonlog.TextlogEntry
 	for _, group := range elementsByRelation {
-		for g, element := range group {
+		for g, element := range group.Objects {
 			marshaledElement := t.Format(element)
 			for i := range marshaledElement {
-				marshaledElement[i].Key = jsonlog.ConcatTextLabels(strings.ToUpper(element.RelationName), marshaledElement[i].Key)
-				if !element.Unique {
+				marshaledElement[i].Key = jsonlog.ConcatTextLabels(strings.ToUpper(group.Relation.Name), marshaledElement[i].Key)
+				if !group.Relation.Unique {
 					marshaledElement[i].Key = jsonlog.ConcatTextLabels(marshaledElement[i].Key, strconv.Itoa(g+1))
 				}
 			}

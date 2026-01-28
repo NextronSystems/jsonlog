@@ -3,7 +3,6 @@ package thorlog
 import (
 	"bytes"
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
 	"regexp"
 	"strings"
@@ -13,57 +12,108 @@ import (
 	"github.com/NextronSystems/jsonlog"
 )
 
-type MatchData struct {
-	Data    []byte
-	FullHex bool
+type StringWithEncoding struct {
+	EncodedData string         `json:"data"`
+	Encoding    StringEncoding `json:"encoding"`
 }
 
-func (f MatchData) MarshalJSON() ([]byte, error) {
-	matchingString := f.String()
-	return InvalidUnicodeString(matchingString).MarshalJSON()
-}
+type StringEncoding string
 
-func (f *MatchData) UnmarshalJSON(data []byte) error {
-	var matchingString string
-	err := json.Unmarshal(data, &matchingString)
-	if err != nil {
-		return err
+const (
+	Plain StringEncoding = "plain"
+	Hex   StringEncoding = "hex"
+)
+
+// Encode encodes the given data into a StringWithEncoding,
+// choosing the most appropriate encoding based on its content.
+func Encode(s []byte) StringWithEncoding {
+	if utf8.Valid(s) {
+		return StringWithEncoding{
+			EncodedData: string(s),
+			Encoding:    Plain,
+		}
+	} else {
+		return StringWithEncoding{
+			EncodedData: hex.EncodeToString(s),
+			Encoding:    Hex,
+		}
 	}
-	f.Data = []byte(matchingString)
-	return nil
 }
 
-func (f MatchData) JSONSchemaAlias() any {
-	return ""
+// EncodeString encodes the given data into a StringWithEncoding,
+// choosing the most appropriate encoding based on its content.
+func EncodeString(s string) StringWithEncoding {
+	if utf8.ValidString(s) {
+		return StringWithEncoding{
+			EncodedData: s,
+			Encoding:    Plain,
+		}
+	} else {
+		return StringWithEncoding{
+			EncodedData: hex.EncodeToString([]byte(s)),
+			Encoding:    Hex,
+		}
+	}
+}
+
+// Data returns the raw byte sequence represented by the StringWithEncoding.
+func (s StringWithEncoding) Data() []byte {
+	switch s.Encoding {
+	case Plain:
+		return []byte(s.EncodedData)
+	case Hex:
+		data, err := hex.DecodeString(s.EncodedData)
+		if err != nil {
+			return []byte("<invalid hex data: " + err.Error() + ">")
+		}
+		return data
+	default:
+		return []byte(fmt.Sprintf("<unknown encoding %s> %s", s.Encoding, s.EncodedData))
+	}
 }
 
 var notOnlyASCII = regexp.MustCompile(`[^\x20-\x7E\x0d\x0a\x09]+`) // printable chars + \r,\n,\t
 
-func (f MatchData) String() string {
-	if f.FullHex {
-		return hex.EncodeToString(f.Data)
+// String returns a human-readable representation of the encoded string.
+// The representation is guaranteed to be valid UTF-8.
+func (s StringWithEncoding) String() string {
+	data := s.decode()
+	if needsQuoting.MatchString(data) {
+		return quote(data)
 	}
-	data := f.Data
-	matchingString := string(data) // Try to directly convert
+	return data
+}
 
-	if !f.FullHex && notOnlyASCII.MatchString(matchingString) { // Check if any non-printable chars occur
-		var utf16Data = data
-		// Try UTF16 encoding
-		if len(utf16Data) > 1 && utf16Data[0] == 0xFF && utf16Data[1] == 0xFE {
-			// Remove byte order mark
-			utf16Data = utf16Data[2:]
-		}
-		if len(utf16Data) > 0 && utf16Data[0] == 0 {
-			// Might be UTF16 shifted by one byte
-			utf16Data = utf16Data[1:]
-		}
-		matchingString, _ = decodeUTF16(utf16Data)
-		if notOnlyASCII.MatchString(matchingString) || len(matchingString) == 0 {
-			// Can't cleanly be rendered as UTF-16
-			matchingString = string(data)
-		}
+// decode returns the plain text, after decoding it from UTF-16, if applicable.
+func (s StringWithEncoding) decode() string {
+	plaintext := s.Data()
+
+	if decoded, ok := attemptDecodeUTF16(plaintext); ok {
+		return decoded
 	}
-	return matchingString
+
+	return string(plaintext)
+}
+
+// attemptDecodeUTF16 tries to decode the given byte slice as UTF-16 and checks
+// whether the decoded string contains non-ASCII characters.
+// It returns the decoded string and a boolean indicating whether the decoding was successful.
+func attemptDecodeUTF16(b []byte) (string, bool) {
+	// Try UTF16 encoding
+	if len(b) > 1 && b[0] == 0xFF && b[1] == 0xFE {
+		// Remove byte order mark
+		b = b[2:]
+	}
+	if len(b) > 0 && b[0] == 0 {
+		// Might be UTF16 shifted by one byte
+		b = b[1:]
+	}
+	decodedUtf16, _ := decodeUTF16(b)
+	if !notOnlyASCII.MatchString(decodedUtf16) && len(decodedUtf16) > 0 {
+		// Can cleanly be rendered as UTF-16
+		return decodedUtf16, true
+	}
+	return "", false
 }
 
 // https://gist.github.com/bradleypeabody/185b1d7ed6c0c2ab6cec
@@ -84,31 +134,30 @@ func decodeUTF16(b []byte) (string, error) {
 	return ret.String(), nil
 }
 
-func (f MatchData) QuotedString() string {
-	matchingString := f.String()
-	matchingString = escaper.Replace(matchingString)
-	var replacedString bytes.Buffer
-	for _, char := range []byte(matchingString) {
+func quote(s string) string {
+	s = escaper.Replace(s)
+	var quotedString bytes.Buffer
+	quotedString.WriteString(`"`)
+	for _, char := range []byte(s) {
 		if char < 0x20 || char > 0x7E { // non ASCII
-			replacedString.WriteString("\\x")
-			replacedString.WriteString(hex.EncodeToString([]byte{char}))
+			quotedString.WriteString("\\x")
+			quotedString.WriteString(hex.EncodeToString([]byte{char}))
 		} else {
-			replacedString.WriteByte(char)
+			quotedString.WriteByte(char)
 		}
 	}
-	matchingString = replacedString.String()
-	matchingString = fmt.Sprintf("\"%s\"", matchingString)
-	return matchingString
+	quotedString.WriteString(`"`)
+	return quotedString.String()
 }
 
 // MatchString describes a sequence of bytes in an object
 // that was matched on by a signature.
 type MatchString struct {
 	// Match contains the bytes that were matched.
-	Match MatchData `json:"data"`
+	Match StringWithEncoding `json:"data"`
 	// Context contains the bytes surrounding the matched bytes.
 	// This may be missing if no context is available.
-	Context *MatchData `json:"context,omitempty"`
+	Context *StringWithEncoding `json:"context,omitempty"`
 	// Offset contains the Match's offset within the Field
 	// where the data was matched.
 	Offset *uint64 `json:"offset,omitempty"`
@@ -120,26 +169,16 @@ type MatchString struct {
 var needsQuoting = regexp.MustCompile(`[^\x21\x23-\x7E]`)
 
 func (f MatchString) String() string {
-	var matchString string
-	if needsQuoting.MatchString(f.Match.String()) && !f.Match.FullHex {
-		matchString += f.Match.QuotedString()
-	} else {
-		matchString += f.Match.String()
-	}
+	matchString := f.Match.String()
 	if f.Context != nil {
-		matchString += " in "
-		if needsQuoting.MatchString(f.Context.String()) && !f.Context.FullHex {
-			matchString += f.Context.QuotedString()
-		} else {
-			matchString += f.Context.String()
-		}
+		matchString += " in " + f.Context.String()
 	}
 	if f.Offset != nil {
 		// Only show the offset if this match does not encompass the full field and it's not explicitly hidden
 		var showOffset = !f.HideOffset
 		if f.Field != nil && *f.Offset == 0 {
 			if targetString, isString := f.Field.Value().(string); isString {
-				if targetString == string(f.Match.Data) {
+				if targetString == f.Match.EncodedData {
 					showOffset = false
 				}
 			}

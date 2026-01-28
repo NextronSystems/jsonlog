@@ -1,8 +1,6 @@
 package thorlog
 
 import (
-	"bytes"
-	"encoding/hex"
 	"fmt"
 	"strings"
 
@@ -40,8 +38,8 @@ func (s SparseData) String() string {
 		_, _ = w.WriteString(truncateSequence)
 	}
 	for _, element := range s.Elements {
-		_, _ = nonAsciiEscaper.WriteString(&w, string(element.Data))
-		if element.Offset+uint64(len(element.Data)) < uint64(s.Length) {
+		_, _ = nonAsciiEscaper.WriteString(&w, string(element.Data.Data()))
+		if element.Offset+uint64(len(element.Data.Data())) < uint64(s.Length) {
 			_, _ = w.WriteString(truncateSequence)
 		}
 	}
@@ -49,26 +47,8 @@ func (s SparseData) String() string {
 }
 
 type SparseDataElement struct {
-	Offset uint64               `json:"offset"`
-	Data   InvalidUnicodeString `json:"data"`
-}
-
-type InvalidUnicodeString string
-
-func (s InvalidUnicodeString) MarshalJSON() ([]byte, error) {
-	matchingString := escaper.Replace(string(s))
-	var replacedString bytes.Buffer
-	for _, char := range []byte(matchingString) {
-		if char < 0x20 || char > 0x7E { // non ASCII
-			replacedString.WriteString("\\u00")
-			replacedString.WriteString(hex.EncodeToString([]byte{char}))
-		} else {
-			replacedString.WriteByte(char)
-		}
-	}
-	matchingString = replacedString.String()
-	matchingString = fmt.Sprintf("\"%s\"", matchingString)
-	return []byte(matchingString), nil
+	Offset uint64             `json:"offset"`
+	Data   StringWithEncoding `json:"data"`
 }
 
 var escaper = strings.NewReplacer("\\", "\\\\", "\"", "\\\"")

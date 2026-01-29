@@ -174,10 +174,20 @@ type PlatformInfoAIX struct {
 
 	// Hardware model
 	Model string `json:"model" textlog:"model"`
-	// OS version string, e.g. "7.3"
+	// OS version string, e.g. "7.3". Also found in the output of `oslevel -s` together with TechnologyLevel, ServicePack and BuildSequenceID, e.g. "7300-04-00-2546".
 	Version string `json:"version" textlog:"version"`
 	// Processor type, e.g. "POWER9"
 	Proc string `json:"proc" textlog:"proc"`
+	// Number of virtual CPUs available to the system. This is not necessarily the same as the number of physical cores, due to SMT and partitioning.
+	VCPUs int `json:"vcpus" textlog:"vcpus"`
+	// Build timestamp of the OS. This specifies the precise OS version that is running on the system.
+	OSBuildTime time.Time `json:"os_build_time" textlog:"os_build_time"`
+	// Technology levels are major updates of an OS version
+	TechnologyLevel int `json:"technology_level" textlog:"technology_level"`
+	// Service packs provide bug fixes within a technology level
+	ServicePack int `json:"service_pack" textlog:"service_pack"`
+	// Build sequence identifier is a unique identifier for the exact OS build
+	BuildSequenceID int `json:"build_sequence_id" textlog:"build_sequence_id"`
 }
 
 func (PlatformInfoAIX) platform() {}

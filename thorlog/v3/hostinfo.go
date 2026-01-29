@@ -178,6 +178,17 @@ type PlatformInfoAIX struct {
 	Version string `json:"version" textlog:"version"`
 	// Processor type, e.g. "POWER9"
 	Proc string `json:"proc" textlog:"proc"`
+	// OS build version
+	BuildVersion string `json:"build_version" textlog:"build_version"`
+
+	// Whether this system is running in an LPAR partition
+	LparPartition bool `json:"lpar_partition" textlog:"lpar_partition"`
+
+	// LPAR configuration regarding memory / CPUs
+	MinMemory Memory `json:"min_memory" textlog:"min_memory"`
+	MaxMemory Memory `json:"max_memory" textlog:"max_memory"`
+	MinVCPUs  int    `json:"min_vcpus" textlog:"min_vcpus"`
+	MaxVCPUs  int    `json:"max_vcpus" textlog:"max_vcpus"`
 }
 
 func (PlatformInfoAIX) platform() {}

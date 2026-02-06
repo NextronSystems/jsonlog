@@ -28,7 +28,7 @@ type LogEventMetadata struct {
 	Mod  string    `json:"module" textlog:"module"`
 	// The ID of the scan where this event was created.
 	ScanID string `json:"scan_id" textlog:"scanid,omitempty"`
-	// A unique ID for this finding.
+	// A unique ID for this event.
 	// The ID is transient and the same element may have different IDs across multiple scans.
 	GenID string `json:"event_id,omitempty" textlog:"uid,omitempty"`
 	// The hostname of the machine where this event was generated.

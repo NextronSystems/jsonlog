@@ -117,10 +117,10 @@ func concatEntry(entry jsonlog.TextlogEntry) string {
 	return builder.String()
 }
 
-func TestFinding_UnmarshalJSON(t *testing.T) {
-	for i, finding := range []*Finding{
+func TestAssessment_UnmarshalJSON(t *testing.T) {
+	for i, assessment := range []*Assessment{
 		{
-			ObjectHeader: LogObjectHeader{Type: typeFinding},
+			ObjectHeader: LogObjectHeader{Type: typeAssessment},
 			Meta: LogEventMetadata{
 				Lvl:    common.Alert,
 				Mod:    "Test",
@@ -128,7 +128,7 @@ func TestFinding_UnmarshalJSON(t *testing.T) {
 				GenID:  "abdas",
 				Source: "aserarsd",
 			},
-			Text:    "This is a test finding",
+			Text:    "This is a test assessment",
 			Subject: NewFile("path/to/file"),
 			EventContext: Context{
 				{
@@ -146,27 +146,27 @@ func TestFinding_UnmarshalJSON(t *testing.T) {
 		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			jsonform, err := json.Marshal(finding)
+			jsonform, err := json.Marshal(assessment)
 			if err != nil {
 				t.Fatal(err)
 			}
 			t.Log(string(jsonform))
-			var newFinding Finding
-			if err := json.Unmarshal(jsonform, &newFinding); err != nil {
+			var newAssessment Assessment
+			if err := json.Unmarshal(jsonform, &newAssessment); err != nil {
 				t.Fatal(err)
 			}
-			newFinding.LogVersion = common.Version(newFinding.LogVersion.Major())
-			if !reflect.DeepEqual(finding, &newFinding) {
-				t.Errorf("UnmarshalJSON() = %+v, want %+v", newFinding, *finding)
+			newAssessment.LogVersion = common.Version(newAssessment.LogVersion.Major())
+			if !reflect.DeepEqual(assessment, &newAssessment) {
+				t.Errorf("UnmarshalJSON() = %+v, want %+v", newAssessment, *assessment)
 			}
 		})
 	}
 }
 
-func TestFinding_UnmarshalIssue(t *testing.T) {
-	finding := `{"type":"THOR finding","meta":{"time":"2025-07-01T12:05:12.993789131+02:00","level":"Info","module":"ProcessCheck","scan_id":"S-pSxgCmyvvfs","event_id":"","hostname":"dummy"},"message":"process found","subject":{"type":"process","pid":502168,"name":"chromium","command":"/usr/lib/chromium/chromium","owner":"owner","image":{"type":"file","path":"/usr/lib/chromium/chromium","exists":"yes","extension":"","magic_header":"ELF","hashes":{"md5":"fc04ee20f064adc18e370c22512e268e","sha1":"2c8b7d05d25e04db9c169ce85e8e8f84321ef0c8","sha256":"0cf1727aa8dc3995d5aa103001f656b8ee8a1b3ffbc6d8664c5ad95cf225771f"},"first_bytes":{"hex":"7f454c4602010100000000000000000003003e00","ascii":"ELF\u003e"},"file_times":{"modified":"2025-06-25T19:45:43+02:00","accessed":"2025-07-01T08:46:56.750309598+02:00","changed":"2025-06-26T08:39:59.980605063+02:00"},"size":252546120,"permissions":{"type":"Unix permissions","owner":"root","group":"root","mask":{"user":{"readable":true,"writable":true,"executable":true},"group":{"readable":true,"writable":false,"executable":true},"world":{"readable":true,"writable":false,"executable":true}}}},"parent_info":{"pid":9011,"exe":"/usr/lib/chromium/chromium","command":"/usr/lib/chromium/chromium"},"tree":["/usr/lib/chromium/chromium","/usr/lib/chromium/chromium"],"created":"2025-07-01T12:00:05+02:00","session":"","listen_ports":null,"connections":[]},"score":0,"reasons":null,"reason_count":0,"context":null,"issues":[{"affected":"/subject/sections","category":"truncated","description":"Removed some sections from process memory (originally 638)"}],"log_version":"v3.0.0"}`
-	var findingObj Finding
-	if err := json.Unmarshal([]byte(finding), &findingObj); err != nil {
-		t.Fatalf("Failed to unmarshal finding: %v", err)
+func TestAssessment_UnmarshalIssue(t *testing.T) {
+	assessment := `{"type":"THOR assessment","meta":{"time":"2025-07-01T12:05:12.993789131+02:00","level":"Info","module":"ProcessCheck","scan_id":"S-pSxgCmyvvfs","event_id":"","hostname":"dummy"},"message":"process found","subject":{"type":"process","pid":502168,"name":"chromium","command":"/usr/lib/chromium/chromium","owner":"owner","image":{"type":"file","path":"/usr/lib/chromium/chromium","exists":"yes","extension":"","magic_header":"ELF","hashes":{"md5":"fc04ee20f064adc18e370c22512e268e","sha1":"2c8b7d05d25e04db9c169ce85e8e8f84321ef0c8","sha256":"0cf1727aa8dc3995d5aa103001f656b8ee8a1b3ffbc6d8664c5ad95cf225771f"},"first_bytes":{"hex":"7f454c4602010100000000000000000003003e00","ascii":"ELF\u003e"},"file_times":{"modified":"2025-06-25T19:45:43+02:00","accessed":"2025-07-01T08:46:56.750309598+02:00","changed":"2025-06-26T08:39:59.980605063+02:00"},"size":252546120,"permissions":{"type":"Unix permissions","owner":"root","group":"root","mask":{"user":{"readable":true,"writable":true,"executable":true},"group":{"readable":true,"writable":false,"executable":true},"world":{"readable":true,"writable":false,"executable":true}}}},"parent_info":{"pid":9011,"exe":"/usr/lib/chromium/chromium","command":"/usr/lib/chromium/chromium"},"tree":["/usr/lib/chromium/chromium","/usr/lib/chromium/chromium"],"created":"2025-07-01T12:00:05+02:00","session":"","listen_ports":null,"connections":[]},"score":0,"reasons":null,"reason_count":0,"context":null,"issues":[{"affected":"/subject/sections","category":"truncated","description":"Removed some sections from process memory (originally 638)"}],"log_version":"v3.0.0"}`
+	var assessmentObj Assessment
+	if err := json.Unmarshal([]byte(assessment), &assessmentObj); err != nil {
+		t.Fatalf("Failed to unmarshal assessment: %v", err)
 	}
 }

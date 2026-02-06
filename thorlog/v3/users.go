@@ -15,7 +15,7 @@ type LoggedInUser struct {
 	OtherDomains string `json:"other_domains,omitempty" textlog:"other_domains,omitempty"`
 }
 
-func (LoggedInUser) reportable() {}
+func (LoggedInUser) observed() {}
 
 const typeLoggedInUser = "logged in user"
 
@@ -39,7 +39,7 @@ type ProfileFolder struct {
 	Created  *time.Time `json:"created,omitempty" textlog:"created,omitempty"`
 }
 
-func (ProfileFolder) reportable() {}
+func (ProfileFolder) observed() {}
 
 const typeUserProfile = "user profile"
 
@@ -67,7 +67,7 @@ type UnixUser struct {
 	AccessFiles []string `json:"access_files" textlog:"-" jsonschema:"nullable"`
 }
 
-func (UnixUser) reportable() {}
+func (UnixUser) observed() {}
 
 const typeUnixUser = "Unix user"
 
@@ -98,7 +98,7 @@ type WindowsUser struct {
 	Comment              string       `json:"comment" textlog:"comment"`
 }
 
-func (WindowsUser) reportable() {}
+func (WindowsUser) observed() {}
 
 const typeWindowsUser = "Windows user"
 

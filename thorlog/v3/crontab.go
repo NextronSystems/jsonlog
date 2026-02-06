@@ -8,7 +8,7 @@ type CronJob struct {
 	Command  string `json:"command" textlog:"command"`
 }
 
-func (CronJob) reportable() {}
+func (CronJob) observed() {}
 
 const typeCronJob = "cron job"
 

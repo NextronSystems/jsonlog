@@ -110,4 +110,4 @@ func NewSRUMResourceUsageEntry() *SRUMResourceUsageEntry {
 	}
 }
 
-func (SRUMResourceUsageEntry) reportable() {}
+func (SRUMResourceUsageEntry) observed() {}

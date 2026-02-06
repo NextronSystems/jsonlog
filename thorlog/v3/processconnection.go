@@ -9,7 +9,7 @@ type ProcessConnectionObject struct {
 	ProcessConnection
 }
 
-func (ProcessConnectionObject) reportable() {}
+func (ProcessConnectionObject) observed() {}
 
 const typeProcessConnection = "process connection"
 

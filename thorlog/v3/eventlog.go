@@ -18,7 +18,7 @@ type WindowsEventlogEntry struct {
 	Entry KeyValueList `json:"entry" textlog:"entry"`
 }
 
-func (WindowsEventlogEntry) reportable() {}
+func (WindowsEventlogEntry) observed() {}
 
 const TypeEventlogEntry = "eventlog entry"
 
@@ -39,7 +39,7 @@ type EventlogProcessStart struct {
 	Count      int         `json:"-" textlog:"count"`
 }
 
-func (EventlogProcessStart) reportable() {}
+func (EventlogProcessStart) observed() {}
 
 const TypeProcessStart = "process start"
 

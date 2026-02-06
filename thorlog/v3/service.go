@@ -10,7 +10,7 @@ type InitdService struct {
 	File *File `json:"file" textlog:"file,expand"`
 }
 
-func (InitdService) reportable() {}
+func (InitdService) observed() {}
 
 const typeInitdService = "init.d service"
 
@@ -35,7 +35,7 @@ type SystemdService struct {
 	Image *File `json:"image" textlog:"image,expand"`
 }
 
-func (SystemdService) reportable() {}
+func (SystemdService) observed() {}
 
 const typeSystemdService = "systemd service"
 
@@ -64,7 +64,7 @@ type WindowsService struct {
 	Image          *File     `json:"image" textlog:"image,expand"`
 }
 
-func (WindowsService) reportable() {}
+func (WindowsService) observed() {}
 
 const typeWindowsService = "Windows service"
 

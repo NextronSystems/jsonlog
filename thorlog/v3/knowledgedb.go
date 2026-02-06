@@ -14,7 +14,7 @@ type KnowledgeDBEntry struct {
 	PrimaryKey int64         `json:"primary_key" textlog:"primary_key"`
 }
 
-func (KnowledgeDBEntry) reportable() {}
+func (KnowledgeDBEntry) observed() {}
 
 const typeKnowledgeDBEntry = "KnowledgeDB entry"
 

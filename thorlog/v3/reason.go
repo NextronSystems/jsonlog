@@ -7,7 +7,7 @@ import (
 	"github.com/NextronSystems/jsonlog"
 )
 
-// Reason describes a match of a single Signature on a ReportableObject.
+// Reason describes a match of a single Signature on a ObservedObject.
 type Reason struct {
 	jsonlog.ObjectHeader
 
@@ -38,11 +38,11 @@ func init() {
 type Signature struct {
 	// Score is a metric that combines severity and certainty for this signature.
 	//
-	// It is related to the Finding.Score, which is derived from the scores of all
+	// It is related to the Assessment.Score, which is derived from the scores of all
 	// signatures that matched; however, signature scores are not limited to the
-	// 0 to 100 interval of finding scores, but may also be negative to indicate
+	// 0 to 100 interval of assessment scores, but may also be negative to indicate
 	// a likely false positive (which results in a score reduction on any related
-	// finding).
+	// assessment).
 	Score int64 `json:"score" textlog:"subscore"`
 	// Ref contains references (usually as links) for further information about
 	// the threat that is detected by this signature.

@@ -68,7 +68,7 @@ type File struct {
 	VirusTotalInfo *VirusTotalInformation `json:"virustotal,omitempty" textlog:"virustotal,expand,omitempty"`
 }
 
-func (File) reportable() {}
+func (File) observed() {}
 
 func (f *File) UnmarshalJSON(data []byte) error {
 	// Permissions are either unix or windows permissions, so we need to try both

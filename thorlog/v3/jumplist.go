@@ -22,7 +22,7 @@ type JumplistEntry struct {
 	Checksum      uint64    `json:"checksum" textlog:"checksum"`
 }
 
-func (JumplistEntry) reportable() {}
+func (JumplistEntry) observed() {}
 
 const typeJumplistEntry = "jump list entry"
 

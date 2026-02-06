@@ -15,7 +15,7 @@ type RegistryValue struct {
 	Size        uint64    `json:"size" textlog:"size"`
 }
 
-func (RegistryValue) reportable() {}
+func (RegistryValue) observed() {}
 
 const TypeRegistryValue = "registry value"
 
@@ -36,7 +36,7 @@ type RegistryKey struct {
 	FormattedValues string    `json:"values" textlog:"values,omitincontext"`
 }
 
-func (RegistryKey) reportable() {}
+func (RegistryKey) observed() {}
 
 func (s *RegistryKey) RawEvent() (string, *jsonlog.Reference) {
 	return s.FormattedValues, jsonlog.NewReference(s, &s.FormattedValues)
@@ -67,7 +67,7 @@ type MsOfficeConnectionCacheEntry struct {
 	Key      string    `json:"key" textlog:"key"`
 }
 
-func (MsOfficeConnectionCacheEntry) reportable() {}
+func (MsOfficeConnectionCacheEntry) observed() {}
 
 func NewMsOfficeConnectionCacheEntry() *MsOfficeConnectionCacheEntry {
 	return &MsOfficeConnectionCacheEntry{
@@ -83,7 +83,7 @@ type RegisteredDebugger struct {
 	Debugger   string `json:"debugger" textlog:"element"`
 }
 
-func (RegisteredDebugger) reportable() {}
+func (RegisteredDebugger) observed() {}
 
 const TypeRegisteredDebugger = "registered debugger"
 

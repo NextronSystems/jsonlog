@@ -12,7 +12,7 @@ type ProcessHandle struct {
 	Type   string `json:"handle_type,omitempty" textlog:"type,omitempty"`
 }
 
-func (ProcessHandle) reportable() {}
+func (ProcessHandle) observed() {}
 
 const typeProcessHandle = "process handle"
 

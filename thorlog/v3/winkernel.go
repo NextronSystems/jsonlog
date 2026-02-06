@@ -5,7 +5,7 @@ type WindowsEvent struct {
 	Event string `json:"event" textlog:"event"`
 }
 
-func (WindowsEvent) reportable() {}
+func (WindowsEvent) observed() {}
 
 const typeWindowsEvent = "event"
 
@@ -26,7 +26,7 @@ type WindowsMutex struct {
 	Mutex string `json:"mutex" textlog:"mutex"`
 }
 
-func (WindowsMutex) reportable() {}
+func (WindowsMutex) observed() {}
 
 const typeWindowsMutex = "mutex"
 

@@ -22,4 +22,4 @@ func NewAtJob() *AtJob {
 	}
 }
 
-func (AtJob) reportable() {}
+func (AtJob) observed() {}

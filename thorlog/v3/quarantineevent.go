@@ -16,7 +16,7 @@ type QuarantineEvent struct {
 	Url       string    `json:"url" textlog:"url,omitempty"`
 }
 
-func (QuarantineEvent) reportable() {}
+func (QuarantineEvent) observed() {}
 
 const typeQuarantineEvent = "quarantine event"
 

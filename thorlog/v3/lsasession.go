@@ -16,7 +16,7 @@ type LsaSession struct {
 	Server      string    `json:"server" textlog:"server"`
 }
 
-func (LsaSession) reportable() {}
+func (LsaSession) observed() {}
 
 const typeLsaSession = "LSA session"
 

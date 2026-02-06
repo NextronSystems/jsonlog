@@ -16,7 +16,7 @@ type ShellbagEntry struct {
 	DateAccess time.Time `json:"date_access" textlog:"date_access"`
 }
 
-func (ShellbagEntry) reportable() {}
+func (ShellbagEntry) observed() {}
 
 const typeShellbagEntry = "shellbag entry"
 

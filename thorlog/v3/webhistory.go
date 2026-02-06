@@ -21,7 +21,7 @@ type WebDownload struct {
 	File *File `json:"file" textlog:"file,expand"`
 }
 
-func (WebDownload) reportable() {}
+func (WebDownload) observed() {}
 
 const typeWebDownload = "web download"
 
@@ -47,7 +47,7 @@ type WebPageVisit struct {
 	Title string `json:"title" textlog:"title"`
 }
 
-func (WebPageVisit) reportable() {}
+func (WebPageVisit) observed() {}
 
 const typeWebVisit = "web page visit"
 

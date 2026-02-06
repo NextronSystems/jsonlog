@@ -6,7 +6,7 @@ type HostsFileEntry struct {
 	IP   string `json:"ip" textlog:"ip"`
 }
 
-func (HostsFileEntry) reportable() {}
+func (HostsFileEntry) observed() {}
 
 const typeHostsFileEntry = "hosts file entry"
 

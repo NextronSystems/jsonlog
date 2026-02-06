@@ -26,7 +26,7 @@ type PrefetchInfo struct {
 	AccessedFiles  []string       `json:"accessed_files" textlog:"-"`
 }
 
-func (PrefetchInfo) reportable() {}
+func (PrefetchInfo) observed() {}
 
 type ExecutionTimes []time.Time
 

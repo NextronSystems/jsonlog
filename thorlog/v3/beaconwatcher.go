@@ -20,7 +20,7 @@ type NetworkConnectingThread struct {
 	Connections      NetworkConnections `json:"connections" textlog:"connections"`
 }
 
-func (NetworkConnectingThread) reportable() {}
+func (NetworkConnectingThread) observed() {}
 
 func NewNetworkConnectingThread(threadId uint32, process *Process) *NetworkConnectingThread {
 	return &NetworkConnectingThread{

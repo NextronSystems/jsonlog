@@ -24,7 +24,7 @@ type Process struct {
 	PeSieveReport *PeSieveReport `json:"pe_sieve,omitempty" textlog:"pe_sieve,expand,omitempty"`
 }
 
-func (Process) reportable() {}
+func (Process) observed() {}
 
 type ProcessInfo struct {
 	Name    string `json:"name" textlog:"name"`

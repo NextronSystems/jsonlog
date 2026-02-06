@@ -74,7 +74,7 @@ type EBPFAttachTarget struct {
 	Priority int `textlog:"priority,omitempty" json:"priority,omitempty"`
 }
 
-func (EBPFProgram) reportable() {}
+func (EBPFProgram) observed() {}
 
 const typeEbpfProgram = "eBPF program"
 

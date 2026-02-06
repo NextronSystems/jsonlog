@@ -14,7 +14,7 @@ type NetworkSession struct {
 	NumOpens   int           `json:"num_opens" textlog:"num_opens"`
 }
 
-func (NetworkSession) reportable() {}
+func (NetworkSession) observed() {}
 
 const typeNetworkSession = "network session"
 

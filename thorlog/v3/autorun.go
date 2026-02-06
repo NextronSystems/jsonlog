@@ -17,7 +17,7 @@ type AutorunEntry struct {
 	OldMd5 string `json:"old_md5,omitempty" textlog:"md5_before,omitempty"`
 }
 
-func (AutorunEntry) reportable() {}
+func (AutorunEntry) observed() {}
 
 const typeAutorunEntry = "autorun entry"
 

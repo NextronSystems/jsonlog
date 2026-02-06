@@ -14,7 +14,7 @@ type ShimCacheEntry struct {
 	Path      string    `json:"path" textlog:"path"`
 }
 
-func (ShimCacheEntry) reportable() {}
+func (ShimCacheEntry) observed() {}
 
 const typeShimCacheEntry = "shim cache entry"
 
@@ -35,7 +35,7 @@ type ShimCache struct {
 	LastKnownEntries int `json:"last_known_entries" textlog:"previous_entries,omitempty"`
 }
 
-func (ShimCache) reportable() {}
+func (ShimCache) observed() {}
 
 const typeShimCache = "shim cache"
 

@@ -2,7 +2,7 @@ package thorlog
 
 import "github.com/NextronSystems/jsonlog"
 
-// Issue describes a problem that occurred during the analysis of a scan target like a file or process.
+// Issue describes a problem that occurred during the assessment of a scan target like a file or process.
 // Often this will be an issue with displaying the results,
 // e.g. the results may be truncated due to size limitations.
 type Issue struct {

@@ -14,21 +14,21 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-// Finding is a summary of a Subject's analysis by THOR.
-// This object is usually, but not necessarily suspicious; the
+// Assessment is a summary of a Subject's analysis by THOR.
+// The assessed object is not necessarily suspicious; the
 // severity can be seen in the Score, and beyond that the
-// Reasons contain further information on why this Subject is
+// Reasons contain further information if this Subject is
 // considered suspicious.
-type Finding struct {
+type Assessment struct {
 	jsonlog.ObjectHeader
 	Meta LogEventMetadata `json:"meta" textlog:",expand"`
-	// Text is the message THOR printed for this finding.
-	// This is usually a summary based on this finding's subject and level.
+	// Text is the message THOR printed for this assessment.
+	// This is usually a summary based on this assessment's subject and level.
 	Text string `json:"message" textlog:"message"`
-	// Subject is the object analysed by THOR.
-	Subject ReportableObject `json:"subject" textlog:",expand"`
+	// Subject is the object assessed by THOR.
+	Subject AssessableObject `json:"subject" textlog:",expand"`
 	// Score is a metric that combines severity and certainty. The score is always in a range of 0 to 100;
-	// 0 indicates that the analysis found no suspicious indicators, whereas 100 indicates very high
+	// 0 indicates that the assessment found no suspicious indicators, whereas 100 indicates very high
 	// severity and certainty.
 	Score int64 `json:"score" textlog:"score"`
 	// Reasons describes the indicators that contributed to the score.
@@ -45,7 +45,7 @@ type Finding struct {
 	// and a relation name of "parent", indicating that the Subject derives from this object,
 	// which is its parent.
 	EventContext Context `json:"context" textlog:",expand" jsonschema:"nullable"`
-	// Issues lists any problems that THOR encountered when trying to create a Finding for this analysis.
+	// Issues lists any problems that THOR encountered when trying to create a JSON struct for this assessment.
 	// This may include e.g. overly long fields that were truncated, fields that could not be rendered to JSON,
 	// or similar problems.
 	Issues []Issue `json:"issues,omitempty" textlog:"-"`
@@ -53,38 +53,38 @@ type Finding struct {
 	LogVersion common.Version `json:"log_version"`
 }
 
-// ReportableObject can be any object type that THOR analyses, e.g. File or Process.
-type ReportableObject interface {
+// AssessableObject can be any object type that THOR assesses, e.g. File or Process.
+type AssessableObject interface {
 	reportable()
 	jsonlog.Object
 }
 
-func (f *Finding) Message() string {
+func (f *Assessment) Message() string {
 	return f.Text
 }
 
-func (f *Finding) Version() common.Version {
+func (f *Assessment) Version() common.Version {
 	return f.LogVersion
 }
 
-func (f *Finding) Metadata() *LogEventMetadata {
+func (f *Assessment) Metadata() *LogEventMetadata {
 	return &f.Meta
 }
 
-func (f *Finding) UnmarshalJSON(data []byte) error {
-	type plainFinding Finding
-	var rawFinding struct {
-		plainFinding                // Embed without unmarshal method to avoid infinite recursion
-		Subject      EmbeddedObject `json:"subject"` // EmbeddedObject is used to allow unmarshalling of the subject as a ReportableObject
+func (f *Assessment) UnmarshalJSON(data []byte) error {
+	type plainAssessment Assessment
+	var rawAssessment struct {
+		plainAssessment                // Embed without unmarshal method to avoid infinite recursion
+		Subject         EmbeddedObject `json:"subject"` // EmbeddedObject is used to allow unmarshalling of the subject as a AssessableObject
 	}
-	if err := json.Unmarshal(data, &rawFinding); err != nil {
+	if err := json.Unmarshal(data, &rawAssessment); err != nil {
 		return err
 	}
-	subject, ok := rawFinding.Subject.Object.(ReportableObject)
+	subject, ok := rawAssessment.Subject.Object.(AssessableObject)
 	if !ok {
 		return fmt.Errorf("subject must implement the reportable interface")
 	}
-	*f = Finding(rawFinding.plainFinding) // Copy the fields from rawFinding to f
+	*f = Assessment(rawAssessment.plainAssessment) // Copy the fields from rawAssessment to f
 	f.Subject = subject
 
 	// Resolve all references
@@ -115,14 +115,14 @@ func (f *Finding) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-var _ common.Event = (*Finding)(nil)
+var _ common.Event = (*Assessment)(nil)
 
 type Context []ContextObject
 
 // ContextObject describes a relation of an object to another.
 type ContextObject struct {
-	Object ReportableObject `json:"object" textlog:",expand"`
-	// Relations describes how the object relates to the main subject of the finding.
+	Object AssessableObject `json:"object" textlog:",expand"`
+	// Relations describes how the object relates to the assessed subject.
 	// There may be multiple relations, e.g. if the object is both the parent and the topmost ancestor of the subject.
 	//
 	// Relations should be ordered by relevance, i.e. the most important relation should be first.
@@ -145,7 +145,7 @@ func (c *ContextObject) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &rawContextObject); err != nil {
 		return err
 	}
-	reportableObject, isReportable := rawContextObject.Object.Object.(ReportableObject)
+	reportableObject, isReportable := rawContextObject.Object.Object.(AssessableObject)
 	if !isReportable {
 		return fmt.Errorf("object of type %q must implement the reportable interface", rawContextObject.Object.Object.EmbeddedHeader().Type)
 	}
@@ -207,14 +207,14 @@ func (c Context) MarshalTextLog(t jsonlog.TextlogFormatter) jsonlog.TextlogEntry
 	return result
 }
 
-const typeFinding = "THOR finding"
+const typeAssessment = "THOR assessment"
 
-func init() { AddLogObjectType(typeFinding, &Finding{}) }
+func init() { AddLogObjectType(typeAssessment, &Assessment{}) }
 
-func NewFinding(subject ReportableObject, message string) *Finding {
-	return &Finding{
+func NewAssessment(subject AssessableObject, message string) *Assessment {
+	return &Assessment{
 		ObjectHeader: LogObjectHeader{
-			Type: typeFinding,
+			Type: typeAssessment,
 		},
 		Text:       message,
 		Subject:    subject,
@@ -223,7 +223,7 @@ func NewFinding(subject ReportableObject, message string) *Finding {
 }
 
 // Message describes a THOR message printed during the scan.
-// Unlike Finding, this does not describe an analysis' result,
+// Unlike Assessment, this does not describe an analysis' result,
 // but rather something about the scan itself (e.g. how many IOCs were loaded).
 type Message struct {
 	jsonlog.ObjectHeader

@@ -10,6 +10,8 @@ import (
 type testObject struct {
 	ObjectHeader
 
+	Recursive *Reference
+
 	Substruct struct {
 		SubField1 string `json:"subfield1" textlog:"subfield1"`
 	} `json:"substruct" textlog:"substruct,expand"`
@@ -89,6 +91,7 @@ func TestReference_ToJsonPointer(t *testing.T) {
 	test.Valuer.Subfield6 = "subfield6"
 	test.Valuer.Subfield7 = "subfield7"
 	test.SubObject = &SubObject{Subfield8: "subfield8"}
+	test.Recursive = NewReference(&test, &test.Substruct)
 
 	var tests = []struct {
 		PointedField any

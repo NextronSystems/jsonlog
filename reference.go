@@ -52,6 +52,8 @@ func (r *Reference) ToJsonPointer() jsonpointer.Pointer {
 	return r.jsonPointer
 }
 
+var referenceType = reflect.TypeFor[Reference]()
+
 func findRelativeJsonPointer(base reflect.Value, pointedField reflect.Value) jsonpointer.Pointer {
 	for {
 		if base.Equal(pointedField) {
@@ -59,6 +61,9 @@ func findRelativeJsonPointer(base reflect.Value, pointedField reflect.Value) jso
 		}
 		if resolver, isResolver := base.Interface().(JsonReferenceResolver); isResolver {
 			return resolver.RelativeJsonPointer(pointedField.Interface())
+		}
+		if base.Type() == referenceType { // Don't recurse into other references
+			return nil
 		}
 		if base.Kind() == reflect.Ptr || base.Kind() == reflect.Interface {
 			if base.IsNil() {

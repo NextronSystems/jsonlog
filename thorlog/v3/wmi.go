@@ -16,7 +16,7 @@ type WmiElement struct {
 	Eventconsumer     string `json:"event_consumer" textlog:"eventconsumer"`
 }
 
-func (WmiElement) reportable() {}
+func (WmiElement) observed() {}
 
 const typeWmiElement = "WMI element"
 
@@ -37,7 +37,7 @@ type WmiStartupCommand struct {
 	Command  string `json:"command" textlog:"command"`
 }
 
-func (WmiStartupCommand) reportable() {}
+func (WmiStartupCommand) observed() {}
 
 const typeWmiStartupCommand = "WMI startup command"
 

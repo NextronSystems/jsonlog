@@ -12,7 +12,7 @@ type PluginStructuredData struct {
 	Data KeyValueList `json:"data" textlog:",inline"`
 }
 
-func (PluginStructuredData) reportable() {}
+func (PluginStructuredData) observed() {}
 
 const typePluginStructuredData = "structured data from plugin"
 
@@ -35,7 +35,7 @@ type PluginString struct {
 	String string `json:"string" textlog:"string"`
 }
 
-func (PluginString) reportable() {}
+func (PluginString) observed() {}
 
 const typePluginString = "data from plugin"
 
@@ -58,7 +58,7 @@ type PluginFinding struct {
 	LogDetails MessageFields `json:"details" textlog:",expand"`
 }
 
-func (PluginFinding) reportable() {}
+func (PluginFinding) observed() {}
 
 const typePluginFinding = "finding from plugin"
 

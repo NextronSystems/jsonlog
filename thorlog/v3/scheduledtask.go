@@ -49,7 +49,7 @@ type ScheduledTask struct {
 	NextRun time.Time `json:"next_run,omitzero" textlog:"nextrun,omitempty"`
 }
 
-func (ScheduledTask) reportable() {}
+func (ScheduledTask) observed() {}
 
 const typeScheduledTask = "scheduled task"
 
@@ -75,7 +75,7 @@ type RegistryScheduledTask struct {
 	LastResult  string    `json:"last_result" textlog:"last_result"`
 }
 
-func (RegistryScheduledTask) reportable() {}
+func (RegistryScheduledTask) observed() {}
 
 const typeRegistryScheduledTask = "registry scheduled task"
 

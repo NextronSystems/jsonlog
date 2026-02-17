@@ -11,7 +11,7 @@ type LogLine struct {
 	Line      string `json:"line" textlog:"line"`
 }
 
-func (LogLine) reportable() {}
+func (LogLine) observed() {}
 
 const TypeLogLine = "log line"
 

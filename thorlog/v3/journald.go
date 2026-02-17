@@ -25,4 +25,4 @@ func NewJournaldEntry() *JournaldEntry {
 	}
 }
 
-func (JournaldEntry) reportable() {}
+func (JournaldEntry) observed() {}

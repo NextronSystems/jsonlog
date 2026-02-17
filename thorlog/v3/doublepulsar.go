@@ -7,7 +7,7 @@ type DoublePulsarHandshake struct {
 	Key  HexNumber `json:"key,omitempty" textlog:"key,omitempty"`
 }
 
-func (DoublePulsarHandshake) reportable() {}
+func (DoublePulsarHandshake) observed() {}
 
 const typeDoublePulsarHandshake = "DoublePulsar Handshake"
 

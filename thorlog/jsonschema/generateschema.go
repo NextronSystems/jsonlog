@@ -97,7 +97,7 @@ func main() {
 		Title:       "ThorEvent",
 		OneOf: []*jsonschema.Schema{
 			{
-				Ref: "#/$defs/Finding",
+				Ref: "#/$defs/Assessment",
 			},
 			{
 				Ref: "#/$defs/Message",

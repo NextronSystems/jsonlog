@@ -17,7 +17,7 @@ type DeepDiveChunk struct {
 	BeaconConfig *BeaconConfig `json:"beacon_config,omitempty" textlog:"beacon,expand,omitempty"`
 }
 
-func (DeepDiveChunk) reportable() {}
+func (DeepDiveChunk) observed() {}
 
 type HexNumber uint64
 

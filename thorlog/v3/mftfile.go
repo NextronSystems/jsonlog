@@ -21,7 +21,7 @@ type MftFileEntry struct {
 	Flags    *uint64   `json:"flags,omitempty" textlog:"flags,omitempty"`
 }
 
-func (MftFileEntry) reportable() {}
+func (MftFileEntry) observed() {}
 
 const typeMftFileEntry = "MFT entry"
 
@@ -43,7 +43,7 @@ type UsnEntry struct {
 	Reasons   StringList `json:"reasons" textlog:"reason"`
 }
 
-func (UsnEntry) reportable() {}
+func (UsnEntry) observed() {}
 
 const typeUsnEntry = "USN entry"
 

@@ -9,7 +9,7 @@ type TomcatUser struct {
 	User string `json:"user" textlog:"user"`
 }
 
-func (TomcatUser) reportable() {}
+func (TomcatUser) observed() {}
 
 const typeTomcatUser = "Tomcat user"
 

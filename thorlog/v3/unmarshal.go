@@ -19,7 +19,7 @@ type UnknownObject struct {
 	Data map[string]any
 }
 
-func (UnknownObject) reportable() {}
+func (UnknownObject) observed() {}
 
 func (u *UnknownObject) UnmarshalJSON(data []byte) error {
 	var details map[string]any

@@ -22,4 +22,4 @@ func NewAuditLogEntry() *AuditLogEntry {
 	}
 }
 
-func (AuditLogEntry) reportable() {}
+func (AuditLogEntry) observed() {}

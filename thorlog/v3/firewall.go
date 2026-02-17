@@ -19,7 +19,7 @@ type FirewallRule struct {
 	Protocol        string     `json:"protocol" textlog:"protocol"`
 }
 
-func (FirewallRule) reportable() {}
+func (FirewallRule) observed() {}
 
 const typeFirewallRule = "firewall rule"
 
@@ -39,7 +39,7 @@ type RawFirewallRule struct {
 	Rule string `json:"rule" textlog:"rule"`
 }
 
-func (RawFirewallRule) reportable() {}
+func (RawFirewallRule) observed() {}
 
 const typeRawFirewallRule = "raw firewall rule"
 

@@ -6,7 +6,7 @@ type DnsCacheEntry struct {
 	IP   string `json:"ip" textlog:"ip"`
 }
 
-func (DnsCacheEntry) reportable() {}
+func (DnsCacheEntry) observed() {}
 
 const typeDnsCacheEntry = "DNS cache entry"
 

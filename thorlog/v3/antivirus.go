@@ -13,7 +13,7 @@ type AntiVirusProduct struct {
 	Path            string `json:"path" textlog:"path"`
 }
 
-func (AntiVirusProduct) reportable() {}
+func (AntiVirusProduct) observed() {}
 
 const typeAntiVirusProduct = "antivirus product"
 
@@ -35,7 +35,7 @@ type AntiVirusExclude struct {
 	Exclusion string `json:"exclusion" textlog:"exclusion"`
 }
 
-func (AntiVirusExclude) reportable() {}
+func (AntiVirusExclude) observed() {}
 
 const typeAntiVirusExclude = "antivirus exclusion"
 

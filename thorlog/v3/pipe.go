@@ -10,7 +10,7 @@ type WindowsPipe struct {
 	Pipe string `json:"pipe" textlog:"pipe"`
 }
 
-func (WindowsPipe) reportable() {}
+func (WindowsPipe) observed() {}
 
 const typeWindowsPipe = "named pipe"
 
@@ -30,7 +30,7 @@ type WindowsPipeList struct {
 	Pipes StringList `json:"pipes" textlog:"pipes"`
 }
 
-func (WindowsPipeList) reportable() {}
+func (WindowsPipeList) observed() {}
 
 const typeWindowsPipeList = "pipe list"
 

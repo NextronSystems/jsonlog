@@ -10,7 +10,7 @@ type Thread struct {
 	Stack    StringList `json:"stack" jsonschema:"nullable"`
 }
 
-func (Thread) reportable() {}
+func (Thread) observed() {}
 
 const typeThread = "thread"
 

@@ -14,21 +14,21 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-// Finding is a summary of a Subject's analysis by THOR.
-// This object is usually, but not necessarily suspicious; the
+// Assessment is a summary of a Subject's analysis by THOR.
+// The assessed object is not necessarily suspicious; the
 // severity can be seen in the Score, and beyond that the
-// Reasons contain further information on why this Subject is
+// Reasons contain further information if this Subject is
 // considered suspicious.
-type Finding struct {
+type Assessment struct {
 	jsonlog.ObjectHeader
 	Meta LogEventMetadata `json:"meta" textlog:",expand"`
-	// Text is the message THOR printed for this finding.
-	// This is usually a summary based on this finding's subject and level.
+	// Text is the message THOR printed for this assessment.
+	// This is usually a summary based on this assessment's subject and level.
 	Text string `json:"message" textlog:"message"`
-	// Subject is the object analysed by THOR.
-	Subject ReportableObject `json:"subject" textlog:",expand"`
+	// Subject is the object assessed by THOR.
+	Subject ObservedObject `json:"subject" textlog:",expand"`
 	// Score is a metric that combines severity and certainty. The score is always in a range of 0 to 100;
-	// 0 indicates that the analysis found no suspicious indicators, whereas 100 indicates very high
+	// 0 indicates that the assessment found no suspicious indicators, whereas 100 indicates very high
 	// severity and certainty.
 	Score int64 `json:"score" textlog:"score"`
 	// Reasons describes the indicators that contributed to the score.
@@ -45,7 +45,7 @@ type Finding struct {
 	// and a relation name of "parent", indicating that the Subject derives from this object,
 	// which is its parent.
 	EventContext Context `json:"context" textlog:",expand" jsonschema:"nullable"`
-	// Issues lists any problems that THOR encountered when trying to create a Finding for this analysis.
+	// Issues lists any problems that THOR encountered when trying to create a JSON struct for this assessment.
 	// This may include e.g. overly long fields that were truncated, fields that could not be rendered to JSON,
 	// or similar problems.
 	Issues []Issue `json:"issues,omitempty" textlog:"-"`
@@ -53,76 +53,76 @@ type Finding struct {
 	LogVersion common.Version `json:"log_version"`
 }
 
-// ReportableObject can be any object type that THOR analyses, e.g. File or Process.
-type ReportableObject interface {
-	reportable()
+// ObservedObject can be any object type that THOR observes, e.g. File or Process.
+type ObservedObject interface {
+	observed()
 	jsonlog.Object
 }
 
-func (f *Finding) Message() string {
-	return f.Text
+func (a *Assessment) Message() string {
+	return a.Text
 }
 
-func (f *Finding) Version() common.Version {
-	return f.LogVersion
+func (a *Assessment) Version() common.Version {
+	return a.LogVersion
 }
 
-func (f *Finding) Metadata() *LogEventMetadata {
-	return &f.Meta
+func (a *Assessment) Metadata() *LogEventMetadata {
+	return &a.Meta
 }
 
-func (f *Finding) UnmarshalJSON(data []byte) error {
-	type plainFinding Finding
-	var rawFinding struct {
-		plainFinding                // Embed without unmarshal method to avoid infinite recursion
-		Subject      EmbeddedObject `json:"subject"` // EmbeddedObject is used to allow unmarshalling of the subject as a ReportableObject
+func (a *Assessment) UnmarshalJSON(data []byte) error {
+	type plainAssessment Assessment
+	var rawAssessment struct {
+		plainAssessment                // Embed without unmarshal method to avoid infinite recursion
+		Subject         EmbeddedObject `json:"subject"` // EmbeddedObject is used to allow unmarshalling of the subject as a ObservedObject
 	}
-	if err := json.Unmarshal(data, &rawFinding); err != nil {
+	if err := json.Unmarshal(data, &rawAssessment); err != nil {
 		return err
 	}
-	subject, ok := rawFinding.Subject.Object.(ReportableObject)
+	subject, ok := rawAssessment.Subject.Object.(ObservedObject)
 	if !ok {
-		return fmt.Errorf("subject must implement the reportable interface")
+		return fmt.Errorf("subject must implement the ObservedObject interface")
 	}
-	*f = Finding(rawFinding.plainFinding) // Copy the fields from rawFinding to f
-	f.Subject = subject
+	*a = Assessment(rawAssessment.plainAssessment) // Copy the fields from rawAssessment to a
+	a.Subject = subject
 
 	// Resolve all references
 	// When the event is unmarshalled, the references are not resolved yet and only contain the JSON pointers.
 	// Resolve them to the actual values to be able to use them in the text log.
-	for i := range f.Reasons {
-		for j := range f.Reasons[i].StringMatches {
-			if f.Reasons[i].StringMatches[j].Field == nil {
+	for i := range a.Reasons {
+		for j := range a.Reasons[i].StringMatches {
+			if a.Reasons[i].StringMatches[j].Field == nil {
 				continue
 			}
-			target, err := jsonpointer.Resolve(f.Subject, f.Reasons[i].StringMatches[j].Field.ToJsonPointer())
+			target, err := jsonpointer.Resolve(a.Subject, a.Reasons[i].StringMatches[j].Field.ToJsonPointer())
 			if err != nil {
 				return err
 			}
-			f.Reasons[i].StringMatches[j].Field = jsonlog.NewReference(f.Subject, target)
+			a.Reasons[i].StringMatches[j].Field = jsonlog.NewReference(a.Subject, target)
 		}
 	}
-	for i := range f.Issues {
-		if f.Issues[i].Affected == nil {
+	for i := range a.Issues {
+		if a.Issues[i].Affected == nil {
 			continue
 		}
-		target, err := jsonpointer.Resolve(f, f.Issues[i].Affected.ToJsonPointer())
+		target, err := jsonpointer.Resolve(a, a.Issues[i].Affected.ToJsonPointer())
 		if err != nil {
 			return err
 		}
-		f.Issues[i].Affected = jsonlog.NewReference(f, target)
+		a.Issues[i].Affected = jsonlog.NewReference(a, target)
 	}
 	return nil
 }
 
-var _ common.Event = (*Finding)(nil)
+var _ common.Event = (*Assessment)(nil)
 
 type Context []ContextObject
 
 // ContextObject describes a relation of an object to another.
 type ContextObject struct {
-	Object ReportableObject `json:"object" textlog:",expand"`
-	// Relations describes how the object relates to the main subject of the finding.
+	Object ObservedObject `json:"object" textlog:",expand"`
+	// Relations describes how the object relates to the assessed subject.
 	// There may be multiple relations, e.g. if the object is both the parent and the topmost ancestor of the subject.
 	//
 	// Relations should be ordered by relevance, i.e. the most important relation should be first.
@@ -145,9 +145,9 @@ func (c *ContextObject) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &rawContextObject); err != nil {
 		return err
 	}
-	reportableObject, isReportable := rawContextObject.Object.Object.(ReportableObject)
+	reportableObject, isReportable := rawContextObject.Object.Object.(ObservedObject)
 	if !isReportable {
-		return fmt.Errorf("object of type %q must implement the reportable interface", rawContextObject.Object.Object.EmbeddedHeader().Type)
+		return fmt.Errorf("object of type %q must implement the ObservedObject interface", rawContextObject.Object.Object.EmbeddedHeader().Type)
 	}
 	*c = ContextObject(rawContextObject.plainContextObject) // Copy the fields from rawContextObject to c
 	c.Object = reportableObject
@@ -207,14 +207,14 @@ func (c Context) MarshalTextLog(t jsonlog.TextlogFormatter) jsonlog.TextlogEntry
 	return result
 }
 
-const typeFinding = "THOR finding"
+const typeAssessment = "THOR assessment"
 
-func init() { AddLogObjectType(typeFinding, &Finding{}) }
+func init() { AddLogObjectType(typeAssessment, &Assessment{}) }
 
-func NewFinding(subject ReportableObject, message string) *Finding {
-	return &Finding{
+func NewAssessment(subject ObservedObject, message string) *Assessment {
+	return &Assessment{
 		ObjectHeader: LogObjectHeader{
-			Type: typeFinding,
+			Type: typeAssessment,
 		},
 		Text:       message,
 		Subject:    subject,
@@ -223,7 +223,7 @@ func NewFinding(subject ReportableObject, message string) *Finding {
 }
 
 // Message describes a THOR message printed during the scan.
-// Unlike Finding, this does not describe an analysis' result,
+// Unlike Assessment, this does not describe an analysis' result,
 // but rather something about the scan itself (e.g. how many IOCs were loaded).
 type Message struct {
 	jsonlog.ObjectHeader

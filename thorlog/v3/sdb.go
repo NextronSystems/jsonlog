@@ -10,7 +10,7 @@ type SdbEntry struct {
 	Entry KeyValueList `json:"entry" textlog:"entry"`
 }
 
-func (SdbEntry) reportable() {}
+func (SdbEntry) observed() {}
 
 const typeSdbEntry = "shim database entry"
 

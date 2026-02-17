@@ -7,7 +7,7 @@ type EnvironmentVariable struct {
 	Value    string `json:"value" textlog:"value"`
 }
 
-func (EnvironmentVariable) reportable() {}
+func (EnvironmentVariable) observed() {}
 
 const typeEnvironmentVariable = "environment variable"
 

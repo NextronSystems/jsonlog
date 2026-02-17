@@ -30,7 +30,7 @@ type LinuxKernelModule struct {
 	InVmallocinfo bool `json:"in_vmallocinfo" textlog:"in_vmallocinfo"`
 }
 
-func (LinuxKernelModule) reportable() {}
+func (LinuxKernelModule) observed() {}
 
 const typeLinuxKernelModule = "Linux kernel module"
 

@@ -10,7 +10,7 @@ type TeamViewerPassword struct {
 	Name     string `json:"name" textlog:"name"`
 }
 
-func (TeamViewerPassword) reportable() {}
+func (TeamViewerPassword) observed() {}
 
 const typeTeamViewerPassword = "TeamViewer password"
 

@@ -25,4 +25,4 @@ func NewAuthorizedKeysEntry() *AuthorizedKeysEntry {
 	}
 }
 
-func (AuthorizedKeysEntry) reportable() {}
+func (AuthorizedKeysEntry) observed() {}

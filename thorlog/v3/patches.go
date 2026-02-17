@@ -11,7 +11,7 @@ type HotfixSummary struct {
 	LastHotfix time.Time `json:"last_hotfix" textlog:"last_hotfix"`
 }
 
-func (HotfixSummary) reportable() {}
+func (HotfixSummary) observed() {}
 
 const typeHotfixSummary = "hotfix summary"
 
@@ -33,7 +33,7 @@ type EndOfLifeReport struct {
 	EndOfLife time.Time `json:"end_of_life" textlog:"end_time"`
 }
 
-func (EndOfLifeReport) reportable() {}
+func (EndOfLifeReport) observed() {}
 
 const typeEndOfLifeReport = "end of life report"
 

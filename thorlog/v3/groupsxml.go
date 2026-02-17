@@ -10,7 +10,7 @@ type GroupsXmlUser struct {
 	Password string `json:"password" textlog:"password"`
 }
 
-func (GroupsXmlUser) reportable() {}
+func (GroupsXmlUser) observed() {}
 
 const typeGroupsXmlPassword = "groups.xml user"
 

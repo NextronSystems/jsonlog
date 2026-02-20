@@ -4,11 +4,16 @@ import (
 	"github.com/NextronSystems/jsonlog"
 )
 
+// PluginStructuredData contains data that was passed to THOR by a plugin in order to be scanned.
+//
+// The keys and values in the given Data are defined by the plugin and thus cannot be known beforehand.
 type PluginStructuredData struct {
 	jsonlog.ObjectHeader
 
+	// The plugin that passed the data to THOR
 	Plugin string `json:"plugin" textlog:"-"`
 
+	// The data that was passed to THOR by the plugin
 	Data KeyValueList `json:"data" textlog:",inline"`
 }
 
@@ -22,52 +27,6 @@ func NewPluginStructuredData(plugin string) *PluginStructuredData {
 	return &PluginStructuredData{
 		ObjectHeader: jsonlog.ObjectHeader{
 			Type: typePluginStructuredData,
-		},
-		Plugin: plugin,
-	}
-}
-
-type PluginString struct {
-	jsonlog.ObjectHeader
-
-	Plugin string `json:"plugin" textlog:"-"`
-
-	String string `json:"string" textlog:"string"`
-}
-
-func (PluginString) observed() {}
-
-const typePluginString = "data from plugin"
-
-func init() { AddLogObjectType(typePluginString, &PluginString{}) }
-
-func NewPluginString(plugin string) *PluginString {
-	return &PluginString{
-		ObjectHeader: jsonlog.ObjectHeader{
-			Type: typePluginString,
-		},
-		Plugin: plugin,
-	}
-}
-
-type PluginFinding struct {
-	LogObjectHeader
-
-	Plugin string `json:"plugin" textlog:"-"`
-
-	LogDetails MessageFields `json:"details" textlog:",expand"`
-}
-
-func (PluginFinding) observed() {}
-
-const typePluginFinding = "finding from plugin"
-
-func init() { AddLogObjectType(typePluginFinding, &PluginFinding{}) }
-
-func NewPluginFinding(plugin string) *PluginFinding {
-	return &PluginFinding{
-		LogObjectHeader: jsonlog.ObjectHeader{
-			Type: typePluginFinding,
 		},
 		Plugin: plugin,
 	}

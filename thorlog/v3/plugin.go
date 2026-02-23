@@ -14,7 +14,7 @@ type PluginStructuredData struct {
 	Plugin string `json:"plugin" textlog:"-"`
 
 	// The data that was passed to THOR by the plugin
-	Data KeyValueList `json:"data" textlog:",inline"`
+	Data KeyValueList `json:"data" textlog:"data"`
 }
 
 func (PluginStructuredData) observed() {}

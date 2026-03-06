@@ -24,7 +24,7 @@ type File struct {
 	FileMode FileModeType `json:"-" textlog:"-"`
 
 	// MagicHeader is the magic header of the file (e.g. PE, ZIP, etc.)
-	MagicHeader string `json:"magic_header" textlog:"type,omitempty"`
+	MagicHeader string `json:"magic_header,omitempty" textlog:"type,omitempty"`
 
 	// FileHashes contains the MD5, SHA1, and SHA256 hashes of the file, provided that the file is regular and could be read
 	Hashes *FileHashes `json:"hashes,omitempty" textlog:",expand,omitempty"`
@@ -35,10 +35,10 @@ type File struct {
 	// Filetimes contains the file times of the file (e.g. created, modified, accessed, etc.)
 	Filetimes *Filetimes `json:"file_times,omitempty" textlog:",expand,omitempty"`
 
-	Size uint64 `json:"size" textlog:"size,omitempty"`
+	Size uint64 `json:"size,omitempty" textlog:"size,omitempty"`
 
 	// Permissions contains the permissions of the file. This can be either Unix or Windows permissions.
-	Permissions Permissions `json:"permissions" textlog:",expand,omitempty"`
+	Permissions Permissions `json:"permissions,omitempty" textlog:",expand,omitempty"`
 
 	// PeInfo contains information about the PE file, if the file is a PE file
 	PeInfo *PeInfo `json:"pe_info,omitempty" textlog:",expand,omitempty"`

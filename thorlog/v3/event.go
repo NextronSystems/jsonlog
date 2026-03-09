@@ -25,12 +25,12 @@ type Assessment struct {
 	// Text is the message THOR printed for this assessment.
 	// This is usually a summary based on this assessment's subject and level.
 	Text string `json:"message" textlog:"message"`
-	// Subject is the object assessed by THOR.
-	Subject ObservedObject `json:"subject" textlog:",expand"`
 	// Score is a metric that combines severity and certainty. The score is always in a range of 0 to 100;
 	// 0 indicates that the assessment found no suspicious indicators, whereas 100 indicates very high
 	// severity and certainty.
 	Score int64 `json:"score" textlog:"score"`
+	// Subject is the object assessed by THOR.
+	Subject ObservedObject `json:"subject" textlog:",expand"`
 	// Reasons describes the indicators that contributed to the score.
 	// This list is not necessarily comprehensive; THOR may cut off all reasons after the first few.
 	// If this is the case, an Issue with category IssueCategoryTruncated pointing to this field will be present.

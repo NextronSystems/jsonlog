@@ -55,8 +55,8 @@ type File struct {
 	// RecycleBinInfo contains information about the file if it was in the recycle bin
 	RecycleBinInfo *RecycleBinIndexFile `json:"recycle_bin_info,omitempty" textlog:",expand,omitempty"`
 
-	// WerInfo contains information about the file if it was a Windows Error Reporting crash report
-	WerInfo *WerCrashReport `json:"wer_info,omitempty" textlog:",expand,omitempty"`
+	// WERInfo contains information about the file if it was a Windows Error Reporting crash report
+	WERInfo *WERCrashReport `json:"wer_info,omitempty" textlog:",expand,omitempty"`
 
 	// Content contains extracts from the content of the file, typically focusing on any matched patterns.
 	Content *SparseData `json:"content,omitempty" textlog:"content,expand,omitempty"`

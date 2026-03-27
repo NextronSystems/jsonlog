@@ -33,11 +33,7 @@ type ProcessInfo struct {
 
 	Image *File `json:"image" textlog:"image,expand"`
 
-	ParentInfo struct {
-		Pid         int32  `json:"pid" textlog:"ppid"`
-		Exe         string `json:"exe" textlog:"parent"`
-		CommandLine string `json:"command" textlog:"parent_command"`
-	} `json:"parent_info,omitempty" textlog:",expand,omitempty"`
+	ParentInfo ParentProcessInfo `json:"parent_info,omitempty" textlog:",expand,omitempty"`
 
 	ProcessTree StringList `json:"tree" textlog:"tree,omitempty" jsonschema:"nullable"`
 
@@ -47,6 +43,12 @@ type ProcessInfo struct {
 	ProcessConnections `textlog:",expand"`
 
 	Sections Sections `json:"sections,omitempty" textlog:"-"`
+}
+
+type ParentProcessInfo struct {
+	Pid         int32  `json:"pid" textlog:"ppid"`
+	Exe         string `json:"exe" textlog:"parent"`
+	CommandLine string `json:"command" textlog:"parent_command"`
 }
 
 type Sections []Section

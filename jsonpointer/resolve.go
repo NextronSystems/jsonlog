@@ -33,7 +33,7 @@ func findByLabel(base reflect.Value, jsonLabel string) (reflect.Value, bool) {
 		return reflect.Value{}, false
 	}
 
-	for base.Kind() == reflect.Ptr || base.Kind() == reflect.Interface {
+	for base.Kind() == reflect.Pointer || base.Kind() == reflect.Interface {
 		if base.IsNil() {
 			return reflect.Value{}, false
 		}

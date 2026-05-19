@@ -10,7 +10,7 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-// NewReference creates a new reference to a field of a Object.
+// NewReference creates a new reference to a field of an Object.
 // The base must be a pointer to a struct implementing Object.
 // The field must be a pointer to a field within the base.
 func NewReference(base Object, field any) *Reference {
@@ -26,9 +26,9 @@ func NewReference(base Object, field any) *Reference {
 	}
 }
 
-// Reference is a reference to a field of a Object
+// Reference is a reference to a field of an Object
 type Reference struct {
-	Base         any // Must be a pointer to a Object
+	Base         any // Must be a pointer to an Object
 	PointedField any // Must be a pointer to a (possibly nested) field of Base
 
 	textLabel   string
@@ -52,8 +52,12 @@ func (r *Reference) ToJsonPointer() jsonpointer.Pointer {
 	return r.jsonPointer
 }
 
-var referenceType = reflect.TypeFor[Reference]()
+var referenceType = reflect.TypeOf((*Reference)(nil)).Elem()
 
+// findRelativeJsonPointer finds a JSON pointer from base to pointedField. The
+// base must be pointer. The pointed field should be a pointer to a field
+// within the base; if the pointed field is not found within the base, nil is
+// returned.
 func findRelativeJsonPointer(base reflect.Value, pointedField reflect.Value) jsonpointer.Pointer {
 	for {
 		if base.Equal(pointedField) {

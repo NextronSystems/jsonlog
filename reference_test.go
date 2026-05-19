@@ -111,6 +111,8 @@ func TestReference_ToJsonPointer(t *testing.T) {
 		{&test.Valuer.Subfield7, "/valuer/subfield7"},
 		{&test.SubObject, "/subobject"},
 		{&test.SubObject.Subfield8, "/subobject/subfield8"},
+		// test.Recursive not required here: if there is a flaw in the pointer
+		// search logic, it will panic when encountering this cycle.
 	}
 	for _, tt := range tests {
 		t.Run(tt.want, func(t *testing.T) {

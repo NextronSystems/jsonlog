@@ -14,10 +14,10 @@ import (
 // The base must be a pointer to a struct implementing Object.
 // The field must be a pointer to a field within the base.
 func NewReference(base Object, field any) *Reference {
-	if reflect.ValueOf(base).Kind() != reflect.Ptr {
+	if reflect.ValueOf(base).Kind() != reflect.Pointer {
 		panic("Base must be a pointer to a struct implementing Object")
 	}
-	if reflect.ValueOf(field).Kind() != reflect.Ptr {
+	if reflect.ValueOf(field).Kind() != reflect.Pointer {
 		panic("field must be a pointer to a field within base")
 	}
 	return &Reference{
@@ -42,7 +42,7 @@ func (r *Reference) ToJsonPointer() jsonpointer.Pointer {
 	}
 	baseValue := reflect.ValueOf(r.Base)
 	pointedValue := reflect.ValueOf(r.PointedField)
-	if pointedValue.Kind() != reflect.Ptr {
+	if pointedValue.Kind() != reflect.Pointer {
 		panic("PointedField must be a pointer")
 	}
 	r.jsonPointer = findRelativeJsonPointer(baseValue, pointedValue)
@@ -69,7 +69,7 @@ func findRelativeJsonPointer(base reflect.Value, pointedField reflect.Value) jso
 		if base.Type() == referenceType { // Don't recurse into other references
 			return nil
 		}
-		if base.Kind() == reflect.Ptr || base.Kind() == reflect.Interface {
+		if base.Kind() == reflect.Pointer || base.Kind() == reflect.Interface {
 			if base.IsNil() {
 				return nil
 			}
@@ -127,7 +127,7 @@ func (r *Reference) ToTextLabel() string {
 	}
 	baseValue := reflect.ValueOf(r.Base).Elem()
 	pointedValue := reflect.ValueOf(r.PointedField)
-	if pointedValue.Kind() != reflect.Ptr {
+	if pointedValue.Kind() != reflect.Pointer {
 		panic("PointedField must be a pointer")
 	}
 	r.textLabel, _ = findTextLabel(baseValue, reflect.ValueOf(r.PointedField))
@@ -147,7 +147,7 @@ func findTextLabel(base reflect.Value, pointedField reflect.Value) (string, bool
 	if base.Addr().Equal(pointedField) {
 		return "", true
 	}
-	if base.Kind() == reflect.Ptr || base.Kind() == reflect.Interface {
+	if base.Kind() == reflect.Pointer || base.Kind() == reflect.Interface {
 		base = base.Elem()
 	}
 	if base.Kind() != reflect.Struct {
@@ -160,7 +160,7 @@ func findTextLabel(base reflect.Value, pointedField reflect.Value) (string, bool
 			continue
 		}
 		var fieldPointer = field
-		if field.Kind() != reflect.Ptr {
+		if field.Kind() != reflect.Pointer {
 			fieldPointer = field.Addr()
 		}
 		var label string

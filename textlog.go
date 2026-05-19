@@ -86,7 +86,7 @@ func withUppercaseKeys(entry TextlogEntry) TextlogEntry {
 }
 
 func (t TextlogFormatter) toEntry(object reflect.Value) TextlogEntry {
-	for object.Kind() == reflect.Ptr || object.Kind() == reflect.Interface {
+	for object.Kind() == reflect.Pointer || object.Kind() == reflect.Interface {
 		if object.IsNil() {
 			return nil
 		}
@@ -138,7 +138,7 @@ func (t TextlogFormatter) toEntry(object reflect.Value) TextlogEntry {
 			} else {
 				// Add the field as a single value
 				key := logfield
-				if field.Kind() == reflect.Ptr {
+				if field.Kind() == reflect.Pointer {
 					field = field.Elem()
 				}
 				details = append(details, TextlogValuePair{

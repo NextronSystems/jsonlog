@@ -180,7 +180,7 @@ func findTextLabel(base reflect.Value, pointedField reflect.Value) (string, bool
 		fieldlabel := strings.ToUpper(tagModifiers[0])
 		tagModifiers = tagModifiers[1:]
 		var fullLabel string
-		if slices.Contains(tagModifiers, "expand") {
+		if slices.Contains(tagModifiers, TextlogModifierExpand) {
 			fullLabel = ConcatTextLabels(fieldlabel, label)
 		} else if label == "" {
 			fullLabel = fieldlabel

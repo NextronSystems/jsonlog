@@ -180,12 +180,14 @@ func findTextLabel(base reflect.Value, pointedField reflect.Value) (string, bool
 		fieldlabel := strings.ToUpper(tagModifiers[0])
 		tagModifiers = tagModifiers[1:]
 		var fullLabel string
-		if slices.Contains(tagModifiers, TextlogModifierExpand) {
+		if typefield.Anonymous || slices.Contains(tagModifiers, TextlogModifierExpand) {
 			fullLabel = ConcatTextLabels(fieldlabel, label)
 		} else if label == "" {
 			fullLabel = fieldlabel
 		} else {
-			fullLabel = label
+			// Unexpanded fields should not use labels of any subfield because it
+			// cannot be resolved unambiguously.
+			return "", false
 		}
 		return fullLabel, true
 	}

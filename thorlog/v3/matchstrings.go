@@ -187,7 +187,9 @@ func (f MatchString) String() string {
 			matchString += fmt.Sprintf(" at %#x", *f.Offset)
 		}
 	}
-	if f.Field != nil {
+	// Field may not be set. But its (text) label also might be empty, e.g., for
+	// matches on unexpanded fields.
+	if f.Field != nil && f.Field.String() != "" {
 		matchString += " in " + f.Field.String()
 	}
 

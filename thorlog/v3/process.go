@@ -46,6 +46,10 @@ type ProcessInfo struct {
 
 	ProcessConnections `textlog:",expand"`
 
+	Handles []ProcessHandle `json:"handles" textlog:"handles,expand"`
+
+	Threads []Thread `json:"threads" textlog:"threads,expand"`
+
 	Sections Sections `json:"sections,omitempty" textlog:"-"`
 }
 
@@ -94,6 +98,17 @@ type ProcessConnections struct {
 	ListenPorts     ProcessListenPorts  `json:"listen_ports" textlog:"listen_ports,omitempty" jsonschema:"nullable"`
 	Connections     []ProcessConnection `json:"connections" textlog:"-" jsonschema:"nullable"`
 	ConnectionCount int                 `json:"-" textlog:"connection_count"`
+}
+
+type ProcessHandle struct {
+	Name   string `json:"name" textlog:"name"`
+	Handle uint64 `json:"handle" textlog:"handle,omitempty"`
+	Type   string `json:"handle_type,omitempty" textlog:"type,omitempty"`
+}
+
+type Thread struct {
+	ThreadId uint32     `json:"id"`
+	Stack    StringList `json:"stack" jsonschema:"nullable"`
 }
 
 type ProcessListenPorts []uint32

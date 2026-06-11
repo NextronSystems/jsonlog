@@ -6,6 +6,7 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/NextronSystems/jsonlog"
 	"github.com/NextronSystems/jsonlog/jsonpointer"
 )
 
@@ -97,17 +98,22 @@ func (d KeyValueList) RelativeJsonPointer(pointee any) jsonpointer.Pointer {
 	return nil
 }
 
-func (d KeyValueList) RelativeTextPointer(pointee any) (string, bool) {
+var _ jsonlog.TextReferenceResolver = KeyValueList{}
+
+func (d KeyValueList) RelativeTextPointer(pointee any) (string, bool, bool) {
+	// Pure virtual: String() combines all key value pairs thus individual keys are not separate fields in the text log
+	virtual := true
+
 	stringPointer, isStringPointer := pointee.(*string)
 	if !isStringPointer {
-		return "", false
+		return "", false, false
 	}
 	for i := range d {
 		if &d[i].Value == stringPointer {
-			return d[i].Key, true
+			return d[i].Key, virtual, true
 		}
 	}
-	return "", false
+	return "", false, false
 }
 
 func (d KeyValueList) Find(key string) *string {

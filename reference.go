@@ -134,13 +134,19 @@ func (r *Reference) ToTextLabel() string {
 	return r.textLabel
 }
 
-// TextReferenceResolver is an interface that can be implemented by a struct to specify custom text labels for its fields
-// that are used in references.
+// TextReferenceResolver is an interface that can be implemented by a struct to
+// specify custom text labels for its fields that are used in references.
 type TextReferenceResolver interface {
-	// RelativeTextPointer returns a label for the given field of the object that implements this interface.
-	// If the field is not found, nil is returned.
+	// RelativeTextPointer returns a label for the given field of the object that
+	// implements this interface.
 	// The given field must be a pointer to a field of the object.
-	RelativeTextPointer(pointee any) (string, bool)
+	// Fields are marked virtual if the resolver provides a distinct label for
+	// this field but a corresponding TextlogMarshaler method does not list this
+	// field/label as a separate key.
+	// RelativeTextPointer returns the label as a string, a bool indicating
+	// whether the label is virtual, and a bool indicating whether the field was
+	// found.
+	RelativeTextPointer(pointee any) (string, bool, bool)
 }
 
 func findTextLabel(base reflect.Value, pointedField reflect.Value) (string, bool) {
@@ -165,10 +171,12 @@ func findTextLabel(base reflect.Value, pointedField reflect.Value) (string, bool
 		}
 		var label string
 		var labelFound bool
+		var labelVirtual bool
+		resolver, isResolver := fieldPointer.Interface().(TextReferenceResolver)
 		if fieldPointer.Equal(pointedField) {
 			label, labelFound = "", true
-		} else if resolver, isResolver := fieldPointer.Interface().(TextReferenceResolver); isResolver {
-			label, labelFound = resolver.RelativeTextPointer(pointedField.Interface())
+		} else if isResolver {
+			label, labelVirtual, labelFound = resolver.RelativeTextPointer(pointedField.Interface())
 		} else {
 			label, labelFound = findTextLabel(field, pointedField)
 		}
@@ -180,8 +188,15 @@ func findTextLabel(base reflect.Value, pointedField reflect.Value) (string, bool
 		fieldlabel := strings.ToUpper(tagModifiers[0])
 		tagModifiers = tagModifiers[1:]
 		var fullLabel string
-		if typefield.Anonymous || slices.Contains(tagModifiers, TextlogModifierExpand) {
-			fullLabel = ConcatTextLabels(fieldlabel, label)
+		if typefield.Anonymous || slices.Contains(tagModifiers, TextlogModifierExpand) || isResolver {
+			if labelVirtual {
+				// Virtual fields are actually not present in the text log (hence the
+				// name), so it does not make sense to combine the existent field label
+				// with the non-existent subfield label which would confuse the reader.
+				fullLabel = label
+			} else {
+				fullLabel = ConcatTextLabels(fieldlabel, label)
+			}
 		} else if label == "" {
 			fullLabel = fieldlabel
 		} else {

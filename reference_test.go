@@ -56,14 +56,15 @@ type TestEventValuer struct {
 	Ignore    string
 }
 
-func (t *TestEventValuer) RelativeTextPointer(pointee any) (string, bool) {
+func (t *TestEventValuer) RelativeTextPointer(pointee any) (string, bool, bool) {
+	virtual := true // We do not implement TextlogMarshaler
 	if pointee == &t.Subfield6 {
-		return "subfield6", true
+		return "subfield6", virtual, true
 	}
 	if pointee == &t.Subfield7 {
-		return "subfield7", true
+		return "subfield7", virtual, true
 	}
-	return "", false
+	return "", false, false
 }
 
 func (t *TestEventValuer) RelativeJsonPointer(pointee any) jsonpointer.Pointer {
@@ -147,8 +148,8 @@ func TestReference_ToTextPointer(t *testing.T) {
 		{&test.Unexpanded.SubField4, ""},
 		{&test.Subfield5, "SUBFIELD5"},
 		{&test.Valuer, "VALUER"},
-		{&test.Valuer.Subfield6, ""},
-		{&test.Valuer.Subfield7, ""},
+		{&test.Valuer.Subfield6, "subfield6"},
+		{&test.Valuer.Subfield7, "subfield7"},
 		{&test.SubObject, "SUBOBJECT"},
 		{&test.SubObject.Subfield8, "SUBOBJECT_SUBFIELD8"},
 	}

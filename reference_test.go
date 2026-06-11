@@ -1,6 +1,7 @@
 package jsonlog
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/NextronSystems/jsonlog/jsonpointer"
@@ -27,7 +28,7 @@ type testObject struct {
 
 	Subfield5 string `json:"subfield5" textlog:"subfield5"`
 
-	Valuer TestEventValuer `json:"valuer" textlog:"valuer"`
+	Resolver TestResolver `json:"resolver" textlog:"resolver"`
 
 	SubObject *SubObject `json:"subobject" textlog:"subobject,expand"`
 }
@@ -50,13 +51,19 @@ func (u UnexpandedSubstruct) String() string {
 	return u.SubField4
 }
 
-type TestEventValuer struct {
+type TestResolver struct {
 	Subfield6 string `json:"subfield6"`
 	Subfield7 string `json:"subfield7"`
 	Ignore    string
 }
 
-func (t *TestEventValuer) RelativeTextPointer(pointee any) (string, bool, bool) {
+func (t TestResolver) String() string {
+	return strings.Join([]string{t.Subfield6, t.Subfield7}, ", ")
+}
+
+var _ TextReferenceResolver = (*TestResolver)(nil)
+
+func (t *TestResolver) RelativeTextPointer(pointee any) (string, bool, bool) {
 	virtual := true // We do not implement TextlogMarshaler
 	if pointee == &t.Subfield6 {
 		return "subfield6", virtual, true
@@ -67,7 +74,9 @@ func (t *TestEventValuer) RelativeTextPointer(pointee any) (string, bool, bool) 
 	return "", false, false
 }
 
-func (t *TestEventValuer) RelativeJsonPointer(pointee any) jsonpointer.Pointer {
+var _ JsonReferenceResolver = (*TestResolver)(nil)
+
+func (t *TestResolver) RelativeJsonPointer(pointee any) jsonpointer.Pointer {
 	if pointee == &t.Subfield6 {
 		return jsonpointer.New("subfield6")
 	}
@@ -89,8 +98,8 @@ func TestReference_ToJsonPointer(t *testing.T) {
 	test.Nested.Substruct.SubField3 = "subfield3"
 	test.Unexpanded.SubField4 = "subfield4"
 	test.Subfield5 = "subfield5"
-	test.Valuer.Subfield6 = "subfield6"
-	test.Valuer.Subfield7 = "subfield7"
+	test.Resolver.Subfield6 = "subfield6"
+	test.Resolver.Subfield7 = "subfield7"
 	test.SubObject = &SubObject{Subfield8: "subfield8"}
 	test.Recursive = NewReference(&test, &test.Substruct)
 
@@ -107,9 +116,9 @@ func TestReference_ToJsonPointer(t *testing.T) {
 		{&test.Unexpanded, "/unexpanded"},
 		{&test.Unexpanded.SubField4, "/unexpanded/subfield4"},
 		{&test.Subfield5, "/subfield5"},
-		{&test.Valuer, "/valuer"},
-		{&test.Valuer.Subfield6, "/valuer/subfield6"},
-		{&test.Valuer.Subfield7, "/valuer/subfield7"},
+		{&test.Resolver, "/resolver"},
+		{&test.Resolver.Subfield6, "/resolver/subfield6"},
+		{&test.Resolver.Subfield7, "/resolver/subfield7"},
 		{&test.SubObject, "/subobject"},
 		{&test.SubObject.Subfield8, "/subobject/subfield8"},
 		// test.Recursive not required here: if there is a flaw in the pointer
@@ -130,9 +139,10 @@ func TestReference_ToTextPointer(t *testing.T) {
 	test.Nested.Substruct.SubField3 = "subfield3"
 	test.Unexpanded.SubField4 = "subfield4"
 	test.Subfield5 = "subfield5"
-	test.Valuer.Subfield6 = "subfield6"
-	test.Valuer.Subfield7 = "subfield7"
+	test.Resolver.Subfield6 = "subfield6"
+	test.Resolver.Subfield7 = "subfield7"
 	test.SubObject = &SubObject{Subfield8: "subfield8"}
+	test.Recursive = NewReference(&test, &test.Substruct)
 
 	var tests = []struct {
 		PointedField any
@@ -147,9 +157,9 @@ func TestReference_ToTextPointer(t *testing.T) {
 		{&test.Unexpanded, "UNEXPANDED"},
 		{&test.Unexpanded.SubField4, ""},
 		{&test.Subfield5, "SUBFIELD5"},
-		{&test.Valuer, "VALUER"},
-		{&test.Valuer.Subfield6, "subfield6"},
-		{&test.Valuer.Subfield7, "subfield7"},
+		{&test.Resolver, "RESOLVER"},
+		{&test.Resolver.Subfield6, "subfield6"},
+		{&test.Resolver.Subfield7, "subfield7"},
 		{&test.SubObject, "SUBOBJECT"},
 		{&test.SubObject.Subfield8, "SUBOBJECT_SUBFIELD8"},
 	}

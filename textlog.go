@@ -66,12 +66,10 @@ func (t TextlogFormatter) Format(object any) TextlogEntry {
 }
 
 const (
-	// modifierExpand, when applied to a struct field, causes the field to be expanded into its subfields
-	modifierExpand = "expand"
-	// modifierOmitempty causes a field to be omitted if it is the zero value or implements IsZero() and it returns true
-	modifierOmitempty = "omitempty"
-	// modifierExplicit causes a field to be marshalled even if the tag name is empty
-	modifierExplicit = "explicit"
+	// TextlogModifierExpand, when applied to a struct field, causes the field to be expanded into its subfields
+	TextlogModifierExpand = "expand"
+	// TextlogModifierOmitempty causes a field to be omitted if it is the zero value or implements IsZero() and it returns true
+	TextlogModifierOmitempty = "omitempty"
 )
 
 type TextlogMarshaler interface {
@@ -117,16 +115,16 @@ func (t TextlogFormatter) toEntry(object reflect.Value) TextlogEntry {
 			if logfield == "-" {
 				continue
 			}
-			if !typeField.Anonymous && textlogTag == "" && !slices.Contains(tagModifiers, modifierExplicit) {
+			if !typeField.Anonymous && textlogTag == "" {
 				continue
 			}
-			if slices.Contains(tagModifiers, modifierOmitempty) && isZero(field) {
+			if slices.Contains(tagModifiers, TextlogModifierOmitempty) && isZero(field) {
 				continue
 			}
 			if t.Omit != nil && t.Omit(tagModifiers, field.Interface()) {
 				continue
 			}
-			if typeField.Anonymous || slices.Contains(tagModifiers, modifierExpand) {
+			if typeField.Anonymous || slices.Contains(tagModifiers, TextlogModifierExpand) {
 				// Use the tag as a prefix for the subfields
 				subentry := t.toEntry(field)
 				for _, subentryValue := range subentry {

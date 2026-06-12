@@ -74,20 +74,25 @@ type Section struct {
 	Permissions RwxPermissions `json:"permissions"`
 }
 
+var _ jsonlog.TextReferenceResolver = (*Sections)(nil)
+
 // RelativeTextPointer implements the jsonlog.TextReferenceResolver interface for Sections.
 // It resolves a reference to a Section's SparseData field to a human-readable string.
-func (s *Sections) RelativeTextPointer(pointee any) (string, bool) {
+func (s *Sections) RelativeTextPointer(pointee any) (string, bool, bool) {
+	// Pure virtual: Sections are omitted in the textlog.
+	virtual := true
+
 	for i := range *s {
 		section := &(*s)[i]
 		if pointee == &section.SparseData {
 			if section.Name != "" {
-				return section.Name, true
+				return section.Name, virtual, true
 			} else {
-				return fmt.Sprintf("0x%x", section.Address), true
+				return fmt.Sprintf("0x%x", section.Address), virtual, true
 			}
 		}
 	}
-	return "", false
+	return "", false, false
 }
 
 type ProcessConnections struct {

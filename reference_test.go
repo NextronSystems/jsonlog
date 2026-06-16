@@ -31,6 +31,10 @@ type testObject struct {
 	Resolver TestResolver `json:"resolver" textlog:"resolver"`
 
 	SubObject *SubObject `json:"subobject" textlog:"subobject,expand"`
+
+	Slice []SliceSubstruct `json:"slice" textlog:"slice,expand"`
+
+	Map map[string]*MapSubstruct `json:"map" textlog:"map,expand"`
 }
 
 type AnonymousSubstruct struct {
@@ -91,7 +95,19 @@ type SubObject struct {
 	Subfield8 string `json:"subfield8" textlog:"subfield8"`
 }
 
-func TestReference_ToJsonPointer(t *testing.T) {
+type SliceSubstruct struct {
+	Subfield9 string `json:"subfield9" textlog:"subfield9"`
+}
+
+type MapSubstruct struct {
+	Subfield10 string `json:"subfield10" textlog:"subfield10"`
+}
+
+func (m MapSubstruct) String() string {
+	return m.Subfield10
+}
+
+func makeTestObject() testObject {
 	var test testObject
 	test.Substruct.SubField1 = "subfield1"
 	test.SubField2 = "subfield2"
@@ -102,6 +118,15 @@ func TestReference_ToJsonPointer(t *testing.T) {
 	test.Resolver.Subfield7 = "subfield7"
 	test.SubObject = &SubObject{Subfield8: "subfield8"}
 	test.Recursive = NewReference(&test, &test.Substruct)
+	test.Slice = []SliceSubstruct{{Subfield9: "slice"}}
+	test.Map = map[string]*MapSubstruct{mapKey: {Subfield10: "map"}}
+	return test
+}
+
+const mapKey = "key"
+
+func TestReference_ToJsonPointer(t *testing.T) {
+	test := makeTestObject()
 
 	var tests = []struct {
 		PointedField any
@@ -121,6 +146,8 @@ func TestReference_ToJsonPointer(t *testing.T) {
 		{&test.Resolver.Subfield7, "/resolver/subfield7"},
 		{&test.SubObject, "/subobject"},
 		{&test.SubObject.Subfield8, "/subobject/subfield8"},
+		{&test.Slice[0].Subfield9, "/slice/0/subfield9"},
+		{&test.Map[mapKey].Subfield10, "/map/key/subfield10"},
 		// test.Recursive not required here: if there is a flaw in the pointer
 		// search logic, it will panic when encountering this cycle.
 	}
@@ -133,16 +160,7 @@ func TestReference_ToJsonPointer(t *testing.T) {
 }
 
 func TestReference_ToTextPointer(t *testing.T) {
-	var test testObject
-	test.Substruct.SubField1 = "subfield1"
-	test.SubField2 = "subfield2"
-	test.Nested.Substruct.SubField3 = "subfield3"
-	test.Unexpanded.SubField4 = "subfield4"
-	test.Subfield5 = "subfield5"
-	test.Resolver.Subfield6 = "subfield6"
-	test.Resolver.Subfield7 = "subfield7"
-	test.SubObject = &SubObject{Subfield8: "subfield8"}
-	test.Recursive = NewReference(&test, &test.Substruct)
+	test := makeTestObject()
 
 	var tests = []struct {
 		PointedField any
@@ -162,6 +180,9 @@ func TestReference_ToTextPointer(t *testing.T) {
 		{&test.Resolver.Subfield7, "subfield7"},
 		{&test.SubObject, "SUBOBJECT"},
 		{&test.SubObject.Subfield8, "SUBOBJECT_SUBFIELD8"},
+		{&test.Slice[0].Subfield9, "SLICE_SUBFIELD9_1"},
+		// Map values aren't expanded and their subfields therefore aren't reachable in textlog
+		{&test.Map[mapKey].Subfield10, ""},
 	}
 	for _, tt := range tests {
 		t.Run(tt.want, func(t *testing.T) {

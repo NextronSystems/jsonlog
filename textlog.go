@@ -165,7 +165,7 @@ func (t TextlogFormatter) toEntry(object reflect.Value) TextlogEntry {
 		var details TextlogEntry
 		for _, key := range object.MapKeys() {
 			details = append(details, TextlogValuePair{
-				Key:   key.String(),
+				Key:   strings.ToUpper(key.String()),
 				Value: t.format(object.MapIndex(key).Interface(), nil),
 			})
 		}

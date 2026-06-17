@@ -54,11 +54,22 @@ func (r *Reference) ToJsonPointer() jsonpointer.Pointer {
 
 var referenceType = reflect.TypeOf((*Reference)(nil)).Elem()
 
+// pointerIfPossible returns a pointer to the specified value if it is addressable.
+// Otherwise, it returns the value itself.
+func pointerIfPossible(v reflect.Value) reflect.Value {
+	if v.CanAddr() {
+		return v.Addr()
+	}
+	return v
+}
+
 // findRelativeJsonPointer finds a JSON pointer from base to pointedField. The
 // base must be pointer. The pointed field should be a pointer to a field
 // within the base; if the pointed field is not found within the base, nil is
 // returned.
 func findRelativeJsonPointer(base reflect.Value, pointedField reflect.Value) jsonpointer.Pointer {
+	// If possible, use a pointer to the base; maybe JsonReferenceResolver is implemented as a pointer method
+	base = pointerIfPossible(base)
 	for {
 		if base.Equal(pointedField) {
 			return jsonpointer.Pointer{}
@@ -86,7 +97,7 @@ func findRelativeJsonPointer(base reflect.Value, pointedField reflect.Value) jso
 			if !typefield.IsExported() {
 				continue
 			}
-			pointer := findRelativeJsonPointer(field.Addr(), pointedField)
+			pointer := findRelativeJsonPointer(field, pointedField)
 			if pointer == nil {
 				continue
 			}
@@ -99,11 +110,24 @@ func findRelativeJsonPointer(base reflect.Value, pointedField reflect.Value) jso
 		return nil
 	case reflect.Slice, reflect.Array:
 		for i := 0; i < base.Len(); i++ {
-			pointer := findRelativeJsonPointer(base.Index(i).Addr(), pointedField)
+			elem := base.Index(i)
+			pointer := findRelativeJsonPointer(elem, pointedField)
 			if pointer == nil {
 				continue
 			}
 			return jsonpointer.New(strconv.Itoa(i)).Append(pointer...)
+		}
+		return nil
+	case reflect.Map:
+		if base.Type().Key().Kind() != reflect.String {
+			return nil
+		}
+		for _, key := range base.MapKeys() {
+			pointer := findRelativeJsonPointer(base.MapIndex(key), pointedField)
+			if pointer == nil {
+				continue
+			}
+			return jsonpointer.New(key.String()).Append(pointer...)
 		}
 		return nil
 	default:
@@ -150,63 +174,81 @@ type TextReferenceResolver interface {
 }
 
 func findTextLabel(base reflect.Value, pointedField reflect.Value) (string, bool) {
-	if base.Addr().Equal(pointedField) {
-		return "", true
+	if base.CanAddr() {
+		if base.Addr().Equal(pointedField) {
+			return "", true
+		}
 	}
 	if base.Kind() == reflect.Pointer || base.Kind() == reflect.Interface {
 		base = base.Elem()
 	}
-	if base.Kind() != reflect.Struct {
+	switch base.Kind() {
+	case reflect.Struct:
+		for i := 0; i < base.NumField(); i++ {
+			field := base.Field(i)
+			typefield := base.Type().Field(i)
+			if !typefield.IsExported() {
+				continue
+			}
+			var fieldPointer = field
+			if field.Kind() != reflect.Pointer && field.CanAddr() {
+				fieldPointer = field.Addr()
+			}
+			var label string
+			var labelFound bool
+			var labelVirtual bool
+			resolver, isResolver := fieldPointer.Interface().(TextReferenceResolver)
+			if fieldPointer.Equal(pointedField) {
+				label, labelFound = "", true
+			} else if isResolver {
+				label, labelVirtual, labelFound = resolver.RelativeTextPointer(pointedField.Interface())
+			} else {
+				label, labelFound = findTextLabel(field, pointedField)
+			}
+			if !labelFound {
+				continue
+			}
+			textlogTag := typefield.Tag.Get("textlog")
+			tagModifiers := strings.Split(textlogTag, ",")
+			fieldlabel := strings.ToUpper(tagModifiers[0])
+			tagModifiers = tagModifiers[1:]
+			var fullLabel string
+			if typefield.Anonymous || slices.Contains(tagModifiers, TextlogModifierExpand) || isResolver {
+				if labelVirtual {
+					// Virtual fields are actually not present in the text log (hence the
+					// name), so it does not make sense to combine the existent field label
+					// with the non-existent subfield label which would confuse the reader.
+					fullLabel = label
+				} else {
+					fullLabel = ConcatTextLabels(fieldlabel, label)
+				}
+			} else if label == "" {
+				fullLabel = fieldlabel
+			} else {
+				// Unexpanded fields should not use labels of any subfield because it
+				// cannot be resolved unambiguously.
+				return "", false
+			}
+			return fullLabel, true
+		}
+		return "", false
+	case reflect.Slice, reflect.Array:
+		for i := 0; i < base.Len(); i++ {
+			element := base.Index(i)
+			label, labelFound := findTextLabel(element, pointedField)
+			if !labelFound {
+				continue
+			}
+			return ConcatTextLabels(label, strconv.Itoa(i+1)), true
+		}
+		return "", false
+	case reflect.Map:
+		// Map values aren't addressable and thus the pointedField can't point to them;
+		// and they aren't expanded, therefore any references to subfields of map values also have no text label.
+		return "", false
+	default:
 		return "", false
 	}
-	for i := 0; i < base.NumField(); i++ {
-		field := base.Field(i)
-		typefield := base.Type().Field(i)
-		if !typefield.IsExported() {
-			continue
-		}
-		var fieldPointer = field
-		if field.Kind() != reflect.Pointer {
-			fieldPointer = field.Addr()
-		}
-		var label string
-		var labelFound bool
-		var labelVirtual bool
-		resolver, isResolver := fieldPointer.Interface().(TextReferenceResolver)
-		if fieldPointer.Equal(pointedField) {
-			label, labelFound = "", true
-		} else if isResolver {
-			label, labelVirtual, labelFound = resolver.RelativeTextPointer(pointedField.Interface())
-		} else {
-			label, labelFound = findTextLabel(field, pointedField)
-		}
-		if !labelFound {
-			continue
-		}
-		textlogTag := typefield.Tag.Get("textlog")
-		tagModifiers := strings.Split(textlogTag, ",")
-		fieldlabel := strings.ToUpper(tagModifiers[0])
-		tagModifiers = tagModifiers[1:]
-		var fullLabel string
-		if typefield.Anonymous || slices.Contains(tagModifiers, TextlogModifierExpand) || isResolver {
-			if labelVirtual {
-				// Virtual fields are actually not present in the text log (hence the
-				// name), so it does not make sense to combine the existent field label
-				// with the non-existent subfield label which would confuse the reader.
-				fullLabel = label
-			} else {
-				fullLabel = ConcatTextLabels(fieldlabel, label)
-			}
-		} else if label == "" {
-			fullLabel = fieldlabel
-		} else {
-			// Unexpanded fields should not use labels of any subfield because it
-			// cannot be resolved unambiguously.
-			return "", false
-		}
-		return fullLabel, true
-	}
-	return "", false
 }
 
 func ConcatTextLabels(prefix string, label string) string {

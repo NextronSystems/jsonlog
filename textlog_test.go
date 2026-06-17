@@ -67,16 +67,7 @@ func TestToDetails(t *testing.T) {
 }
 
 func TestTextlogFormatting(t *testing.T) {
-	var test testObject
-	test.Substruct.SubField1 = "subfield1"
-	test.SubField2 = "subfield2"
-	test.Nested.Substruct.SubField3 = "subfield3"
-	test.Unexpanded.SubField4 = "subfield4"
-	test.Subfield5 = "subfield5"
-	test.Resolver.Subfield6 = "subfield6"
-	test.Resolver.Subfield7 = "subfield7"
-	test.SubObject = &SubObject{Subfield8: "subfield8"}
-	test.Recursive = NewReference(&test, &test.Substruct)
+	test := makeTestObject()
 
 	formatter := TextlogFormatter{
 		FormatValue: func(data any, modifiers []string) string {
@@ -93,5 +84,7 @@ func TestTextlogFormatting(t *testing.T) {
 		{"SUBFIELD5", "subfield5"},
 		{"RESOLVER", "subfield6, subfield7"},
 		{"SUBOBJECT_SUBFIELD8", "subfield8"},
+		{"SLICE_SUBFIELD9_1", "slice"},
+		{"MAP_KEY", "map"},
 	}, details)
 }

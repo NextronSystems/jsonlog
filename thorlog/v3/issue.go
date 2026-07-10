@@ -20,4 +20,6 @@ const (
 	IssueCategoryTruncated = "truncated"
 	// IssueCategoryOutOfRange indicates that a value can't be represented in the format that the log uses.
 	IssueCategoryOutOfRange = "out_of_range"
+	// IssueCategoryCorruptedRead indicates that a value was corrupted during reading.
+	IssueCorruptedRead = "corrupted_read"
 )

@@ -102,7 +102,7 @@ func (s *Sections) RelativeTextPointer(pointee any) (string, bool, bool) {
 type ProcessConnections struct {
 	ListenPorts     ProcessListenPorts  `json:"listen_ports" textlog:"listen_ports,omitempty" jsonschema:"nullable"`
 	Connections     []ProcessConnection `json:"connections" textlog:"-" jsonschema:"nullable"`
-	ConnectionCount int                 `json:"-" textlog:"connection_count"`
+	ConnectionCount int                 `json:"connection_count" textlog:"connection_count"`
 }
 
 type ProcessHandle struct {
@@ -127,7 +127,7 @@ func (p ProcessListenPorts) String() string {
 }
 
 type ProcessConnection struct {
-	Fd uint32 `json:"-" textlog:"-"`
+	Fd uint32 `json:"fd" textlog:"-"`
 	// Status is the connection status, e.g. ESTABLISHED, LISTEN, etc.
 	Status     string `json:"status" textlog:"-"`
 	Ip         string `json:"ip" textlog:"ip"`

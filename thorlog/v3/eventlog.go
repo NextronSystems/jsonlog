@@ -9,11 +9,11 @@ import (
 type WindowsEventlogEntry struct {
 	jsonlog.ObjectHeader
 
-	EventId       uint16    `json:"-" textlog:"event_id"`
-	EventLevel    int       `json:"-" textlog:"event_level"`
-	EventTime     time.Time `json:"-" textlog:"event_time"`
-	EventChannel  string    `json:"-" textlog:"event_channel,omitempty"`
-	EventComputer string    `json:"-" textlog:"event_computer,omitempty"`
+	EventId       uint16    `json:"event_id" textlog:"event_id"`
+	EventLevel    int       `json:"level" textlog:"event_level"`
+	EventTime     time.Time `json:"time" textlog:"event_time"`
+	EventChannel  string    `json:"channel,omitempty" textlog:"event_channel,omitempty"`
+	EventComputer string    `json:"computer,omitempty" textlog:"event_computer,omitempty"`
 
 	Entry KeyValueList `json:"entry" textlog:"entry"`
 }
@@ -36,7 +36,7 @@ type EventlogProcessStart struct {
 	jsonlog.ObjectHeader
 	Process    string      `json:"process" textlog:"process"`
 	StartTimes []time.Time `json:"start_times" textlog:"-"`
-	Count      int         `json:"-" textlog:"count"`
+	Count      int         `json:"count" textlog:"count"`
 }
 
 func (EventlogProcessStart) observed() {}

@@ -21,7 +21,7 @@ type File struct {
 	Extension string `json:"extension" textlog:"extension,omitempty"`
 
 	// FileMode is the type of the file (e.g. file, directory, symlink, etc.)
-	FileMode FileModeType `json:"-" textlog:"-"`
+	FileMode FileModeType `json:"mode,omitempty" textlog:"-"`
 
 	// MagicHeader is the magic header of the file (e.g. PE, ZIP, etc.)
 	MagicHeader string `json:"magic_header,omitempty" textlog:"type,omitempty"`
@@ -98,7 +98,7 @@ type FileHashes struct {
 }
 
 type RecycleBinIndexFile struct {
-	Version          uint64    `json:"-" textlog:"-"`
+	Version          uint64    `json:"version" textlog:"-"`
 	OriginalFilename string    `json:"original_file_name" textlog:"original_filename"`
 	DeletionTime     time.Time `json:"deletion_time" textlog:"deletion_time"`
 	OriginalFilesize uint64    `json:"original_file_size" textlog:"-"`

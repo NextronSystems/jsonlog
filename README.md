@@ -3,6 +3,7 @@
 ## Introduction
 
 This library provides definitions of structures used in the output of the THOR APT Forensic Scanner. These structures can be used for different use cases:
+
 - generate a schema for THOR JSON logs
 - convert JSON logs into text logs
 - parse JSON logs
@@ -11,10 +12,10 @@ This library provides definitions of structures used in the output of the THOR A
 
 There are three versions of the THOR log format:
 
- - v1: The original THOR log format, used up to and including THOR version 10.7. This is equivalent to the THOR text format, simply serialized as JSON.
- - v2: The format used in THOR version 10.7 with the `--jsonv2` flag. This format introduced a more structured approach to logging,
-   with subobjects for reasons, files, and other entities. It is largely open-ended and allows for custom fields.
- - v3: The format used in THOR 11 and later. This format is more strict and versioned, with a defined schema. It introduces the concept of _reportable objects_.
+- v1: The original THOR log format, used up to and including THOR version 10.7. This is equivalent to the THOR text format, simply serialized as JSON.
+- v2: The format used in THOR version 10.7 with the `--jsonv2` flag. This format introduced a more structured approach to logging,
+  with subobjects for reasons, files, and other entities. It is largely open-ended and allows for custom fields.
+- v3: The format used in THOR 11 and later. This format is more strict and versioned, with a defined schema. It introduces the concept of _reportable objects_.
 
 ## Parsing Events
 
@@ -39,21 +40,36 @@ This type determines how the object should be interpreted and what fields it con
 ### Event Types
 
 The object types contained in a THOR log are `THOR finding` and `THOR message`:
- - Findings are the results of THOR's analysis, such as detected threats or anomalies.
- - Messages are informational or status updates from THOR, such as progress updates.
+
+- Findings are the results of THOR's analysis, such as detected threats or anomalies.
+- Messages are informational or status updates from THOR, such as progress updates.
 
 Both findings and messages are together called _events_.
 
+### Trace Types
+
+The THOR audit trail is a separate log that documents which objects a scan examined, 
+regardless of whether THOR reported anything about them.
+The object types contained in this log are `THOR audit record` and `THOR audit message`:
+
+- Audit records document a single object that THOR observed, together with the timestamps known for
+  it, any indicators that matched on it, and its relations to other audit records.
+- Audit messages are the messages that THOR printed during the scan, in a less verbose form than the
+  `THOR message` events.
+
+Both audit records and audit messages are together called _traces._
+
 ### Reportable Objects
 
-Findings may contain more objects, e.g. as a subject that they report. 
+Findings may contain more objects, e.g. as a subject that they report.
 Object types that can appear as subjects are called _reportable objects_.
 The most common reportable objects are:
+
 - `file`
 - `process`
 
 Reportable objects should contain only fields that relate directly to the object itself.
-E.g. when extracting a file from an archive, the file object should contain only fields 
+E.g. when extracting a file from an archive, the file object should contain only fields
 that relate to the file itself, not to the archive.
 The archive data will instead appear in the _context_ of the finding.
 

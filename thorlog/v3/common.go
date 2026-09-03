@@ -22,4 +22,4 @@ const (
 	Debug   = common.Debug
 )
 
-const currentVersion = "v3.0.0"
+const CurrentVersion = "v3.0.0"

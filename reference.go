@@ -258,7 +258,7 @@ func ConcatTextLabels(prefix string, label string) string {
 	if label == "" {
 		return prefix
 	}
-	if prefix == label {
+	if prefix == label || strings.HasPrefix(label, prefix+"_") { // Don't duplicate the prefix if it already exists
 		return label
 	}
 	return prefix + "_" + label

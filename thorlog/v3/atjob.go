@@ -8,6 +8,7 @@ type AtJob struct {
 	jsonlog.ObjectHeader
 
 	Command string `json:"command" textlog:"command"`
+	Image   *File  `json:"image" textlog:"image"`
 }
 
 const typeAtJob = "at job"

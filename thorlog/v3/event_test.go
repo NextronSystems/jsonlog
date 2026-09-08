@@ -11,87 +11,76 @@ import (
 	"github.com/NextronSystems/jsonlog/thorlog/common"
 )
 
-func TestContext_MarshalTextLog(t *testing.T) {
+func TestAncestors_MarshalTextLog(t *testing.T) {
 	tests := []struct {
 		name string
-		c    *Context
+		c    Ancestors
 		want string
 	}{
 		{
-			name: "empty context",
-			c:    &Context{},
+			name: "empty ancestors",
+			c:    nil,
 			want: "",
 		},
 		{
-			name: "context with unique related object",
-			c: &Context{
+			name: "single ancestor",
+			c: Ancestors{
 				{
-					Object: NewFile("path/to/file"),
-					Relations: []Relation{{
-						Name:   "file",
-						Unique: true,
-					}},
-				},
-			},
-			want: "FILE: path/to/file",
-		},
-		{
-			name: "context with related object group",
-			c: &Context{
-				{
-					Object: NewFile("path/to/file"),
-					Relations: []Relation{{
-						Name:   "file",
-						Unique: false,
-					}},
-				},
-				{
-					Object: NewFile("path/to/otherfile"),
-					Relations: []Relation{{
-						Name:   "file",
-						Unique: false,
-					}},
-				},
-			},
-			want: "FILE_1: path/to/file FILE_2: path/to/otherfile",
-		},
-		{
-			name: "context with different related objects",
-			c: &Context{
-				{
-					Object: NewFile("path/to/file"),
-					Relations: []Relation{{
-						Name:   "file",
-						Unique: false,
-					}},
-				},
-				{
-					Object: NewFile("path/to/otherfile"),
-					Relations: []Relation{{
-						Name:   "archive",
-						Unique: true,
-					}},
-				},
-			},
-			want: "FILE_1: path/to/file ARCHIVE_FILE: path/to/otherfile",
-		},
-		{
-			name: "context with object related in two ways",
-			c: &Context{
-				{
-					Object: NewFile("path/to/file"),
-					Relations: []Relation{{
-						Name:   "parent",
-						Type:   "derived from",
-						Unique: true,
-					}, {
-						Name:   "origin",
-						Type:   "derived from",
-						Unique: true,
-					}},
+					Object:   NewFile("path/to/file"),
+					Distance: 1,
+					TopLevel: true,
 				},
 			},
 			want: "PARENT_FILE: path/to/file",
+		},
+		{
+			name: "two ancestors",
+			c: Ancestors{
+				{
+					Object:   NewFile("path/to/file"),
+					Distance: 1,
+				},
+				{
+					Object:   NewFile("path/to/otherfile"),
+					Distance: 2,
+					TopLevel: true,
+				},
+			},
+			want: "PARENT_FILE: path/to/file ORIGIN_FILE: path/to/otherfile",
+		},
+		{
+			name: "ancestors with middle ancestor invisible",
+			c: Ancestors{
+				{
+					Object:   NewFile("path/to/file"),
+					Distance: 1,
+				},
+				{
+					Object:   NewFile("path/to/otherfile"),
+					Distance: 3,
+					TopLevel: true,
+				},
+			},
+			want: "PARENT_FILE: path/to/file ORIGIN_FILE: path/to/otherfile",
+		},
+		{
+			name: "three ancestors",
+			c: Ancestors{
+				{
+					Object:   NewFile("path/to/file"),
+					Distance: 1,
+				},
+				{
+					Object:   NewFile("path/to/middlefile"),
+					Distance: 2,
+				},
+				{
+					Object:   NewFile("path/to/otherfile"),
+					Distance: 3,
+					TopLevel: true,
+				},
+			},
+			want: "PARENT_FILE: path/to/file ORIGIN_FILE: path/to/otherfile",
 		},
 	}
 	var formatter jsonlog.TextlogFormatter
@@ -130,12 +119,15 @@ func TestAssessment_UnmarshalJSON(t *testing.T) {
 			},
 			Text:    "This is a test assessment",
 			Subject: NewFile("path/to/file"),
-			EventContext: Context{
+			Ancestors: Ancestors{
 				{
-					Object: NewAtJob(),
-					Relations: []Relation{{
-						Type: "related to",
-					}},
+					Object:   NewAtJob(),
+					Distance: 1,
+				},
+			},
+			Derivatives: []Derivative{
+				{
+					Object: NewAuditLogEntry(),
 				},
 			},
 			Reasons: []Reason{

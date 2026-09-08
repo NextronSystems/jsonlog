@@ -6,6 +6,11 @@ import (
 	"github.com/NextronSystems/jsonlog"
 )
 
+type ScheduledTaskCommand struct {
+	Image   *File  `json:"image" textlog:"image"`
+	Command string `json:"command" textlog:"command"`
+}
+
 // ScheduledTask describes a Windows Scheduled Task.
 //
 // See also the Microsoft documentation at https://learn.microsoft.com/en-us/windows/win32/taskschd/task-scheduler-reference
@@ -19,7 +24,7 @@ type ScheduledTask struct {
 	Path string `json:"path" textlog:"path"`
 
 	// Commands executed when this scheduled task activates. Commands each include both image and arguments.
-	Commands StringList `json:"commands" textlog:"command,omitempty"`
+	Commands []ScheduledTaskCommand `json:"commands" textlog:",expand"`
 	// COM Handlers (as GUIDs) invoked when this scheduled task activates.
 	ComHandlers StringList `json:"com_handlers,omitempty" textlog:"com_handler,expand,omitempty"`
 

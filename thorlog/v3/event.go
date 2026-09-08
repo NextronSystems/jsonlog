@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
-	"strconv"
 	"strings"
 
 	"github.com/NextronSystems/jsonlog"
@@ -37,14 +36,11 @@ type Assessment struct {
 	Reasons []Reason `json:"reasons" textlog:",expand"`
 	// ReasonCount contains the total number of reasons (before any truncations).
 	ReasonCount int `json:"reason_count,omitempty" textlog:"reasons_count,omitempty"`
-	// EventContext contains other objects that may be relevant for an analyst and their relation to the
-	// Subject.
-	//
-	// To give an example: if the Subject is a file in a ZIP archive,
-	// the ZIP archive would be listed in the EventContext with a relation type of "derives from"
-	// and a relation name of "parent", indicating that the Subject derives from this object,
-	// which is its parent.
-	EventContext Context `json:"context" textlog:",expand" jsonschema:"nullable"`
+	// Ancestors contains information about objects that are the subject's ancestors: E.g. if the subject is a file in a nested ZIP, each of the nested ZIPs is an ancestor.
+	// Ancestors does not necessarily include information about all ancestors, but it will always include information about at least the topmost ancestor and the parent.
+	Ancestors Ancestors `json:"ancestors" textlog:",expand"`
+	// Derivatives contains information about objects that have been referenced in the subject.
+	Derivatives []Derivative `json:"derivatives" textlog:"file,expand"`
 	// Issues lists any problems that THOR encountered when trying to create a JSON struct for this assessment.
 	// This may include e.g. overly long fields that were truncated, fields that could not be rendered to JSON,
 	// or similar problems.
@@ -117,69 +113,42 @@ func (a *Assessment) UnmarshalJSON(data []byte) error {
 
 var _ common.Event = (*Assessment)(nil)
 
-type Context []ContextObject
+type Ancestors []Ancestor
 
-// ContextObject describes a relation of an object to another.
-type ContextObject struct {
+type Ancestor struct {
+	Per      string         `json:"per"`
+	Object   ObservedObject `json:"object"`
+	TopLevel bool           `json:"top_level,omitempty"`
+	Distance int            `json:"distance"`
+}
+
+type Derivative struct {
 	Object ObservedObject `json:"object" textlog:",expand"`
-	// Relations describes how the object relates to the assessed subject.
-	// There may be multiple relations, e.g. if the object is both the parent and the topmost ancestor of the subject.
-	//
-	// Relations should be ordered by relevance, i.e. the most important relation should be first.
-	// Only the first (and most relevant) relation is used for text log formatting.
-	Relations []Relation `json:"relations" textlog:",expand" jsonschema:"minItems=1"`
+	// Via is a reference to the field that contains a link to Object.
+	Via *jsonlog.Reference `json:"via"`
 }
 
-type Relation struct {
-	Type   string `json:"relation_type"` // RelationType is used to specify the type of relation, e.g. "derives from" or "related to"
-	Name   string `json:"relation_name"` // RelationName is used to specify the name of the relation, e.g. "parent". It is optional.
-	Unique bool   `json:"unique"`        // Unique indicates whether the relation is unique, i.e. there can only be one object with this relation type / name in the context.
-}
-
-func (c *ContextObject) UnmarshalJSON(data []byte) error {
-	type plainContextObject ContextObject
-	var rawContextObject struct {
+func (a *Ancestor) UnmarshalJSON(data []byte) error {
+	type plainAncestor Ancestor
+	var rawAncestor struct {
 		Object EmbeddedObject `json:"object"`
-		plainContextObject
+		plainAncestor
 	}
-	if err := json.Unmarshal(data, &rawContextObject); err != nil {
+	if err := json.Unmarshal(data, &rawAncestor); err != nil {
 		return err
 	}
-	reportableObject, isReportable := rawContextObject.Object.Object.(ObservedObject)
+	reportableObject, isReportable := rawAncestor.Object.Object.(ObservedObject)
 	if !isReportable {
-		return fmt.Errorf("object of type %q must implement the ObservedObject interface", rawContextObject.Object.Object.EmbeddedHeader().Type)
+		return fmt.Errorf("object of type %q must implement the ObservedObject interface", rawAncestor.Object.Object.EmbeddedHeader().Type)
 	}
-	*c = ContextObject(rawContextObject.plainContextObject) // Copy the fields from rawContextObject to c
-	c.Object = reportableObject
+	*a = Ancestor(rawAncestor.plainAncestor) // Copy the fields from rawAncestor to a
+	a.Object = reportableObject
 	return nil
 }
 
 const omitInContext = "omitincontext"
 
-func (c Context) MarshalTextLog(t jsonlog.TextlogFormatter) jsonlog.TextlogEntry {
-	type objectsByRelation struct {
-		Relation Relation
-		Objects  []ContextObject
-	}
-	var elementsByRelation []objectsByRelation
-	for _, element := range c {
-		var groupExists bool
-		if len(element.Relations) == 0 {
-			continue
-		}
-		// only use the first relation for textlog conversion
-		relation := element.Relations[0]
-		for i := range elementsByRelation {
-			if elementsByRelation[i].Relation == relation {
-				elementsByRelation[i].Objects = append(elementsByRelation[i].Objects, element)
-				groupExists = true
-				break
-			}
-		}
-		if !groupExists {
-			elementsByRelation = append(elementsByRelation, objectsByRelation{Relation: relation, Objects: []ContextObject{element}})
-		}
-	}
+func (a Ancestors) MarshalTextLog(t jsonlog.TextlogFormatter) jsonlog.TextlogEntry {
 	oldOmit := t.Omit
 	t.Omit = func(modifiers []string, value any) bool {
 		if slices.Contains(modifiers, omitInContext) {
@@ -190,19 +159,21 @@ func (c Context) MarshalTextLog(t jsonlog.TextlogFormatter) jsonlog.TextlogEntry
 		}
 		return false // Default behavior is to not omit any fields
 	}
-
 	var result jsonlog.TextlogEntry
-	for _, group := range elementsByRelation {
-		for g, element := range group.Objects {
-			marshaledElement := t.Format(element)
-			for i := range marshaledElement {
-				marshaledElement[i].Key = jsonlog.ConcatTextLabels(strings.ToUpper(group.Relation.Name), marshaledElement[i].Key)
-				if !group.Relation.Unique {
-					marshaledElement[i].Key = jsonlog.ConcatTextLabels(marshaledElement[i].Key, strconv.Itoa(g+1))
-				}
-			}
-			result = append(result, marshaledElement...)
+	for _, ancestor := range a {
+		var prefix string
+		if ancestor.Distance == 0 {
+			prefix = "parent"
+		} else if ancestor.TopLevel {
+			prefix = "origin"
+		} else {
+			continue
 		}
+		marshaledElement := t.Format(ancestor.Object)
+		for i := range marshaledElement {
+			marshaledElement[i].Key = jsonlog.ConcatTextLabels(strings.ToUpper(prefix), marshaledElement[i].Key)
+		}
+		result = append(result, marshaledElement...)
 	}
 	return result
 }

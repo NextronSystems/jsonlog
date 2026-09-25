@@ -51,11 +51,11 @@ func (h *HostInfo) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	*h = HostInfo(unmarshalableInfo.hostInfoClone)
-	if platformInfo, isPlatformInfo := unmarshalableInfo.Platform.Object.(PlatformInfo); isPlatformInfo {
-		h.Platform = platformInfo
-	} else {
+	platformInfo, isPlatformInfo := unmarshalableInfo.Platform.Object.(PlatformInfo)
+	if !isPlatformInfo && unmarshalableInfo.Platform.Object != nil {
 		return fmt.Errorf("platform information has invalid type %s", unmarshalableInfo.Platform.Object.EmbeddedHeader().Type)
 	}
+	h.Platform = platformInfo
 	return nil
 }
 

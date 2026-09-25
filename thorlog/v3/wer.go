@@ -15,7 +15,7 @@ import (
 // (WerReportCreate()) and the WER_REPORT_UI enumeration that holds additional
 // error details if present.
 //
-// [1] https://learn.microsoft.com/en-us/windows/win32/api/werapi/ns-werapi-wer_report_information 
+// [1] https://learn.microsoft.com/en-us/windows/win32/api/werapi/ns-werapi-wer_report_information
 // [2] https://learn.microsoft.com/en-us/windows/win32/api/werapi/ .
 type WERCrashReport struct {
 	ReportType WERReportType `json:"type" textlog:"reporttype"`

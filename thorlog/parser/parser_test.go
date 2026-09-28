@@ -130,7 +130,9 @@ func TestParseEvent(t *testing.T) {
 		},
 		{
 			"JsonV3Assessment",
-			`{"type":"THOR assessment","meta":{"time":"2024-09-24T14:18:46.190394329+02:00","level":"Alert","module":"Test","scan_id":"abdc","event_id":"abdas","hostname":"aserarsd"},"message":"This is a test assessment","subject":{"type":"file","path":"path/to/file"},"score":70,"reasons":[{"type":"reason","summary":"Reason 1","signature":{"score":70,"ref":null,"origin":"internal","kind":""},"matched":null}],"reason_count":0,"context":[{"object":{"type":"at job"},"relation":"","unique":false}],"log_version":"v3"}`,
+			`{"type":"THOR assessment","meta":{"time":"2024-09-24T14:18:46.190394329+02:00","level":"Alert","module":"Test","scan_id":"abdc","event_id":"abdas","hostname":"aserarsd"},
+"message":"This is a test assessment","subject":{"type":"file","path":"path/to/file"},"score":70,"reasons":[{"type":"reason","summary":"Reason 1","signature":{"score":70,"ref":null,"origin":"internal","kind":""},"matched":null}],"reason_count":0,
+"ancestors":[{"object":{"type":"at job"},"distance":1,"top_level":false}],"derivatives":[{"object":{"type":"at job"}}],"log_version":"v3"}`,
 			&thorlog.Assessment{
 				ObjectHeader: jsonlog.ObjectHeader{
 					Type: "THOR assessment",
@@ -164,7 +166,17 @@ func TestParseEvent(t *testing.T) {
 					},
 				},
 				ReasonCount: 0,
-				EventContext: thorlog.Context{
+				Ancestors: thorlog.Ancestors{
+					{
+						Object: &thorlog.AtJob{
+							ObjectHeader: jsonlog.ObjectHeader{
+								Type: "at job",
+							},
+						},
+						Distance: 1,
+					},
+				},
+				Derivatives: []thorlog.Derivative{
 					{
 						Object: &thorlog.AtJob{
 							ObjectHeader: jsonlog.ObjectHeader{

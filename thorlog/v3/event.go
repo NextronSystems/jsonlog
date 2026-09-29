@@ -10,7 +10,6 @@ import (
 	"github.com/NextronSystems/jsonlog"
 	"github.com/NextronSystems/jsonlog/jsonpointer"
 	"github.com/NextronSystems/jsonlog/thorlog/common"
-	"golang.org/x/exp/slices"
 )
 
 // Assessment is a summary of a Subject's analysis by THOR.
@@ -157,16 +156,7 @@ func (a *Ancestor) UnmarshalJSON(data []byte) error {
 }
 
 func (a Ancestors) MarshalTextLog(t jsonlog.TextlogFormatter) jsonlog.TextlogEntry {
-	oldOmit := t.Omit
-	t.Omit = func(modifiers []string, value any) bool {
-		if slices.Contains(modifiers, omitInContext) {
-			return true // Omit fields that are marked with "omitincontext"
-		}
-		if oldOmit != nil {
-			return oldOmit(modifiers, value) // Call the original omit function if it exists
-		}
-		return false // Default behavior is to not omit any fields
-	}
+	t = withOmitInContext(t)
 	var result jsonlog.TextlogEntry
 	for _, ancestor := range a {
 		var prefix string
@@ -193,7 +183,22 @@ type Derivative struct {
 	Object ObservedObject `json:"object" textlog:",expand"`
 }
 
-const omitInContext = "omitincontext"
+// withOmitInContext returns a formatter that additionally omits all fields tagged with `context:"omit"`.
+// This tag marks fields that are too verbose to be repeated for an object that is only
+// logged as context (ancestor or derivative) of another object.
+func withOmitInContext(t jsonlog.TextlogFormatter) jsonlog.TextlogFormatter {
+	oldOmit := t.Omit
+	t.Omit = func(field reflect.StructField, value any) bool {
+		if field.Tag.Get("context") == "omit" {
+			return true
+		}
+		if oldOmit != nil {
+			return oldOmit(field, value)
+		}
+		return false
+	}
+	return t
+}
 
 func (d *Derivative) UnmarshalJSON(data []byte) error {
 	type plainDerivative Derivative
@@ -214,16 +219,7 @@ func (d *Derivative) UnmarshalJSON(data []byte) error {
 }
 
 func (d Derivative) MarshalTextLog(t jsonlog.TextlogFormatter) jsonlog.TextlogEntry {
-	oldOmit := t.Omit
-	t.Omit = func(modifiers []string, value any) bool {
-		if slices.Contains(modifiers, omitInContext) {
-			return true // Omit fields that are marked with "omitincontext"
-		}
-		if oldOmit != nil {
-			return oldOmit(modifiers, value) // Call the original omit function if it exists
-		}
-		return false // Default behavior is to not omit any fields
-	}
+	t = withOmitInContext(t)
 	type plainDerivative Derivative // Wrap this struct to not implement TextlogMarshaler
 	return t.Format(plainDerivative(d))
 }

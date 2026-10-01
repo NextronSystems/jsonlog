@@ -30,9 +30,10 @@ type TextlogValuePair struct {
 type TextlogFormatter struct {
 	// FormatValue is a function that formats a single value into a string. If it is nil, fmt.Sprint is used.
 	FormatValue func(data any, modifiers []string) string
-	// Omit is a function that determines whether a field should be omitted from the log entry.
+	// Omit is a function that determines whether a struct field should be omitted from the log entry.
+	// It receives the full struct field (including all of its tags) and the field's value.
 	// If it is nil, no fields are omitted.
-	Omit func(modifiers []string, value any) bool
+	Omit func(field reflect.StructField, value any) bool
 }
 
 func (t TextlogFormatter) format(data any, modifiers []string) string {
@@ -121,7 +122,7 @@ func (t TextlogFormatter) toEntry(object reflect.Value) TextlogEntry {
 			if slices.Contains(tagModifiers, TextlogModifierOmitempty) && isZero(field) {
 				continue
 			}
-			if t.Omit != nil && t.Omit(tagModifiers, field.Interface()) {
+			if t.Omit != nil && t.Omit(typeField, field.Interface()) {
 				continue
 			}
 			if typeField.Anonymous || slices.Contains(tagModifiers, TextlogModifierExpand) {

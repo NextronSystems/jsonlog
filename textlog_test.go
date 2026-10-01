@@ -2,6 +2,7 @@ package jsonlog
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 	"time"
 
@@ -87,4 +88,33 @@ func TestTextlogFormatting(t *testing.T) {
 		{"SLICE_SUBFIELD9_1", "slice"},
 		{"MAP_KEY", "map"},
 	}, details)
+}
+
+func TestTextlogOmit(t *testing.T) {
+	type omitTestObject struct {
+		Kept    string `json:"kept" textlog:"kept"`
+		Omitted string `json:"omitted" textlog:"omitted" context:"omit"`
+		Nested  struct {
+			Omitted string `json:"omitted" textlog:"omitted" context:"omit"`
+			Kept    int    `json:"kept" textlog:"kept"`
+		} `json:"nested" textlog:"nested,expand"`
+	}
+	var test omitTestObject
+	test.Kept = "kept"
+	test.Omitted = "omitted"
+	test.Nested.Omitted = "omitted"
+	test.Nested.Kept = 42
+
+	formatter := TextlogFormatter{
+		FormatValue: func(data any, modifiers []string) string {
+			return "formatted:" + fmt.Sprint(data)
+		},
+		Omit: func(field reflect.StructField, value any) bool {
+			return field.Tag.Get("context") == "omit"
+		},
+	}
+	assert.Equal(t, TextlogEntry{
+		{"KEPT", "formatted:kept"},
+		{"NESTED_KEPT", "formatted:42"},
+	}, formatter.Format(test))
 }

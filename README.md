@@ -22,13 +22,13 @@ There are three versions of the THOR log format:
 There is a parser in the `thorlog/parser` package which can be used to parse an event.
 This parser is version aware and can handle all versions of the THOR log format.
 The result of the parsing is a `common.Event` object, which is a version-agnostic representation of a THOR event.
-It can be cast to the version-specific implementation of this interface, e.g. `thorlog.Finding` for a finding in version 3.
+It can be cast to the version-specific implementation of this interface, e.g. `thorlog.Assessment` for an assessment in version 3.
 
 ## Textlog Conversion
 
 The `jsonlog.TextlogFormatter` type provides a way to convert an object to a text log format.
 
-This formatter can be used to convert findings and messages to a human-readable format.
+This formatter can be used to convert assessments and messages to a human-readable format.
 However, the text log format is not as rich as the JSON format and may not contain all fields.
 When in doubt, use the JSON format for analysis.
 
@@ -39,12 +39,12 @@ This type determines how the object should be interpreted and what fields it con
 
 ### Event Types
 
-The object types contained in a THOR log are `THOR finding` and `THOR message`:
+The object types contained in a THOR log are `THOR assessment` and `THOR message`:
 
-- Findings are the results of THOR's analysis, such as detected threats or anomalies.
+- An assessment is THOR's verdict on a single object. The object is not necessarily suspicious. Its score (0–100) reflects severity and certainty, and its reasons list the indicators that contributed to that score.
 - Messages are informational or status updates from THOR, such as progress updates.
 
-Both findings and messages are together called _events_.
+Both assessments and messages are together called _events_.
 
 ### Audit Entry Types
 
@@ -61,7 +61,7 @@ Both audit records and audit messages are together called _audit entries_.
 
 ### Reportable Objects
 
-Findings may contain more objects, e.g. as a subject that they report.
+Assessments may contain more objects, e.g. as the subject that they assess.
 Object types that can appear as subjects are called _reportable objects_.
 The most common reportable objects are:
 
@@ -71,7 +71,7 @@ The most common reportable objects are:
 Reportable objects should contain only fields that relate directly to the object itself.
 E.g. when extracting a file from an archive, the file object should contain only fields
 that relate to the file itself, not to the archive.
-The archive data will instead appear in the _context_ of the finding.
+The archive data will instead appear in the `ancestors` of the assessment.
 
 ## Schema
 

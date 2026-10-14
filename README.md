@@ -71,7 +71,7 @@ The most common reportable objects are:
 Reportable objects should contain only fields that relate directly to the object itself.
 E.g. when extracting a file from an archive, the file object should contain only fields
 that relate to the file itself, not to the archive.
-The archive data will instead appear in the _ancestors_ of the assessment.
+The archive data will instead appear in the `ancestors` of the assessment.
 
 ## Schema
 

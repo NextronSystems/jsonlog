@@ -1,6 +1,8 @@
 package thorlog
 
 import (
+	"time"
+
 	"github.com/NextronSystems/jsonlog"
 )
 
@@ -11,6 +13,9 @@ type AntiVirusProduct struct {
 	Status          string `json:"status" textlog:"status"`
 	SignatureStatus string `json:"signature_status" textlog:"signature_status"`
 	Path            string `json:"path" textlog:"path"`
+	// SignatureUpdated is the time when the product's signatures were last updated.
+	// It is only available for products that report this information.
+	SignatureUpdated time.Time `json:"signature_updated,omitzero" textlog:"signature_updated,omitempty"`
 }
 
 func (AntiVirusProduct) observed() {}
@@ -33,6 +38,10 @@ type AntiVirusExclude struct {
 
 	Type      string `json:"exclusion_type" textlog:"type"`
 	Exclusion string `json:"exclusion" textlog:"exclusion"`
+	// Modified is the last write time of the registry key that holds this exclusion.
+	// Since all exclusions of the same type share that key, this is the time when any
+	// exclusion of this type was last added or removed, not necessarily this one.
+	Modified time.Time `json:"modified,omitzero" textlog:"modified,omitempty"`
 }
 
 func (AntiVirusExclude) observed() {}

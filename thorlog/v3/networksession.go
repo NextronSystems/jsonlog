@@ -11,7 +11,9 @@ type NetworkSession struct {
 	ClientType string        `json:"client_type" textlog:"client_type"`
 	Active     time.Duration `json:"active" textlog:"active"`
 	Idle       time.Duration `json:"idle" textlog:"idle"`
-	NumOpens   int           `json:"num_opens" textlog:"num_opens"`
+	// Established is the absolute time when the session was opened.
+	Established time.Time `json:"established,omitzero" textlog:"established,omitempty"`
+	NumOpens    int       `json:"num_opens" textlog:"num_opens"`
 }
 
 func (NetworkSession) observed() {}

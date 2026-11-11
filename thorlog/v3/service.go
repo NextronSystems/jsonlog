@@ -60,6 +60,7 @@ type WindowsService struct {
 	ServiceType    string    `json:"service_type" textlog:"service_type"`
 	User           string    `json:"user" textlog:"user"`
 	Description    string    `json:"description" textlog:"description"`
+	Command        string    `json:"command" textlog:"command"`
 	FailureCommand string    `json:"failure_command" textlog:"failure_command,omitempty"`
 	Image          *File     `json:"image" textlog:"image,expand"`
 }

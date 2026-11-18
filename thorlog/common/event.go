@@ -30,6 +30,9 @@ type LogEventMetadata struct {
 	ScanID string `json:"scan_id" textlog:"scanid,omitempty"`
 	// A unique ID for this event.
 	// The ID is transient and the same element may have different IDs across multiple scans.
+	//
+	// In v3 events, it is guaranteed that the string is a UUID, and it is also guaranteed
+	// to be unique across multiple scans.
 	GenID string `json:"event_id,omitempty" textlog:"uid,omitempty"`
 	// The hostname of the machine where this event was generated.
 	Source string `json:"hostname" textlog:"-"`

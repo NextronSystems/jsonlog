@@ -13,6 +13,9 @@ type LoggedInUser struct {
 	Server       string `json:"server,omitempty" textlog:"server,omitempty"`
 	Domain       string `json:"domain,omitempty" textlog:"domain,omitempty"`
 	OtherDomains string `json:"other_domains,omitempty" textlog:"other_domains,omitempty"`
+
+	// LogonTime is the time when the user logged on, if it is known.
+	LogonTime time.Time `json:"logon_time,omitzero" textlog:"logon_time,omitempty"`
 }
 
 func (LoggedInUser) observed() {}
@@ -65,6 +68,9 @@ type UnixUser struct {
 	Shell       string   `json:"shell" textlog:"shell"`
 	Crontab     string   `json:"crontab" textlog:"-"`
 	AccessFiles []string `json:"access_files" textlog:"-" jsonschema:"nullable"`
+	// PasswordChanged is the day on which the user's password was last changed,
+	// taken from /etc/shadow. It has a granularity of one day.
+	PasswordChanged time.Time `json:"password_changed,omitzero" textlog:"password_changed,omitempty"`
 }
 
 func (UnixUser) observed() {}

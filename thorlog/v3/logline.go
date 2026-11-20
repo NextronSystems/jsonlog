@@ -1,6 +1,8 @@
 package thorlog
 
 import (
+	"time"
+
 	"github.com/NextronSystems/jsonlog"
 )
 
@@ -9,6 +11,8 @@ type LogLine struct {
 
 	LineIndex uint64 `json:"line_index" textlog:"-"`
 	Line      string `json:"line" textlog:"line"`
+	// Time contained in the log line, if the line has a timestamp that could be parsed.
+	Time time.Time `json:"time,omitzero" textlog:"time,omitempty"`
 }
 
 func (LogLine) observed() {}

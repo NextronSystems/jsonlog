@@ -81,6 +81,8 @@ type RegisteredDebugger struct {
 	jsonlog.ObjectHeader
 	Executable string `json:"executable" textlog:"file"`
 	Debugger   string `json:"debugger" textlog:"element"`
+	// Modified is the last write time of the Image File Execution Options key that registers the debugger.
+	Modified time.Time `json:"modified,omitzero" textlog:"modified,omitempty"`
 }
 
 func (RegisteredDebugger) observed() {}
